@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExamResultDTO {
+public class TestDTO {
     private Long userid;
     private String username;
     private Long quizSeq;

@@ -1,4 +1,31 @@
-package com.unique.Repository;
+package com.unique.repository;
 
-public class ExamRepository {
+import com.unique.entity.ExamEntity;
+import jakarta.persistence.OrderBy;
+import org.hibernate.annotations.BatchSize;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
+
+
+    @EntityGraph(attributePaths = {"quizList"}, type = EntityGraph.EntityGraphType.LOAD)
+    @BatchSize(size = 10)
+    @OrderBy("regdate ASC")
+    List<ExamEntity> findAll();
+
+    //사용자 정의 추가 기증
+    @EntityGraph(attributePaths = {
+            "quizList.quiz"
+    })
+    @Query("SELECT e FROM ExamEntity e")
+    List<ExamEntity> myFindAllExamWithQuizzes();
+
+
+
 }

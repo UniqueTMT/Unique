@@ -1,4 +1,4 @@
 package com.unique.controller;
 
-public class UsersController {
+public class MemberController {
 }

@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.example'
+group = 'com.unique'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -37,20 +37,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    //GEMINI
-//    implementation 'com.google.cloud:google-cloud-aiplatform:2.36.0'
-//    implementation 'com.google.auth:google-auth-library-oauth2-http:1.22.0'
-//    implementation 'com.google.ai:generativelanguage:0.6.0'
-
     //lombok
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    //postgreSQL
-    implementation 'org.postgresql:postgresql'
+    //ModelMapper
+    implementation 'org.modelmapper:modelmapper:3.1.1'
 
-    //mongo DB
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    //Oracle Driver
+    implementation 'com.oracle.database.jdbc:ojdbc8:21.8.0.0'
+    implementation 'org.apache.commons:commons-dbcp2:2.11.0'
 
     //sweager
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'

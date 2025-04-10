@@ -1,4 +1,4 @@
-package com.example.unique.gpt;
+package com.unique.gpt;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
