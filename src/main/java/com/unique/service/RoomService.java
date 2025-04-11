@@ -9,9 +9,10 @@ import java.util.Optional;
 public interface RoomService {
     List<RoomEntity> svcRoomList();
     Optional<RoomEntity> svcRoomDetail(Long id);
-    void svcRoomInsert(RoomEntity entity);
+    Long svcRoomInsert(RoomDTO roomDTO, Long userSeq);
     void svcRoomUpdate(RoomEntity entity);
     void svcRoomDelete(Long id);
+
 
     //시험 방 관리
 //     public List<RoomDTO> findRoomWithExams();
