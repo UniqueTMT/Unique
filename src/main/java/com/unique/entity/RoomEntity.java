@@ -28,7 +28,7 @@ public class RoomEntity {
     private String roomName;
 
     @Column(name = "view_yn", length = 1)
-    private Character viewYn;
+    private String viewYn;
 
     @Column(name = "room_pw", length = 100)
     private String roomPw;
@@ -40,13 +40,13 @@ public class RoomEntity {
     private Integer limitCnt;
 
     @Column(name = "active_yn", length = 1)
-    private Character activeYn;
+    private String activeYn;
 
     @Column(name = "room_status", length = 50)
     private String roomStatus;
 
     @Column(name = "shutdown_yn", length = 1)
-    private Character shutdownYn;
+    private String shutdownYn;
 
     @Column(name = "regdate", columnDefinition = "date default sysdate")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -62,10 +62,10 @@ public class RoomEntity {
     @JoinColumn(name = "user_seq")
     @JsonIgnore
     private MemberEntity member;
-    
-    //    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonIgnore
-//    @BatchSize(size = 10)
-//    @OrderBy("regdate ASC")
-//    private List<ExamEntity> examList;
+
+    @OneToOne
+    @JoinColumn(name = "exam_seq")
+    private ExamEntity exam;
+
+
 }

@@ -29,14 +29,6 @@ public class ExamEntity {
     @Column(name = "subject_name", length = 20)
     private String subjectName;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "room_seq")
-//    @JsonIgnore
-//    private RoomEntity room;
-//
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private RoomEntity room;
-
     @Column(name = "exam_title", length = 200)
     private String examTitle;
 
@@ -44,7 +36,7 @@ public class ExamEntity {
     private Integer examCnt;
 
     @Column(name = "pub_yn", length = 1)
-    private Character pubYn;
+    private String pubYn;
 
     @Column(name = "regdate", columnDefinition = "date default sysdate")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

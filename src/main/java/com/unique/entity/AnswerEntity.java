@@ -27,7 +27,7 @@ public class AnswerEntity {
     private String userAnswer;
 
     @Column(name = "answer_yn", length = 1)
-    private Character answerYn;
+    private String answerYn;
 
     @Column(name = "regdate", columnDefinition = "date default sysdate")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
