@@ -15,6 +15,6 @@ public interface AnswerService {
     void svcDeleteAnswer(Long id);
 
     //사용자 정의 추가 기능
-    public List<TestDTO> svcTest();
+//    public List<TestDTO> svcTest();
 
 }
