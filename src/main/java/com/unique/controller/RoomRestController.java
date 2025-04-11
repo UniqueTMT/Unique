@@ -12,36 +12,36 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class RoomRestController {
-    private final RoomServiceImpl roomServiceImpl;
+    private final RoomServiceImpl roomService;
 
     @GetMapping("/room")
     public ResponseEntity<List<RoomEntity>> ctlRoomList()  {
-        return ResponseEntity.ok(roomServiceImpl.svcRoomList());
+        return ResponseEntity.ok(roomService.svcRoomList());
     }
 
     @GetMapping("/room/{id}")
     public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
-        return ResponseEntity.ok(roomServiceImpl.svcRoomDetail(id));
+        return ResponseEntity.ok(roomService.svcRoomDetail(id));
     }
 
     @PostMapping("/room")
     public void ctlRoomInsert(@RequestBody RoomEntity entity) {
-        roomServiceImpl.svcRoomInsert(entity);
+        roomService.svcRoomInsert(entity);
     }
 
     @PutMapping("/room")
     public void ctlRoomUpdate(@RequestBody RoomEntity entity) {
-        roomServiceImpl.svcRoomUpdate(entity);
+        roomService.svcRoomUpdate(entity);
     }
 
     @DeleteMapping("/room/{id}")
     public void ctlRoomDelete(@PathVariable(value="id") Long id) {
-        roomServiceImpl.svcRoomDelete(id);
+        roomService.svcRoomDelete(id);
     }
 
     //시험 방관리
     @GetMapping("/roomlist")
     public ResponseEntity<List<RoomDTO>> ctlFindAll() {
-        return ResponseEntity.ok(roomServiceImpl.findRoomWithExams());
+        return ResponseEntity.ok(roomService.findRoomWithExams());
     }
 }

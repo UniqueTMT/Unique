@@ -1,7 +1,9 @@
 package com.unique.controller;
 
+import com.unique.dto.AnswerDTO;
 import com.unique.dto.TestDTO;
 import com.unique.entity.AnswerEntity;
+import com.unique.service.AnswerService;
 import com.unique.service.AnswerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class AnswerRestController {
-    private final AnswerServiceImpl answerServiceImpl;
+    private final AnswerServiceImpl answerService;
 
     //------------------------------- 수민 조인 샘플 예시 ---------------------------
 //    @GetMapping("/test")
@@ -24,31 +26,35 @@ public class AnswerRestController {
 //        return ResponseEntity.ok(result);
 //    }
     //----------------------------------------------------------------------------
-
-
     @GetMapping("/answers")
     public ResponseEntity<List<AnswerEntity>> ctlGetAllAnswers() {
-        return ResponseEntity.ok(answerServiceImpl.svcGetAllAnswers());
+        return ResponseEntity.ok(answerService.svcGetAllAnswers());
     }
 
     @GetMapping("/answers/{id}")
     public ResponseEntity<Optional<AnswerEntity>> ctlGetAnswer(@PathVariable(value="id") Long id) {
-        return ResponseEntity.ok(answerServiceImpl.svcGetAnswer(id));
+        return ResponseEntity.ok(answerService.svcGetAnswer(id));
     }
 
     @PostMapping("/answers")
     public void ctlCreateAnswer(@RequestBody AnswerEntity answer) {
-        answerServiceImpl.svcCreateAnswer(answer);
+        answerService.svcCreateAnswer(answer);
     }
 
     @PutMapping("/answers")
     public void ctlUpdateAnswer(@RequestBody AnswerEntity answer) {
-        answerServiceImpl.svcUpdateAnswer(answer);
+        answerService.svcUpdateAnswer(answer);
     }
 
     @DeleteMapping("/answers/{id}")
     public void ctlDeleteAnswer(@PathVariable(value="id") Long id) {
-        answerServiceImpl.svcDeleteAnswer(id);
+        answerService.svcDeleteAnswer(id);
+    }
+
+    //응시자 답안 확인
+    @GetMapping("/memberlist")
+    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembers() {
+        return ResponseEntity.ok(answerService.findAnswerWithApplysMemberAndQuiz());
     }
 }
 

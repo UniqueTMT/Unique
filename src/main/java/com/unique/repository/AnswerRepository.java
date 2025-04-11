@@ -20,4 +20,15 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
 //    })
 //    @Query("SELECT a FROM AnswerEntity a")
 //    List<AnswerEntity> myFindExamResultsWithGraph();
+
+    //응시자 답안 확인
+    @EntityGraph(attributePaths = {
+            "applys",
+            "applys.member",
+            "quiz"
+    })
+    @Query("SELECT a FROM AnswerEntity a")
+    List<AnswerEntity> findAnswerWithApplysMemberAndQuiz();
+
+
 }

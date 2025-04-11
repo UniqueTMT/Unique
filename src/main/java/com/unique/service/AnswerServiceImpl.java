@@ -1,5 +1,6 @@
 package com.unique.service;
 
+import com.unique.dto.AnswerDTO;
 import com.unique.dto.TestDTO;
 import com.unique.entity.AnswerEntity;
 import com.unique.repository.AnswerRepository;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
-//    private final ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public List<AnswerEntity> svcGetAllAnswers() {
         return answerRepository.findAll();
@@ -37,6 +38,15 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
 
+    //응시자 답안 확인
+    public List<AnswerDTO> findAnswerWithApplysMemberAndQuiz(){
+        return AnswerRepository.findAnswerWithApplysMemberAndQuiz.stream()
+                .map(answer->modelMapper.map(answer, AnswerDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    //문제은행 카테고리별 문제 상세보기
 //    public List<TestDTO> svcTest() {
 //        List<AnswerEntity> answerList = answerRepository.myFindExamResultsWithGraph();
 //        return answerList.stream()

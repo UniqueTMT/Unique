@@ -41,7 +41,6 @@ public class ExamRestController {
 //    public void ctlDelete(@PathVariable(value="id") Long id) {
 //        examService.svcDelete(id);
 //    }
-
     //문제은행 카테고리별 문제 상세 보기
     @GetMapping("/test2")
     public ResponseEntity<List<ExamDTO>> ctlFindAll2() {
