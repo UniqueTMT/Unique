@@ -16,6 +16,7 @@ public interface ExamService {
     void svcUpdate(TestDTO dto);
     void svcDelete(Long id);
 
+    //문제은행 카테고리별 문제 상세 보기
     public List<ExamDTO> myFindAllExamWithQuizzes();
 
 }

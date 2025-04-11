@@ -29,15 +29,13 @@ public class ExamEntity {
     @Column(name = "subject_name", length = 20)
     private String subjectName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_seq")
-    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "room_seq")
+//    @JsonIgnore
+//    private RoomEntity room;
+//
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RoomEntity room;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_seq")
-    @JsonIgnore
-    private MemberEntity member;
 
     @Column(name = "exam_title", length = 200)
     private String examTitle;
@@ -58,6 +56,12 @@ public class ExamEntity {
         if (this.regdate == null) this.regdate = new Date();
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_seq")
+    @JsonIgnore
+    private MemberEntity member;
+
+    //문제은행 카테고리별 문제 상세 보기
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @BatchSize(size = 10)

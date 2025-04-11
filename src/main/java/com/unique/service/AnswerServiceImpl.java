@@ -37,12 +37,12 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
 
-    public List<TestDTO> svcTest() {
-        List<AnswerEntity> answerList = answerRepository.myFindExamResultsWithGraph();
-        return answerList.stream()
-                .map(answer -> modelMapper.map(answer, TestDTO.class))
-                .collect(Collectors.toList());
-    }
+//    public List<TestDTO> svcTest() {
+//        List<AnswerEntity> answerList = answerRepository.myFindExamResultsWithGraph();
+//        return answerList.stream()
+//                .map(answer -> modelMapper.map(answer, TestDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
 
 

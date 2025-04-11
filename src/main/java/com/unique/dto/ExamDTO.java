@@ -18,5 +18,6 @@ public class ExamDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
+    //문제은행 카테고리별 문제 상세 보기
     private List<QuizDTO> quizList;
 }
