@@ -39,9 +39,8 @@ public class ApplysEntity {
     @JsonIgnore
     private List<AnswerEntity> answerList;
 
-    @OneToMany(mappedBy = "applys", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<AppealEntity> appealList;
+    @OneToOne(mappedBy = "applys", cascade = CascadeType.ALL, orphanRemoval = true)
+    private AppealEntity appeal;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")

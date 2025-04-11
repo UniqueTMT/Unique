@@ -18,11 +18,11 @@ public class AnswerRestController {
     private final AnswerServiceImpl answerServiceImpl;
 
     //------------------------------- 수민 조인 샘플 예시 ---------------------------
-    @GetMapping("/test")
-    public ResponseEntity<List<TestDTO>> ctlExamResult() {
-        List<TestDTO> result = answerServiceImpl.svcTest();
-        return ResponseEntity.ok(result);
-    }
+//    @GetMapping("/test")
+//    public ResponseEntity<List<TestDTO>> ctlExamResult() {
+//        List<TestDTO> result = answerServiceImpl.svcTest();
+//        return ResponseEntity.ok(result);
+//    }
     //----------------------------------------------------------------------------
 
 
