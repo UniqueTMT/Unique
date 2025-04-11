@@ -17,5 +17,5 @@ public class RoomDTO {
     private Date regdate;
 
     //시험 방관리
-//    private List<ExamDTO> examList;
+    private List<ExamDTO> examList;
 }
