@@ -14,7 +14,7 @@ public class RoomRestController {
     private final RoomServiceImpl roomServiceImpl;
 
     @GetMapping("/room")
-    public ResponseEntity<List<RoomEntity>> ctlRoomList() {
+    public ResponseEntity<List<RoomEntity>> ctlRoomList()  {
         return ResponseEntity.ok(roomServiceImpl.svcRoomList());
     }
 
@@ -37,4 +37,5 @@ public class RoomRestController {
     public void ctlRoomDelete(@PathVariable(value="id") Long id) {
         roomServiceImpl.svcRoomDelete(id);
     }
+
 }

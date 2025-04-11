@@ -19,7 +19,7 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     @OrderBy("regdate ASC")
     List<ExamEntity> findAll();
 
-    //사용자 정의 추가 기증
+    //문제은행 카테고리별 문제 상세 보기
     @EntityGraph(attributePaths = {
             "quizList.quiz"
     })

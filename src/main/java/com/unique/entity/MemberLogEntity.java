@@ -24,11 +24,6 @@ public class MemberLogEntity {
     @Column(name = "MEMBER_LOG_SEQ")
     private Long memberLogSeq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_SEQ")
-    @JsonIgnore
-    private MemberEntity member;
-
     @Column(name = "REGDATE", columnDefinition = "date default sysdate")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -39,6 +34,11 @@ public class MemberLogEntity {
 
     @Column(name = "USER_IP", length = 50)
     private String userIp;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_SEQ")
+    @JsonIgnore
+    private MemberEntity member;
 
     @PrePersist
     protected void onCreate() {
