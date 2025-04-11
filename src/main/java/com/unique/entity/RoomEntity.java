@@ -27,11 +27,6 @@ public class RoomEntity {
     @Column(name = "room_name", nullable = false, length = 100)
     private String roomName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_seq")
-    @JsonIgnore
-    private MemberEntity member;
-
     @Column(name = "view_yn", length = 1)
     private Character viewYn;
 
@@ -63,9 +58,14 @@ public class RoomEntity {
         if (this.regdate == null) this.regdate = new Date();
     }
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_seq")
     @JsonIgnore
-    @BatchSize(size = 10)
-    @OrderBy("regdate ASC")
-    private List<ExamEntity> examList;
+    private MemberEntity member;
+    
+    //    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonIgnore
+//    @BatchSize(size = 10)
+//    @OrderBy("regdate ASC")
+//    private List<ExamEntity> examList;
 }

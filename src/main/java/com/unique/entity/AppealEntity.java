@@ -23,11 +23,6 @@ public class AppealEntity {
     @SequenceGenerator(name = "APPEAL_SEQ", sequenceName = "APPEAL_SEQUENCE", allocationSize = 1)
     private Long appealSeq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "applys_seq")
-    @JsonIgnore
-    private ApplysEntity applys;
-
     @Column(name = "contents", length = 1000)
     private String contents;
 
@@ -43,4 +38,10 @@ public class AppealEntity {
     protected void onCreate() {
         if (this.regdate == null) this.regdate = new Date();
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "applys_seq")
+    @JsonIgnore
+    private ApplysEntity applys;
+
 }
