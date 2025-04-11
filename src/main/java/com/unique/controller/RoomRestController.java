@@ -37,4 +37,10 @@ public class RoomRestController {
     public void ctlRoomDelete(@PathVariable(value="id") Long id) {
         roomServiceImpl.svcRoomDelete(id);
     }
+
+
+    @PostMapping("/create-room-test")
+    public void ctlRoomCreate(@RequestBody RoomEntity entity) {
+//        roomServiceImpl.svcRoomCreate(entity);
+    }
 }
