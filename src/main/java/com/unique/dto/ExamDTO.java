@@ -10,14 +10,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ExamDTO {
     private Long examSeq;
-    private String title;
+    private String examTitle;             // 시험지 제목
+    private String subjectName;           // 카테고리
+    private String creatorNickname;       // 닉네임
     private String comments;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
-    //문제은행 카테고리별 문제 상세 보기
     private List<QuizDTO> quizList;
 }
