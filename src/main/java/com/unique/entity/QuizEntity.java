@@ -28,7 +28,7 @@ public class QuizEntity {
     private String quiz;
 
     @Column(name = "obj_yn", length = 1)
-    private Character objYn;
+    private String objYn;
 
     @Column(name = "obj1", length = 200)
     private String obj1;

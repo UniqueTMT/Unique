@@ -36,10 +36,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     //시험 방 관리
-    public List<RoomDTO> findRoomWithExams(){
-        return roomRepository.findRoomWithExams().stream()
-                .map(room -> modelMapper.map(room, RoomDTO.class))
-                .collect(Collectors.toList());
-    }
+//    public List<RoomDTO> findRoomWithExams(){
+//        return roomRepository.findRoomWithExams().stream()
+//                .map(room -> modelMapper.map(room, RoomDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
 }
