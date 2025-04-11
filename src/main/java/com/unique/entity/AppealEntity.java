@@ -39,9 +39,8 @@ public class AppealEntity {
         if (this.regdate == null) this.regdate = new Date();
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "applys_seq")
-    @JsonIgnore
     private ApplysEntity applys;
 
 }

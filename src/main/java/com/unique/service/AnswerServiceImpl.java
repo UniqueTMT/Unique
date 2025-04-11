@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
-    private final ModelMapper modelMapper;
+//    private final ModelMapper modelMapper;
 
     public List<AnswerEntity> svcGetAllAnswers() {
         return answerRepository.findAll();
