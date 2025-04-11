@@ -11,4 +11,11 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
 
+    // 시험 방 관리
+    @EntityGraph(attributePaths = {
+            "exam"
+    })
+    @Query("SELECT r FROM RoomEntity r")
+    List<RoomEntity> findRoomWithExam();
+
 }

@@ -11,11 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomDTO {
     private Long roomSeq;
-    private String title;
+    private String roomName;
+    private Integer limitTime;
+    private Long userSeq;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
     //시험 방관리
-//    private List<ExamDTO> examList;
+    private List<ExamDTO> examList;
 }

@@ -12,12 +12,14 @@ import java.util.List;
 @AllArgsConstructor
 public class ExamDTO {
     private Long examSeq;
-    private String title;
+    private String examTitle;
     private String comments;
+    private Long subjectCode;
+    private String subjectName;
+    private Long userSeq;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
-    //문제은행 카테고리별 문제 상세 보기
     private List<QuizDTO> quizList;
 }

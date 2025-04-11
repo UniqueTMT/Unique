@@ -14,5 +14,5 @@ public interface RoomService {
     void svcRoomDelete(Long id);
 
     //시험 방 관리
-//     public List<RoomDTO> findRoomWithExams();
+     public List<RoomDTO> findRoomWithExams();
 }

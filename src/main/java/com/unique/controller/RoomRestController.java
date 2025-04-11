@@ -1,4 +1,5 @@
 package com.unique.controller;
+import com.unique.dto.RoomDTO;
 import com.unique.entity.RoomEntity;
 import com.unique.service.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -38,4 +39,9 @@ public class RoomRestController {
         roomServiceImpl.svcRoomDelete(id);
     }
 
+    //시험 방관리
+    @GetMapping("/roomlist")
+    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
+        return ResponseEntity.ok(roomServiceImpl.findRoomWithExams());
+    }
 }
