@@ -18,7 +18,7 @@ public class UserExamHistoryDetailDTO {
     private String examTitle; // 시험명
     private Long userSeq; // 유저 시퀀스
     private String creatorName; // 출제자명
-    private String userId; // 응시자 아이디
+    private Long userId; // 응시자 아이디
     private String userName; // 응시자명
     private Long applysSeq; // 응시 시퀀스
     private Integer totalScore; // 총 배점
