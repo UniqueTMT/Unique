@@ -21,17 +21,13 @@ public class ApplysServiceImpl implements ApplysService {
     private final ApplysRepository applysRepository;
     private final ModelMapper modelMapper;
 
-//    @Override
-//    public List<UserExamHistoryDTO> myFindAllExamHistory() {
-//        return applysRepository.myFindAllExamHistory().stream()
-//                .map(apply->modelMapper.map(apply,UserExamHistoryDTO.class))
-//                .collect(Collectors.toList());
-//    }
-
     @Override
-    public List<UserExamHistoryDTO> myFindAllExamHistory() {
-        return List.of();
+    public List<UserExamHistoryDTO> myFindAllExamHistory(Long userSeq) {
+        return applysRepository.myFindAllExamHistory(userSeq).stream()
+                .map(apply -> modelMapper.map(apply, UserExamHistoryDTO.class))
+                .collect(Collectors.toList());
     }
+
 
     public List<ApplysEntity> svcApplysList() {
         return applysRepository.findAll();

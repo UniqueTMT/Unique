@@ -41,8 +41,8 @@ public class ApplysRestController {
         applysServiceImpl.svcApplysDelete(id);
     }
 
-    @GetMapping("/applys/{userSeq}")
-    public ResponseEntity<List<UserExamHistoryDTO>> ctlFindAllExamHistory(@PathVariable(value="userSeq") Long userSeq) {
-        return ResponseEntity.ok(applysServiceImpl.myFindAllExamHistory());
+    @GetMapping("/apply-history/{userSeq}")
+    public ResponseEntity<List<UserExamHistoryDTO>> ctlFindAllExamHistory(@PathVariable(value = "userSeq") Long userSeq) {
+        return ResponseEntity.ok(applysServiceImpl.myFindAllExamHistory(userSeq));
     }
 }
