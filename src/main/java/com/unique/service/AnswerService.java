@@ -1,5 +1,6 @@
 package com.unique.service;
 
+import com.unique.dto.AnswerDTO;
 import com.unique.dto.TestDTO;
 import com.unique.entity.AnswerEntity;
 
@@ -17,4 +18,6 @@ public interface AnswerService {
     //사용자 정의 추가 기능
 //    public List<TestDTO> svcTest();
 
+    //응시자 답안 확인
+    List<AnswerDTO> svcFindAnswerWithMemberAndQuiz();
 }

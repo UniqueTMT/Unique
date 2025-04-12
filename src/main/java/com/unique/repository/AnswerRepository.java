@@ -11,15 +11,15 @@ import java.util.List;
 @Repository
 public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
 
-//    //샘플 코드 예외--------------------------------------------------------
-//    @EntityGraph(attributePaths = {
-//            "quiz",
-//            "quiz.exam",
-//            "applys",
-//            "applys.member"
-//    })
-//    @Query("SELECT a FROM AnswerEntity a")
-//    List<AnswerEntity> myFindExamResultsWithGraph();
+    //임의의 학생 시험 결과 확인
+    @EntityGraph(attributePaths = {
+            "quiz",
+            "quiz.exam",
+            "applys",
+            "applys.member"
+    })
+    @Query("SELECT a FROM AnswerEntity a")
+    List<AnswerEntity> myFindExamResultsWithGraph();
 
     //응시자 답안 확인
     @EntityGraph(attributePaths = {

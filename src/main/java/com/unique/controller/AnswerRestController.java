@@ -22,7 +22,7 @@ public class AnswerRestController {
     //------------------------------- 수민 조인 샘플 예시 ---------------------------
 //    @GetMapping("/test")
 //    public ResponseEntity<List<TestDTO>> ctlExamResult() {
-//        List<TestDTO> result = answerServiceImpl.svcTest();
+//        List<TestDTO> result = answerService.svcTest();
 //        return ResponseEntity.ok(result);
 //    }
     //----------------------------------------------------------------------------
@@ -52,9 +52,14 @@ public class AnswerRestController {
     }
 
     //응시자 답안 확인
+//    @GetMapping("/memberlist")
+//    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembers() {
+//        return ResponseEntity.ok(answerService.findAnswerWithApplysMemberAndQuiz());
+//    }
     @GetMapping("/memberlist")
-    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembers() {
-        return ResponseEntity.ok(answerService.findAnswerWithApplysMemberAndQuiz());
+    public ResponseEntity<List<AnswerDTO>> ctlFindAnswerWithMemberAndQuiz() {
+        List<AnswerDTO> result = answerService.svcFindAnswerWithMemberAndQuiz();
+        return ResponseEntity.ok(result);
     }
 }
 

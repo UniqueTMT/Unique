@@ -39,12 +39,13 @@ public class AnswerServiceImpl implements AnswerService {
 
 
     //응시자 답안 확인
-    public List<AnswerDTO> findAnswerWithApplysMemberAndQuiz(){
-        return AnswerRepository.findAnswerWithApplysMemberAndQuiz.stream()
-                .map(answer->modelMapper.map(answer, AnswerDTO.class))
+    public List<AnswerDTO> svcFindAnswerWithMemberAndQuiz(){
+        return answerRepository.findAnswerWithApplysMemberAndQuiz().stream()
+                .map(answer -> modelMapper.map(answer, AnswerDTO.class))
                 .collect(Collectors.toList());
 
     }
+
 
     //문제은행 카테고리별 문제 상세보기
 //    public List<TestDTO> svcTest() {
