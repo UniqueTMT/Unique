@@ -1,8 +1,7 @@
 package com.unique.controller;
 
 import com.unique.dto.ExamDTO;
-import com.unique.dto.ExamDetailDTO;
-import com.unique.dto.TestDTO;
+import com.unique.dto.AnswerDetailDTO;
 import com.unique.service.ExamServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +17,22 @@ public class ExamRestController {
     private final ExamServiceImpl examService;
 
     @GetMapping()
-    public ResponseEntity<List<TestDTO>> ctlFindAll() {
+    public ResponseEntity<List<AnswerDetailDTO>> ctlFindAll() {
         return ResponseEntity.ok(examService.svcFindAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<TestDTO>> ctlFindById(@PathVariable(value="id") Long id) {
+    public ResponseEntity<Optional<AnswerDetailDTO>> ctlFindById(@PathVariable(value="id") Long id) {
         return ResponseEntity.ok(examService.svcFindById(id));
     }
 
     @PostMapping
-    public void ctlInsert(@RequestBody TestDTO dto) {
+    public void ctlInsert(@RequestBody AnswerDetailDTO dto) {
         examService.svcInsert(dto);
     }
 
     @PutMapping
-    public void ctlUpdate(@RequestBody TestDTO dto) {
+    public void ctlUpdate(@RequestBody AnswerDetailDTO dto) {
         examService.svcUpdate(dto);
     }
 

@@ -1,7 +1,7 @@
 package com.unique.service;
 
 import com.unique.dto.AnswerDTO;
-import com.unique.dto.TestDTO;
+import com.unique.dto.AnswerDetailDTO;
 import com.unique.entity.AnswerEntity;
 import com.unique.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,15 +46,11 @@ public class AnswerServiceImpl implements AnswerService {
 
     }
 
-
-    //문제은행 카테고리별 문제 상세보기
-//    public List<TestDTO> svcTest() {
-//        List<AnswerEntity> answerList = answerRepository.myFindExamResultsWithGraph();
-//        return answerList.stream()
-//                .map(answer -> modelMapper.map(answer, TestDTO.class))
-//                .collect(Collectors.toList());
-//    }
-
-
+    //임의의 학생 시험 결과 확인
+    public List<AnswerDetailDTO> svcFindSelectedStudentResult(Long userid) {
+        return answerRepository.findSelectedStudentResult(userid).stream()
+                .map(answer -> modelMapper.map(answer, AnswerDetailDTO.class))
+                .collect(Collectors.toList());
+    }
 
 }
