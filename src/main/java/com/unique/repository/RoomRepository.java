@@ -9,6 +9,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
 
+    // 시험 방 관리
+    @EntityGraph(attributePaths = {
+            "exam"
+    })
+    @Query("SELECT r FROM RoomEntity r")
+    List<RoomEntity> findRoomWithExam();
+
+  
   @EntityGraph(attributePaths = {
       "exam",
       "exam.member",
@@ -16,4 +24,5 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
   })
   @Query("SELECT r FROM RoomEntity r WHERE r.roomSeq = :roomSeq")
   RoomEntity findRoomWithExamAndMemberAndQuizList(Long roomSeq);
+
 }

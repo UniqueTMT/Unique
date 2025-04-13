@@ -15,31 +15,31 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class MemberRestController {
-    private final MemberServiceImpl memberServiceImpl;
+    private final MemberServiceImpl memberService;
 
     @GetMapping("/member")
     public ResponseEntity<List<MemberEntity>> ctlMemberList() {
-        return ResponseEntity.ok(memberServiceImpl.svcMemberList());
+        return ResponseEntity.ok(memberService.svcMemberList());
     }
 
     @GetMapping("/member/{id}")
     public ResponseEntity<Optional<MemberEntity>> ctlMemberDetail(@PathVariable Long id) {
-        return ResponseEntity.ok(memberServiceImpl.svcMemberDetail(id));
+        return ResponseEntity.ok(memberService.svcMemberDetail(id));
     }
 
     @PostMapping("/member")
     public void ctlMemberInsert(@RequestBody MemberEntity entity) {
-        memberServiceImpl.svcMemberInsert(entity);
+        memberService.svcMemberInsert(entity);
     }
 
     @PutMapping("/member")
     public void ctlMemberUpdate(@RequestBody MemberEntity entity) {
-        memberServiceImpl.svcMemberUpdate(entity);
+        memberService.svcMemberUpdate(entity);
     }
 
     @DeleteMapping("/member/{id}")
     public void ctlMemberDelete(@PathVariable(value="id") Long id) {
-        memberServiceImpl.svcMemberDelete(id);
+        memberService.svcMemberDelete(id);
     }
 
 

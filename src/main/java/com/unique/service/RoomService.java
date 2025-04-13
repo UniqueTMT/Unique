@@ -15,5 +15,5 @@ public interface RoomService {
 
 
     //시험 방 관리
-//     public List<RoomDTO> findRoomWithExams();
+     public List<RoomDTO> findRoomWithExams();
 }

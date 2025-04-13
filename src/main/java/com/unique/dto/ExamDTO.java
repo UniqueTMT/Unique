@@ -17,6 +17,10 @@ public class ExamDTO {
     private String subjectName;           // 카테고리
     private String creatorNickname;       // 닉네임
     private String comments;
+    private Long subjectCode;
+    private String subjectName;
+    private Long userSeq;
+    private Integer examCnt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;

@@ -12,30 +12,30 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class AppealRestController {
-    private final AppealServiceImpl appealServiceImpl;
+    private final AppealServiceImpl appealService;
 
     @GetMapping("/appeal")
     public ResponseEntity<List<AppealEntity>> ctlAppealList() {
-        return ResponseEntity.ok(appealServiceImpl.svcAppealList());
+        return ResponseEntity.ok(appealService.svcAppealList());
     }
 
     @GetMapping("/appeal/{id}")
     public ResponseEntity<Optional<AppealEntity>> ctlAppealDetail(@PathVariable(value="id") Long id) {
-        return ResponseEntity.ok(appealServiceImpl.svcAppealDetail(id));
+        return ResponseEntity.ok(appealService.svcAppealDetail(id));
     }
 
     @PostMapping("/appeal")
     public void ctlAppealInsert(@RequestBody AppealEntity entity) {
-        appealServiceImpl.svcAppealInsert(entity);
+        appealService.svcAppealInsert(entity);
     }
 
     @PutMapping("/appeal")
     public void ctlAppealUpdate(@RequestBody AppealEntity entity) {
-        appealServiceImpl.svcAppealUpdate(entity);
+        appealService.svcAppealUpdate(entity);
     }
 
     @DeleteMapping("/appeal/{id}")
     public void ctlAppealDelete(@PathVariable(value="id") Long id) {
-        appealServiceImpl.svcAppealDelete(id);
+        appealService.svcAppealDelete(id);
     }
 }
