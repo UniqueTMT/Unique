@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-// AnswerRestController.java
 @RestController
 @RequiredArgsConstructor
 public class AnswerRestController {
@@ -62,7 +61,7 @@ public class AnswerRestController {
         return ResponseEntity.ok(result);
     }
 
-    //임의의 학생 시험 결과 확인
+    //임의의 학생 시험 결과 확인 userid = 20220293로 호출
     @GetMapping("/result/{userid}")
     public ResponseEntity<List<AnswerDetailDTO>> ctlFindSelectedStudentResult(@PathVariable Long userid) {
         List<AnswerDetailDTO> result = answerService.svcFindSelectedStudentResult(userid);
