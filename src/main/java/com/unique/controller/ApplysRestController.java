@@ -43,6 +43,6 @@ public class ApplysRestController {
 
     @GetMapping("/apply-history/{userSeq}")
     public ResponseEntity<List<UserExamHistoryDTO>> ctlFindAllExamHistory(@PathVariable(value = "userSeq") Long userSeq) {
-        return ResponseEntity.ok(applysServiceImpl.myFindAllExamHistory(userSeq));
+        return ResponseEntity.ok(applysService.myFindAllExamHistory(userSeq));
     }
 }
