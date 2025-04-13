@@ -1,14 +1,18 @@
 package com.unique.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class TestDTO {
-    private Long userid;
+@AllArgsConstructor
+public class AnswerDetailDTO {
+    //임의의 학생 시험 결과 확인
+    private String userid;
     private String username;
     private Long quizSeq;
     private Long examSeq;
@@ -18,12 +22,17 @@ public class TestDTO {
     private String obj2;
     private String obj3;
     private String obj4;
-    private Long correctScore;
+    private Integer correctScore;
     private String correctAnswer;
     private String hint;
     private String comments;
+
     private Long answerSeq;
     private Long applysSeq;
     private String userAnswer;
     private String answerYn;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date regdate;
+
 }
