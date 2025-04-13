@@ -1,11 +1,17 @@
 package com.unique.service;
 
+import com.unique.dto.UserExamHistoryDTO;
 import com.unique.entity.ApplysEntity;
 import com.unique.repository.ApplysRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.unique.entity.AppealEntity;
 import com.unique.repository.AppealRepository;
 
@@ -13,6 +19,15 @@ import com.unique.repository.AppealRepository;
 @RequiredArgsConstructor
 public class ApplysServiceImpl implements ApplysService {
     private final ApplysRepository applysRepository;
+    private final ModelMapper modelMapper;
+
+    @Override
+    public List<UserExamHistoryDTO> myFindAllExamHistory(Long userSeq) {
+        return applysRepository.myFindAllExamHistory(userSeq).stream()
+                .map(apply -> modelMapper.map(apply, UserExamHistoryDTO.class))
+                .collect(Collectors.toList());
+    }
+
 
     public List<ApplysEntity> svcApplysList() {
         return applysRepository.findAll();

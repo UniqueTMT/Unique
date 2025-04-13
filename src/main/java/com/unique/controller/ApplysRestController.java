@@ -1,5 +1,6 @@
 package com.unique.controller;
 
+import com.unique.dto.UserExamHistoryDTO;
 import com.unique.entity.ApplysEntity;
 import com.unique.service.ApplysServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,10 @@ public class ApplysRestController {
     @DeleteMapping("/applys/{id}")
     public void ctlApplysDelete(@PathVariable(value="id") Long id) {
         applysService.svcApplysDelete(id);
+    }
+
+    @GetMapping("/apply-history/{userSeq}")
+    public ResponseEntity<List<UserExamHistoryDTO>> ctlFindAllExamHistory(@PathVariable(value = "userSeq") Long userSeq) {
+        return ResponseEntity.ok(applysServiceImpl.myFindAllExamHistory(userSeq));
     }
 }

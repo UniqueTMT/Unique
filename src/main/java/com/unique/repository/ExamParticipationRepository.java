@@ -1,28 +1,28 @@
 package com.unique.repository;
 
 import com.unique.entity.RoomEntity;
+import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
+public interface ExamParticipationRepository extends JpaRepository<RoomEntity, Long> {
 
-    // 시험 방 관리
-    @EntityGraph(attributePaths = {
-            "exam"
-    })
-    @Query("SELECT r FROM RoomEntity r")
-    List<RoomEntity> findRoomWithExam();
-
-  
+  // 방 정보 + 생성자 닉네임 + 시험지까지 fetch
   @EntityGraph(attributePaths = {
+      "member",
       "exam",
-      "exam.member",
       "exam.quizList"
   })
   @Query("SELECT r FROM RoomEntity r WHERE r.roomSeq = :roomSeq")
-  RoomEntity findRoomWithExamAndMemberAndQuizList(Long roomSeq);
+  RoomEntity findRoomDetailWithExamAndMember(Long roomSeq);
+
+  @Query("SELECT DISTINCT m.userid " +
+      "FROM ApplysEntity a " +
+      "JOIN a.member m " +
+      "WHERE a.exam.examSeq = :examSeq")
+  List<Long> findApplicantUserIdsByExam_ExamSeq(Long examSeq);
 
 }

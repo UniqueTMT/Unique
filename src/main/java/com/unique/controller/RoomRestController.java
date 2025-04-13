@@ -25,8 +25,10 @@ public class RoomRestController {
     }
 
     @PostMapping("/room")
-    public void ctlRoomInsert(@RequestBody RoomEntity entity) {
-        roomService.svcRoomInsert(entity);
+    public ResponseEntity<Long> ctlRoomInsert(@RequestBody RoomDTO roomDTO) {
+//        Long userSeq = getCurrentUserSeq(); // 로그인 유저 ID 가져오기
+        Long roomSeq = roomService.svcRoomInsert(roomDTO, 1L);     // 일단 테스트용으로 1번 유저로 하드코딩
+        return ResponseEntity.ok(roomSeq);
     }
 
     @PutMapping("/room")

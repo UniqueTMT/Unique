@@ -10,9 +10,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ExamDTO {
     private Long examSeq;
-    private String examTitle;
+    private String examTitle;             // 시험지 제목
+    private String subjectName;           // 카테고리
+    private String creatorNickname;       // 닉네임
     private String comments;
     private Long subjectCode;
     private String subjectName;
