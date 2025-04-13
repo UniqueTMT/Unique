@@ -19,9 +19,10 @@ public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
     private final ModelMapper modelMapper;
 
-    //문제은행 카테고리별 문제 상세 보기
-    public List<ExamDTO> myFindAllExamWithQuizzes() {
-        return examRepository.myFindAllExamWithQuizzes().stream()
+    //문제은행 카테고리별 시험지 상세 보기
+    @Override
+    public List<ExamDTO> svcFindExamWithQuizList() {
+        return examRepository.findExamWithQuizList().stream()
                 .map(exam -> modelMapper.map(exam, ExamDTO.class))
                 .collect(Collectors.toList());
     }

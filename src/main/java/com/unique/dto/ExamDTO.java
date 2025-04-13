@@ -17,6 +17,7 @@ public class ExamDTO {
     private Long subjectCode;
     private String subjectName;
     private Long userSeq;
+    private Integer examCnt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
