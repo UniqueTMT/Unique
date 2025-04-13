@@ -18,7 +18,6 @@ public class ExamDTO {
     private String creatorNickname;       // 닉네임
     private String comments;
     private Long subjectCode;
-    private String subjectName;
     private Long userSeq;
     private Integer examCnt;
 
