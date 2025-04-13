@@ -1,5 +1,6 @@
 package com.unique.controller;
 
+import com.unique.dto.MemberInfoDTO;
 import com.unique.entity.MemberEntity;
 import com.unique.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,11 @@ public class MemberRestController {
     @DeleteMapping("/member/{id}")
     public void ctlMemberDelete(@PathVariable(value="id") Long id) {
         memberServiceImpl.svcMemberDelete(id);
+    }
+
+
+    @GetMapping("/member-info/{userSeq}")
+    public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
+        return ResponseEntity.ok(memberServiceImpl.svcGetMemberInfo(userSeq));
     }
 }
