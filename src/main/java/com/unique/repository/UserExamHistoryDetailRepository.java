@@ -16,25 +16,13 @@ import java.util.List;
  */
 @Repository
 public interface UserExamHistoryDetailRepository extends JpaRepository<ApplysEntity, Long> {
+    
+
 
     /**
-     * 특정 유저(userSeq)가 응시한 특정 시험(examSeq)의 데이터를 조회.
+     * 특정 유저(userSeq)가 응시한 특정 시험(examSeq)의 데이터를 조회. - 경준
      * EntityGraph를 사용하여 연관 데이터를 효율적으로 로드.
      */
-//    @EntityGraph(attributePaths = {
-//            "exam",
-//            "exam.quizList",
-//            "exam.member",
-//            "member",
-//            "answerList",
-//            "answerList.quiz"
-//    })
-//    @Query("SELECT a FROM ApplysEntity a WHERE a.member.userSeq = :userSeq AND a.exam.examSeq = :examSeq")
-//    ApplysEntity MyfindUserExamHistoryDetail(@Param("userSeq") Long userSeq, @Param("examSeq") Long examSeq);
-
-
-
-
         // 1차 쿼리: ApplysEntity + Exam + Member (컬렉션은 로드하지 않음)
         @Query("""
         SELECT a 

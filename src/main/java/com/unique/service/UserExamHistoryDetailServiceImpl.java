@@ -106,7 +106,9 @@ public class UserExamHistoryDetailServiceImpl {
 //        );
 //    }
 
-
+        /**
+         * 특정 유저(userSeq)가 응시한 특정 시험지(examSeq)의 결과출력 - 경준
+         */
         public UserExamHistoryDetailDTO svcGetExamResult(Long userSeq, Long examSeq) {
             // 1. 기본 정보 조회 (컬렉션 제외)
             ApplysEntity applysEntity = userExamHistoryDetailRepository.findApplysWithExamAndMember(userSeq, examSeq);

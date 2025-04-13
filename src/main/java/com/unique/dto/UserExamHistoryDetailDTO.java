@@ -15,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserExamHistoryDetailDTO {
+    
+    // 시험 이력 세부 DTO (시험지 정보) - 경준
     private Long examSeq;          // 시험 시퀀스
     private Long subjectCode;      // 과목 코드
     private String subjectName;    // 과목명

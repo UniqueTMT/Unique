@@ -11,65 +11,40 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 @RestController
 @RequiredArgsConstructor
-public class MemberRestController {
+public class AdminRestController {
     private final MemberServiceImpl memberService;
 
-    @GetMapping("/member")
+    //관리자 기능 관련 컨트롤러 입니다. 추후 사용 예정입니다..
+
+    @GetMapping("/admin")
     public ResponseEntity<List<MemberEntity>> ctlMemberList() {
         return ResponseEntity.ok(memberService.svcMemberList());
     }
 
-    @GetMapping("/member/{id}")
+    @GetMapping("/admin/{id}")
     public ResponseEntity<Optional<MemberEntity>> ctlMemberDetail(@PathVariable Long id) {
         return ResponseEntity.ok(memberService.svcMemberDetail(id));
     }
 
-    @PostMapping("/member")
+    @PostMapping("/admin")
     public void ctlMemberInsert(@RequestBody MemberEntity entity) {
         memberService.svcMemberInsert(entity);
     }
 
-    @PutMapping("/member")
+    @PutMapping("/admin")
     public void ctlMemberUpdate(@RequestBody MemberEntity entity) {
         memberService.svcMemberUpdate(entity);
     }
 
-    @DeleteMapping("/member/{id}")
+    @DeleteMapping("/admin/{id}")
     public void ctlMemberDelete(@PathVariable(value="id") Long id) {
         memberService.svcMemberDelete(id);
     }
 
-
-
-
-    // 유저 정보 불러오기 (마이페이지) - 경준
-    @GetMapping("/member-info/{userSeq}")
+    @GetMapping("/admin-info/{userSeq}")
     public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
         return ResponseEntity.ok(memberService.svcGetMemberInfo(userSeq));
     }
-    
-    
-    // 유저 비밀번호 변경 - 경준
-    @PutMapping("/change-password/{userSeq}")
-    public ResponseEntity<String> ctlChangePassword(
-            @PathVariable(value = "userSeq") Long userSeq
-            ,@RequestParam(value = "oldPassword") String oldPassword
-            ,@RequestParam(value = "newPassword") String newPassword
-            ) {
-        try {
-            boolean success = memberService.svcChangePassword(userSeq,oldPassword,newPassword);
-            if (success) {
-                return ResponseEntity.ok("비밀번호 변경완료");
-            }else {
-                return ResponseEntity.badRequest().body("비밀번호 변경실패");
-            }
-        }catch (RuntimeException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-
 }

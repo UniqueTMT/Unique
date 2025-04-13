@@ -15,9 +15,9 @@ public class AnswerDTO {
     private String userAnswer;
     private Character answerYn;
 
-    private Long userid;          // from member
-    private String nickname;      // from member
-    private Integer correctScore; // from quiz
+//    private Long userid;          // from member
+//    private String nickname;      // from member
+//    private Integer correctScore; // from quiz
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
