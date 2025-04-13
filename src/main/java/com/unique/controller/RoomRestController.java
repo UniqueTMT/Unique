@@ -41,4 +41,9 @@ public class RoomRestController {
         roomService.svcRoomDelete(id);
     }
 
+    //시험 방관리
+    @GetMapping("/roomlist")
+    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
+        return ResponseEntity.ok(roomService.findRoomWithExams());
+    }
 }

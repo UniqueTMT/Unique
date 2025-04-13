@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExamDetailDTO {
+    //문제은행 카테고리별 문제 상세 보기
     private String subjectName;
     private String subjectCode;
     private String examCnt;

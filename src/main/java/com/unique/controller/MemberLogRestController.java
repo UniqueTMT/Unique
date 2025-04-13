@@ -11,30 +11,30 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 public class MemberLogRestController {
-    private final MemberLogServiceImpl memberLogServiceImpl;
+    private final MemberLogServiceImpl memberLogService;
 
     @GetMapping("/memberlog")
     public ResponseEntity<List<MemberLogEntity>> ctlMemberLogList() {
-        return ResponseEntity.ok(memberLogServiceImpl.svcMemberLogList());
+        return ResponseEntity.ok(memberLogService.svcMemberLogList());
     }
 
     @GetMapping("/memberlog/{id}")
     public ResponseEntity<Optional<MemberLogEntity>> ctlMemberLogDetail(@PathVariable(value="id") Long id) {
-        return ResponseEntity.ok(memberLogServiceImpl.svcMemberLogDetail(id));
+        return ResponseEntity.ok(memberLogService.svcMemberLogDetail(id));
     }
 
     @PostMapping("/memberlog")
     public void ctlMemberLogInsert(@RequestBody MemberLogEntity entity) {
-        memberLogServiceImpl.svcMemberLogInsert(entity);
+        memberLogService.svcMemberLogInsert(entity);
     }
 
     @PutMapping("/memberlog")
     public void ctlMemberLogUpdate(@RequestBody MemberLogEntity entity) {
-        memberLogServiceImpl.svcMemberLogUpdate(entity);
+        memberLogService.svcMemberLogUpdate(entity);
     }
 
     @DeleteMapping("/memberlog/{id}")
     public void ctlMemberLogDelete(@PathVariable(value="id") Long id) {
-        memberLogServiceImpl.svcMemberLogDelete(id);
+        memberLogService.svcMemberLogDelete(id);
     }
 }
