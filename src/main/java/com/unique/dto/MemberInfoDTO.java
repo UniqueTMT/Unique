@@ -15,6 +15,7 @@ public class MemberInfoDTO {
     private Long userSeq; //유저 시퀀스
     private Long userid; // 유저 학번 (아이디)
     private String username; // 유저 이름
+    private String email;
     private String nickname; // 유저 닉네임
 
 

@@ -1,4 +1,5 @@
 package com.unique.service;
+import com.unique.dto.MemberInfoDTO;
 import com.unique.entity.AnswerEntity;
 import com.unique.entity.MemberEntity;
 
@@ -11,4 +12,6 @@ public interface MemberService {
     void svcMemberInsert(MemberEntity entity);
     void svcMemberUpdate(MemberEntity entity);
     void svcMemberDelete(Long id);
+
+    Optional<MemberInfoDTO> svcGetMemberInfo(Long id);
 }

@@ -1,5 +1,6 @@
 package com.unique.service;
 
+import com.unique.dto.MemberInfoDTO;
 import com.unique.entity.MemberEntity;
 import com.unique.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,10 @@ public class MemberServiceImpl implements MemberService {
 
     public void svcMemberDelete(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<MemberInfoDTO> svcGetMemberInfo(Long userSeq) {
+        return memberRepository.myfindUserInfo(userSeq);
     }
 }
