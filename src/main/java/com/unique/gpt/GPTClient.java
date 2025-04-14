@@ -15,11 +15,13 @@ import java.util.Map;
 public class GPTClient {
     private final RestTemplate restTemplate = new RestTemplate();
     private final String apiKey = "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";
+    private final String projectId = "proj_ez9r3W9WaAK5iIb3mk0z3h28";
 
     public String sendPrompt(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
+        headers.add("OpenAI-Project", projectId); // ✅ 꼭 추가해야 함
 
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-4",
@@ -29,6 +31,7 @@ public class GPTClient {
         );
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
         ResponseEntity<String> response = restTemplate.postForEntity(
                 "https://api.openai.com/v1/chat/completions", entity, String.class
         );

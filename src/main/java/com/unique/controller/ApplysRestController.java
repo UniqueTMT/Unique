@@ -45,16 +45,11 @@ public class ApplysRestController {
         applysService.svcApplysDelete(id);
     }
 
-
-
-
     //유저 응시 시험 리스트 - 경준
     @GetMapping("/apply-history/{userSeq}")
     public ResponseEntity<List<UserExamHistoryDTO>> ctlFindAllExamHistory(@PathVariable(value = "userSeq") Long userSeq) {
         return ResponseEntity.ok(applysService.myFindAllExamHistory(userSeq));
     }
-
-
 
     //유저 응시 시험 세부 결과 - 경준
     @GetMapping("/apply-history/{userSeq}/{examSeq}")
