@@ -19,9 +19,13 @@ public class RoomDTO {
     private String roomPw;         // 비밀번호
     private Integer limitTime;     // 제한 시간
     private Integer limitCnt;      // 인원 제한
+    private String roomStatus;     // 방 상태 (진행전, 진행중, 진행완료)
     private Long userSeq;
 
     private ExamDTO exam;          // 선택된 시험지
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;        // 시작 시간
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;

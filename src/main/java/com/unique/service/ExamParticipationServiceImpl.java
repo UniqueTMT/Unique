@@ -37,6 +37,7 @@ public class ExamParticipationServiceImpl implements ExamParticipationService {
         roomEntity.getRoomName(),
         roomEntity.getLimitTime(),
         roomEntity.getMember().getNickname(),
+        "ws://localhost:5000/ws", // 웹소켓 URL
         quizList,
         applicantUserIds
     );

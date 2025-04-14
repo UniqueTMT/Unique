@@ -16,4 +16,7 @@ public interface RoomService {
 
     //시험 방 관리
      public List<RoomDTO> findRoomWithExams();
+
+     // 시험방 남은시간 알림 기능
+     Long getRemainingTime(Long roomSeq);
 }
