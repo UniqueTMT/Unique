@@ -190,12 +190,21 @@ public class UserExamHistoryDetailServiceImpl {
         }
 
         private AnswerDTO convertAnswer(AnswerEntity entity) {
+            // MemberEntity 조회 (ApplysEntity -> MemberEntity)
+            MemberEntity member = entity.getApplys().getMember();
+
+            // QuizEntity 조회 (AnswerEntity -> QuizEntity)
+            QuizEntity quiz = entity.getQuiz();
+
             return new AnswerDTO(
                     entity.getAnswerSeq(),
                     entity.getApplys().getApplysSeq(),
                     entity.getQuiz().getQuizSeq(),
                     entity.getUserAnswer(),
                     entity.getAnswerYn() != null ? entity.getAnswerYn().charAt(0) : null,
+                    member.getUserid(),
+                    member.getNickname(),
+                    quiz.getCorrectScore(),
                     entity.getRegdate()
             );
         }
