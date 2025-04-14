@@ -1,6 +1,6 @@
 package com.unique.impl.member;
 
-import com.unique.dto.member.UserExamHistoryDetailDTO;
+import com.unique.dto.member.MemberExamHistoryDetailDTO;
 import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.quiz.QuizDTO;
 import com.unique.entity.answer.AnswerEntity;
@@ -8,7 +8,7 @@ import com.unique.entity.applys.ApplysEntity;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.member.MemberEntity;
 import com.unique.entity.quiz.QuizEntity;
-import com.unique.repository.member.UserExamHistoryDetailRepository;
+import com.unique.repository.member.MemberExamHistoryDetailRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,30 +21,30 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class UserExamHistoryDetailServiceImpl {
+public class MemberExamHistoryDetailServiceImpl {
 
-    private final UserExamHistoryDetailRepository userExamHistoryDetailRepository;
+    private final MemberExamHistoryDetailRepository memberExamHistoryDetailRepository;
 
 
     /**
      * 특정 유저(userSeq)가 응시한 특정 시험지(examSeq)의 결과출력 - 경준
      */
-    public UserExamHistoryDetailDTO svcGetExamResult(Long userSeq, Long examSeq) {
+    public MemberExamHistoryDetailDTO svcGetExamResult(Long userSeq, Long examSeq) {
         // 1. 기본 정보 조회 (컬렉션 제외)
-        ApplysEntity applysEntity = userExamHistoryDetailRepository.findApplysWithExamAndMember(userSeq, examSeq);
+        ApplysEntity applysEntity = memberExamHistoryDetailRepository.findApplysWithExamAndMember(userSeq, examSeq);
         if (applysEntity == null) throw new RuntimeException("응시 기록 없음");
 
         // 2. 문제 목록 조회 (별도 쿼리)
-        List<QuizEntity> quizList = userExamHistoryDetailRepository.findQuizzesByExamSeq(examSeq);
+        List<QuizEntity> quizList = memberExamHistoryDetailRepository.findQuizzesByExamSeq(examSeq);
 
         // 3. 답변 목록 조회 (별도 쿼리)
-        List<AnswerEntity> answerList = userExamHistoryDetailRepository.findAnswersByApplysSeq(applysEntity.getApplysSeq());
+        List<AnswerEntity> answerList = memberExamHistoryDetailRepository.findAnswersByApplysSeq(applysEntity.getApplysSeq());
 
         // 4. DTO 변환
         return convertToDTO(applysEntity, quizList, answerList);
     }
 
-    private UserExamHistoryDetailDTO convertToDTO(
+    private MemberExamHistoryDetailDTO convertToDTO(
             ApplysEntity applys,
             List<QuizEntity> quizList,
             List<AnswerEntity> answerList
@@ -52,7 +52,7 @@ public class UserExamHistoryDetailServiceImpl {
         ExamEntity exam = applys.getExam();
         MemberEntity member = applys.getMember();
 
-        UserExamHistoryDetailDTO dto = new UserExamHistoryDetailDTO();
+        MemberExamHistoryDetailDTO dto = new MemberExamHistoryDetailDTO();
         dto.setExamSeq(exam.getExamSeq());
         dto.setSubjectCode(exam.getSubjectCode());
         dto.setSubjectName(exam.getSubjectName());

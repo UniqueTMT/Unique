@@ -1,6 +1,6 @@
 package com.unique.repository.applys;
 
-import com.unique.dto.member.UserExamHistoryDTO;
+import com.unique.dto.member.MemberExamHistoryDTO;
 import com.unique.entity.applys.ApplysEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +18,7 @@ public interface ApplysRepository extends JpaRepository<ApplysEntity, Long> {
         //내 시험 이력 리스트 - 경준
         @EntityGraph(attributePaths = {"exam", "member", "exam.member", "exam.quizList"})
         @Query("""
-            SELECT new com.unique.dto.UserExamHistoryDTO(
+            SELECT new com.unique.dto.member.MemberExamHistoryDTO(
                 e.examSeq,
                 e.subjectCode,
                 e.subjectName,
@@ -43,7 +43,7 @@ public interface ApplysRepository extends JpaRepository<ApplysEntity, Long> {
                      m.userSeq, c.username, m.userid, m.username, a.regdate
             ORDER BY a.regdate DESC
         """)
-        List<UserExamHistoryDTO> myFindAllExamHistory(@Param("userSeq") Long userSeq);
+        List<MemberExamHistoryDTO> myFindAllExamHistory(@Param("userSeq") Long userSeq);
 
 
 }

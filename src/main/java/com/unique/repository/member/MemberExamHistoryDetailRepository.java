@@ -14,7 +14,7 @@ import java.util.List;
  * 특정 시험 결과 데이터를 조회하는 레포지토리 클래스.
  */
 @Repository
-public interface UserExamHistoryDetailRepository extends JpaRepository<ApplysEntity, Long> {
+public interface MemberExamHistoryDetailRepository extends JpaRepository<ApplysEntity, Long> {
     
 
 

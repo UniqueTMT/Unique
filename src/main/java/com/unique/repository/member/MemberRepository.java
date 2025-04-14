@@ -17,7 +17,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
      * @EntityGraph로 exam, exam.member 즉시 로딩
      */
     @Query("""
-    SELECT new com.unique.dto.MemberInfoDTO(
+    SELECT new com.unique.dto.member.MemberInfoDTO(
         m.userSeq,
         m.userid,
         m.username,

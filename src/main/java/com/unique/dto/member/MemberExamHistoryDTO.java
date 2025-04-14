@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserExamHistoryDTO {
+public class MemberExamHistoryDTO {
     //유저 시험이력 리스트 - 경준
     private Long examSeq; // 시험 시퀀스
     private Long subjectCode; // 과목 코드
