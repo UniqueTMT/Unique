@@ -45,7 +45,10 @@ public class ApplysRestController {
         applysService.svcApplysDelete(id);
     }
 
-    //유저 응시 시험 리스트
+
+        
+
+    //유저 응시 시험 리스트 - 경준
     @GetMapping("/apply-history/{userSeq}")
     public ResponseEntity<List<UserExamHistoryDTO>> ctlFindAllExamHistory(@PathVariable(value = "userSeq") Long userSeq) {
         return ResponseEntity.ok(applysService.myFindAllExamHistory(userSeq));
@@ -66,4 +69,38 @@ public class ApplysRestController {
 //            return ResponseEntity.notFound().build();
 //        }
 //    }
+=======
+
+
+    //유저 응시 시험 세부 결과 - 경준
+    @GetMapping("/apply-history/{userSeq}/{examSeq}")
+    public ResponseEntity<UserExamHistoryDetailDTO> ctlGetExamResult(
+            @PathVariable(value = "userSeq") Long userSeq,
+            @PathVariable(value = "examSeq") Long examSeq
+    ) {
+        try {
+            UserExamHistoryDetailDTO result = userExamHistoryDetailServiceImpl.svcGetExamResult(userSeq, examSeq);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            System.err.println("Error fetching exam result: " + e.getMessage());
+            e.printStackTrace(); // 예외 내용을 출력
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    //시험이력 검색기능 - 경준
+    @GetMapping("/search/{userSeq}")
+    public ResponseEntity<List<UserExamHistoryDTO>> ctlSearchUserExamHistory(
+            @PathVariable Long userSeq,
+            @RequestParam(required = false) String subjectName,
+            @RequestParam(required = false) String creatorName,
+            @RequestParam(required = false) String examTitle) {
+
+        List<UserExamHistoryDTO> result =
+                applysService.svcSearchUserExamHistory(userSeq, subjectName, creatorName, examTitle);
+
+        return ResponseEntity.ok(result);
+    }
+
 }

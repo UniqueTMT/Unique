@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberInfoDTO {
-
+    // - 유저 정보 DTO
     private Long userSeq; //유저 시퀀스
     private Long userid; // 유저 학번 (아이디)
     private String username; // 유저 이름
