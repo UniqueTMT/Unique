@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomService {
-    List<RoomEntity> svcRoomList();
     Optional<RoomEntity> svcRoomDetail(Long id);
     Long svcRoomInsert(RoomDTO roomDTO, Long userSeq);
     void svcRoomUpdate(RoomEntity entity);

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/appeal")
+
 @RequiredArgsConstructor
 public class AppealRestController {
     private final AppealServiceImpl appealService;

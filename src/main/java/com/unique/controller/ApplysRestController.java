@@ -14,6 +14,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("/api/applys")
 @RequiredArgsConstructor
 public class ApplysRestController {
     private final ApplysServiceImpl applysServiceImpl;

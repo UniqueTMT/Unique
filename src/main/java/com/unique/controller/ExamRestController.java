@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/exam")
 @RequiredArgsConstructor
 public class ExamRestController {
 
@@ -40,6 +41,13 @@ public class ExamRestController {
     public void ctlDelete(@PathVariable(value="id") Long userid) {
         examService.svcDelete(userid);
     }
+
+    //문제은행 리스트업
+//    @GetMapping("/quizbank/list")
+//    public ResponseEntity<List<SubjectSummary>> ctlFindGroupedSubjects() {
+//        return ResponseEntity.ok(examService.svcFindGroupedSubjects());
+//    }
+
 
     //문제은행 카테고리별 시험지 상세 보기
     @GetMapping("/quizbank-detail")

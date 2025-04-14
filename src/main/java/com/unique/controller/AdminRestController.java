@@ -12,6 +12,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminRestController {
     private final MemberServiceImpl memberService;
