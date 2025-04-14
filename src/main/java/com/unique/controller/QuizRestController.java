@@ -2,6 +2,7 @@ package com.unique.controller;
 import com.unique.dto.QuizDTO;
 import com.unique.entity.ExamEntity;
 import com.unique.entity.QuizEntity;
+import com.unique.gpt.GPTClient;
 import com.unique.repository.ExamRepository;
 import com.unique.repository.QuizRepository;
 import com.unique.service.QuizService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,48 +155,81 @@ public class QuizRestController {
 //                [학습자료 끝]
 //                """, category, chapter, type, count, userPrompt, text);
 //    }
+    @GetMapping("/generate")
+    public ResponseEntity<List<QuizDTO>> generateFakeQuizList() {
+        List<QuizDTO> quizList = new ArrayList<>();
 
-    @GetMapping("/generate-test")
-    public ResponseEntity<List<QuizDTO>> generateTest() {
-        try {
-            // 🔹 하드코딩된 테스트용 프롬프트 구성
-            String category = "자바";
-            String chapter = "변수";
-            String type = "객관식";
-            String count = "3";
-            String userPrompt = "보기 4개 포함, 각 문제에 정답과 해설도 넣어주세요.";
+        quizList.add(QuizDTO.builder()
+                .quiz("자바에서 변수를 선언하는 올바른 방법은?")
+                .objYn('Y')
+                .obj1("int a = 10;")
+                .obj2("int = 10 a;")
+                .obj3("10 = int a;")
+                .obj4("int: a = 10")
+                .correctAnswer("A")
+                .hint("자바는 자료형 → 변수명 → 값 순으로 선언")
+                .comments("변수 선언 시 자료형과 변수명 순서를 지켜야 한다.")
+                .build()
+        );
 
-            String sampleText = """
-                    변수는 데이터를 저장하는 메모리 공간입니다.
-                    자바에서 변수를 선언할 때는 타입과 변수명을 함께 지정해야 합니다.
-                    예: int score = 100;
-                    변수는 값을 재사용하거나 수정할 수 있도록 도와줍니다.
-                    """;
+        quizList.add(QuizDTO.builder()
+                .quiz("다음 중 자바에서 변수의 특징으로 옳은 것은?")
+                .objYn('Y')
+                .obj1("변수는 한 번 선언하면 값을 바꿀 수 없다.")
+                .obj2("변수는 항상 public 이어야 한다.")
+                .obj3("변수는 데이터를 저장하는 메모리 공간이다.")
+                .obj4("변수는 메서드 내부에서는 선언할 수 없다.")
+                .correctAnswer("C")
+                .hint("변수는 데이터를 저장하기 위해 사용됨")
+                .comments("변수는 메모리에 데이터를 담기 위한 이름이다.")
+                .build()
+        );
 
-            String finalPrompt = String.format("""
-                당신은 교육 전문가입니다. 다음의 학습 자료를 기반으로 문제를 생성해주세요.
-
-                🏷️ 카테고리: %s
-                📚 챕터: %s
-                📌 문제 유형: %s
-                🔢 생성할 문제 수: %s
-                🧠 추가 지시사항: %s
-
-                아래는 학습 자료입니다. 이 자료를 분석하여 요청한 유형과 수량에 맞게 문제를 생성해주세요.
-                가능하면 다양한 유형(객관식, 단답형, 서술형 등)을 포함하고, 문제는 각기 다른 내용을 다루도록 해주세요.
-
-                [학습자료 시작]
-                %s
-                [학습자료 끝]
-                """, category, chapter, type, count, userPrompt, sampleText);
-
-            // 🔹 하드코딩된 prompt만 넘기고 PDF는 null
-            List<QuizDTO> result = quizService.generateQuizFromPdf(null, finalPrompt);
-            return ResponseEntity.ok(result);
-
-        } catch (Exception e) {
-            e.printStackTrace(); // 진짜 원인 콘솔에 출력
-            return ResponseEntity.internalServerError().body(null);
-        }
+        return ResponseEntity.ok(quizList);
     }
+
+//
+//    @GetMapping("/generate-test")
+//    public ResponseEntity<List<QuizDTO>> generateTest() {
+//        try {
+//            // 🔹 하드코딩된 테스트용 프롬프트 구성
+//            String category = "자바";
+//            String chapter = "변수";
+//            String type = "객관식";
+//            String count = "3";
+//            String userPrompt = "보기 4개 포함, 각 문제에 정답과 해설도 넣어주세요.";
+//
+//            String sampleText = """
+//                    변수는 데이터를 저장하는 메모리 공간입니다.
+//                    자바에서 변수를 선언할 때는 타입과 변수명을 함께 지정해야 합니다.
+//                    예: int score = 100;
+//                    변수는 값을 재사용하거나 수정할 수 있도록 도와줍니다.
+//                    """;
+//
+//            String finalPrompt = String.format("""
+//                당신은 교육 전문가입니다. 다음의 학습 자료를 기반으로 문제를 생성해주세요.
+//
+//                🏷️ 카테고리: %s
+//                📚 챕터: %s
+//                📌 문제 유형: %s
+//                🔢 생성할 문제 수: %s
+//                🧠 추가 지시사항: %s
+//
+//                아래는 학습 자료입니다. 이 자료를 분석하여 요청한 유형과 수량에 맞게 문제를 생성해주세요.
+//                가능하면 다양한 유형(객관식, 단답형, 서술형 등)을 포함하고, 문제는 각기 다른 내용을 다루도록 해주세요.
+//
+//                [학습자료 시작]
+//                %s
+//                [학습자료 끝]
+//                """, category, chapter, type, count, userPrompt, sampleText);
+//
+//            // 🔹 하드코딩된 prompt만 넘기고 PDF는 null
+//            List<QuizDTO> result = quizService.generateQuizFromPdf(null, finalPrompt);
+//            return ResponseEntity.ok(result);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace(); // 진짜 원인 콘솔에 출력
+//            return ResponseEntity.internalServerError().body(null);
+//        }
+//    }
 }
