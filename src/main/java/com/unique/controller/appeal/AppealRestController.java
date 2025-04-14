@@ -37,7 +37,7 @@ public class AppealRestController {
         appealService.svcAppealUpdate(entity);
     }
 
-    @DeleteMapping("/appeal/{id}")
+    @DeleteMapping("/{id}")
     public void ctlAppealDelete(@PathVariable(value="id") Long id) {
         appealService.svcAppealDelete(id);
     }

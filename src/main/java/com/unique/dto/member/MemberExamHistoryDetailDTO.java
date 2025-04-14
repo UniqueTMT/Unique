@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserExamHistoryDetailDTO {
+public class MemberExamHistoryDetailDTO {
     
     // 시험 이력 세부 DTO (시험지 정보) - 경준
     private Long examSeq;          // 시험 시퀀스

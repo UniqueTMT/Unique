@@ -34,8 +34,27 @@ public class AppealServiceImpl implements AppealService {
         appealRepository.save(entity);
     }
 
+//    public void svcAppealDelete(Long id) {
+//        appealRepository.deleteById(id);
+//    }
+
+    // 이의제기 삭제 - 경준
+    @Override
+    @Transactional
     public void svcAppealDelete(Long id) {
-        appealRepository.deleteById(id);
+        // 1. 삭제할 이의제기 조회
+        AppealEntity appeal = appealRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이의제기 ID: " + id));
+
+        // 2. 연관된 ApplysEntity의 참조 제거
+        ApplysEntity applys = appeal.getApplys();
+        if (applys != null) {
+            applys.setAppeal(null); // ApplysEntity에서 AppealEntity 참조 제거
+            applysRepository.save(applys); // 변경 사항 저장
+        }
+
+        // 3. 이의제기 삭제
+        appealRepository.delete(appeal);
     }
 
 

@@ -1,6 +1,6 @@
 package com.unique.impl.applys;
 
-import com.unique.dto.member.UserExamHistoryDTO;
+import com.unique.dto.member.MemberExamHistoryDTO;
 import com.unique.entity.applys.ApplysEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.repository.applys.ApplysRepository;
@@ -23,9 +23,9 @@ public class ApplysServiceImpl implements ApplysService {
 
     //시험이력리스트 - 경준
     @Override
-    public List<UserExamHistoryDTO> myFindAllExamHistory(Long userSeq) {
+    public List<MemberExamHistoryDTO> myFindAllExamHistory(Long userSeq) {
         return applysRepository.myFindAllExamHistory(userSeq).stream()
-                .map(apply -> modelMapper.map(apply, UserExamHistoryDTO.class))
+                .map(apply -> modelMapper.map(apply, MemberExamHistoryDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class ApplysServiceImpl implements ApplysService {
     /**
      * 사용자의 시험 이력 검색
      */
-    public List<UserExamHistoryDTO> svcSearchUserExamHistory(
+    public List<MemberExamHistoryDTO> svcSearchUserExamHistory(
             Long userSeq,
             String subjectName,
             String creatorName,
@@ -51,7 +51,7 @@ public class ApplysServiceImpl implements ApplysService {
                 .collect(Collectors.toList());
     }
 
-    private UserExamHistoryDTO convertToDTO(ApplysEntity applys) {
+    private MemberExamHistoryDTO convertToDTO(ApplysEntity applys) {
         
         // 총 문제 합점
         Integer totalScore = applys.getExam().getQuizList().stream()
@@ -64,7 +64,7 @@ public class ApplysServiceImpl implements ApplysService {
                 .mapToInt(ans -> ans.getQuiz().getCorrectScore())
                 .sum();
 
-        return new UserExamHistoryDTO(
+        return new MemberExamHistoryDTO(
                 applys.getExam().getExamSeq(),
                 applys.getExam().getSubjectCode(),
                 applys.getExam().getSubjectName(),
