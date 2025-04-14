@@ -49,6 +49,12 @@ public class MemberRestController {
 
 
 
+//    @GetMapping("/member-info/{userSeq}")
+//    public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
+//        return ResponseEntity.ok(memberServiceImpl.svcGetMemberInfo(userSeq));
+//    }
+
+
 
     // 유저 정보 불러오기 (마이페이지) - 경준
     @GetMapping("/member-info/{userSeq}")
@@ -119,4 +125,5 @@ public class MemberRestController {
                     .body("일치하는 정보가 없습니다.");
         }
     }
+
 }

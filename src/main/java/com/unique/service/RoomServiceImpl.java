@@ -17,10 +17,6 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final ModelMapper modelMapper;
 
-    public List<RoomEntity> svcRoomList() {
-        return roomRepository.findAll();
-    }
-
     public Optional<RoomEntity> svcRoomDetail(Long id) {
         return roomRepository.findById(id);
     }
