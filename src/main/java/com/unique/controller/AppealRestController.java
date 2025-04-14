@@ -1,5 +1,7 @@
 package com.unique.controller;
 
+import com.unique.dto.AppealDTO;
+import com.unique.dto.AppealPostDTO;
 import com.unique.entity.AppealEntity;
 import com.unique.service.AppealServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -38,4 +40,17 @@ public class AppealRestController {
     public void ctlAppealDelete(@PathVariable(value="id") Long id) {
         appealService.svcAppealDelete(id);
     }
+
+
+    //유저 이의 제기 생성 -경준
+    @PostMapping("/create-appeal")
+    public ResponseEntity<String> ctlAppealInsert(@RequestBody AppealPostDTO appealDTO) {
+        try {
+            appealService.svcAppealCreate(appealDTO);
+            return ResponseEntity.ok("이의제기가 등록되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

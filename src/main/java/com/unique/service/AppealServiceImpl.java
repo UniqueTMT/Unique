@@ -1,5 +1,10 @@
 package com.unique.service;
 
+import com.unique.dto.AppealDTO;
+import com.unique.dto.AppealPostDTO;
+import com.unique.entity.ApplysEntity;
+import com.unique.repository.ApplysRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,6 +16,7 @@ import com.unique.repository.AppealRepository;
 @RequiredArgsConstructor
 public class AppealServiceImpl implements AppealService {
     private final AppealRepository appealRepository;
+    private final ApplysRepository applysRepository;
 
     public List<AppealEntity> svcAppealList() {
         return appealRepository.findAll();
@@ -30,5 +36,25 @@ public class AppealServiceImpl implements AppealService {
 
     public void svcAppealDelete(Long id) {
         appealRepository.deleteById(id);
+    }
+
+
+    //이의제기 생성 - 경준
+    @Override
+    @Transactional
+    public void svcAppealCreate(AppealPostDTO appealDTO) {
+        // 1. 응시 기록 조회
+        ApplysEntity applys = applysRepository.findById(appealDTO.getApplysSeq())
+                .orElseThrow(() -> new RuntimeException("응시 기록을 찾을 수 없습니다."));
+
+        // 2. 이의제기 엔티티 생성
+        AppealEntity appeal = AppealEntity.builder()
+                .contents(appealDTO.getContents())
+                .appealTitle(appealDTO.getAppealTitle())
+                .applys(applys)          // ApplysEntity 연결
+                .build();
+
+        // 3. 저장 (regdate는 @PrePersist로 자동 생성)
+        appealRepository.save(appeal);
     }
 }

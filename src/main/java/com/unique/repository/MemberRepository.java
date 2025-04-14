@@ -13,7 +13,10 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
-
+    /**
+     * 유저 정보 - 경준
+     * @EntityGraph로 exam, exam.member 즉시 로딩
+     */
     @Query("""
     SELECT new com.unique.dto.MemberInfoDTO(
         m.userSeq,
@@ -27,5 +30,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     WHERE m.userSeq = :userSeq
 """)
     Optional<MemberInfoDTO> myfindUserInfo(@Param("userSeq") Long userSeq);
+
+    MemberEntity findByUserSeq(Long userSeq);
 
 }

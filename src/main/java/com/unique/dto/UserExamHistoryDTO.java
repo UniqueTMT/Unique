@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserExamHistoryDTO {
-    //유저 시험이력 리스트
+    //유저 시험이력 리스트 - 경준
     private Long examSeq; // 시험 시퀀스
     private Long subjectCode; // 과목 코드
     private String subjectName; // 과목명
