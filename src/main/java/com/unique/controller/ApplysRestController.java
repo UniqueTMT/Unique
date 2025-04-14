@@ -46,7 +46,7 @@ public class ApplysRestController {
     }
 
 
-        
+
 
     //유저 응시 시험 리스트 - 경준
     @GetMapping("/apply-history/{userSeq}")

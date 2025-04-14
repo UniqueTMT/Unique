@@ -14,10 +14,6 @@ import java.util.Optional;
 public class RoomRestController {
     private final RoomServiceImpl roomService;
 
-    @GetMapping("/room")
-    public ResponseEntity<List<RoomEntity>> ctlRoomList()  {
-        return ResponseEntity.ok(roomService.svcRoomList());
-    }
 
     @GetMapping("/room/{id}")
     public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {

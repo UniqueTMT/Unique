@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-// AnswerService.java
 public interface AnswerService {
     List<AnswerEntity> svcGetAllAnswers();
     Optional<AnswerEntity> svcGetAnswer(Long userid);
@@ -17,7 +16,7 @@ public interface AnswerService {
     void svcDeleteAnswer(Long userid);
 
     //응시자 답안 확인
-    List<AnswerDTO> svcFindAnswerWithMemberAndQuiz();
+    List<AnswerDTO> svcGetAllMembersAnswers();
 
     //임의의 학생 시험 결과 확인
     List<AnswerDetailDTO> svcFindSelectedStudentResult(Long userid);

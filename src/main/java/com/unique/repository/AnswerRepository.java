@@ -30,7 +30,7 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
             "quiz"
     })
     @Query("SELECT a FROM AnswerEntity a")
-    List<AnswerEntity> findAnswerWithApplysMemberAndQuiz();
+    List<AnswerEntity> findGetAllMembersAnswers();
 
 
 }

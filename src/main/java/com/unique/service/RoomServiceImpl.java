@@ -19,10 +19,6 @@ public class RoomServiceImpl implements RoomService {
     private final ModelMapper modelMapper;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public List<RoomEntity> svcRoomList() {
-        return roomRepository.findAll();
-    }
-
     public Optional<RoomEntity> svcRoomDetail(Long id) {
         return roomRepository.findById(id);
     }
