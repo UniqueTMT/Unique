@@ -43,8 +43,8 @@ public class MemberRestController {
     }
 
 
-    @GetMapping("/member-info/{userSeq}")
-    public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
-        return ResponseEntity.ok(memberServiceImpl.svcGetMemberInfo(userSeq));
-    }
+//    @GetMapping("/member-info/{userSeq}")
+//    public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
+//        return ResponseEntity.ok(memberServiceImpl.svcGetMemberInfo(userSeq));
+//    }
 }

@@ -52,12 +52,12 @@ public class AnswerRestController {
 
     //응시자 답안 확인
 //    @GetMapping("/memberlist")
-//    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembers() {
+//    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
 //        return ResponseEntity.ok(answerService.findAnswerWithApplysMemberAndQuiz());
 //    }
     @GetMapping("/memberlist")
-    public ResponseEntity<List<AnswerDTO>> ctlFindAnswerWithMemberAndQuiz() {
-        List<AnswerDTO> result = answerService.svcFindAnswerWithMemberAndQuiz();
+    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
+        List<AnswerDTO> result = answerService.svcGetAllMembersAnswers();
         return ResponseEntity.ok(result);
     }
 

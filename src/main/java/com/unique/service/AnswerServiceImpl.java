@@ -39,8 +39,8 @@ public class AnswerServiceImpl implements AnswerService {
 
 
     //응시자 답안 확인
-    public List<AnswerDTO> svcFindAnswerWithMemberAndQuiz(){
-        return answerRepository.findAnswerWithApplysMemberAndQuiz().stream()
+    public List<AnswerDTO> svcGetAllMembersAnswers(){
+        return answerRepository.findGetAllMembersAnswers().stream()
                 .map(answer -> modelMapper.map(answer, AnswerDTO.class))
                 .collect(Collectors.toList());
 

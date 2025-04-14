@@ -4,7 +4,7 @@ import com.unique.dto.UserExamHistoryDTO;
 import com.unique.dto.UserExamHistoryDetailDTO;
 import com.unique.entity.ApplysEntity;
 import com.unique.service.ApplysServiceImpl;
-import com.unique.service.UserExamHistoryDetailServiceImpl;
+//import com.unique.service.UserExamHistoryDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ApplysRestController {
     private final ApplysServiceImpl applysServiceImpl;
-    private final UserExamHistoryDetailServiceImpl userExamHistoryDetailServiceImpl;
+//    private final UserExamHistoryDetailServiceImpl userExamHistoryDetailServiceImpl;
     private final ApplysServiceImpl applysService;
 
     @GetMapping("/applys")
@@ -51,19 +51,19 @@ public class ApplysRestController {
         return ResponseEntity.ok(applysService.myFindAllExamHistory(userSeq));
     }
 
-    //유저 응시 시험 세부 결과
-    @GetMapping("/apply-history/{userSeq}/{examSeq}")
-    public ResponseEntity<UserExamHistoryDetailDTO> ctlGetExamResult(
-            @PathVariable(value = "userSeq") Long userSeq,
-            @PathVariable(value = "examSeq") Long examSeq
-    ) {
-        try {
-            UserExamHistoryDetailDTO result = userExamHistoryDetailServiceImpl.svcGetExamResult(userSeq, examSeq);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            System.err.println("Error fetching exam result: " + e.getMessage());
-            e.printStackTrace(); // 예외 내용을 출력
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    //유저 응시 시험 세부 결과
+//    @GetMapping("/apply-history/{userSeq}/{examSeq}")
+//    public ResponseEntity<UserExamHistoryDetailDTO> ctlGetExamResult(
+//            @PathVariable(value = "userSeq") Long userSeq,
+//            @PathVariable(value = "examSeq") Long examSeq
+//    ) {
+//        try {
+//            UserExamHistoryDetailDTO result = userExamHistoryDetailServiceImpl.svcGetExamResult(userSeq, examSeq);
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+//            System.err.println("Error fetching exam result: " + e.getMessage());
+//            e.printStackTrace(); // 예외 내용을 출력
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }
