@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/quiz")
+@RequestMapping("/api/quiz")
 @RequiredArgsConstructor
 public class QuizRestController {
     private final QuizService quizService;

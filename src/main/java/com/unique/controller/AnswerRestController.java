@@ -3,7 +3,6 @@ package com.unique.controller;
 import com.unique.dto.AnswerDTO;
 import com.unique.dto.AnswerDetailDTO;
 import com.unique.entity.AnswerEntity;
-import com.unique.service.AnswerService;
 import com.unique.service.AnswerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("/api/answer")
 @RequiredArgsConstructor
 public class AnswerRestController {
     private final AnswerServiceImpl answerService;
