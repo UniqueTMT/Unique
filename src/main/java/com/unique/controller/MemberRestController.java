@@ -1,9 +1,13 @@
 package com.unique.controller;
 
 import com.unique.dto.MemberInfoDTO;
+import com.unique.dto.member.FindIdRequestDTO;
+import com.unique.dto.member.FindPwRequestDTO;
+import com.unique.dto.member.LoginRequestDTO;
 import com.unique.entity.MemberEntity;
 import com.unique.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +17,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberRestController {
     private final MemberServiceImpl memberService;
@@ -71,5 +76,47 @@ public class MemberRestController {
         }
     }
 
+    // [1] 로그인 - 이제무
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
+        String testId = "20140293";
+        String testPw = "111";
 
+        if (testId.equals(loginRequest.getUserId()) && testPw.equals(loginRequest.getPassword())) {
+            return ResponseEntity.ok("로그인되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("아이디와 비밀번호를 확인하세요");
+        }
+    }
+
+    // [2] 아이디 찾기 - 이제무
+    @PostMapping("/find-id")
+    public ResponseEntity<String> findId(@RequestBody FindIdRequestDTO request) {
+        String testName = "아무개";
+        String testEmail = "dd@dd.com";
+        String testUserId = "20140293";
+
+        if (testName.equals(request.getName()) && testEmail.equals(request.getEmail())) {
+            return ResponseEntity.ok("아이디는 " + testUserId + "입니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("일치하는 정보가 없습니다.");
+        }
+    }
+
+    // [3] 비밀번호 찾기 - 이제무
+    @PostMapping("/find-password")
+    public ResponseEntity<String> findPassword(@RequestBody FindPwRequestDTO request) {
+        String testUserId = "20140293";
+        String testEmail = "dd@dd.com";
+        String tempPw = "111";
+
+        if (testUserId.equals(request.getUserId()) && testEmail.equals(request.getEmail())) {
+            return ResponseEntity.ok("임시 비밀번호는 " + tempPw + "입니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("일치하는 정보가 없습니다.");
+        }
+    }
 }
