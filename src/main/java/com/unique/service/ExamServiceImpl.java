@@ -2,8 +2,7 @@ package com.unique.service;
 
 
 import com.unique.dto.ExamDTO;
-import com.unique.dto.ExamDetailDTO;
-import com.unique.dto.TestDTO;
+import com.unique.dto.AnswerDetailDTO;
 import com.unique.entity.ExamEntity;
 import com.unique.repository.ExamRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,35 +18,36 @@ public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
     private final ModelMapper modelMapper;
 
-    //문제은행 카테고리별 문제 상세 보기
-    public List<ExamDTO> myFindAllExamWithQuizzes() {
-        return examRepository.myFindAllExamWithQuizzes().stream()
+    //문제은행 카테고리별 시험지 상세 보기
+    @Override
+    public List<ExamDTO> svcFindExamWithQuizList() {
+        return examRepository.findExamWithQuizList().stream()
                 .map(exam -> modelMapper.map(exam, ExamDTO.class))
                 .collect(Collectors.toList());
     }
 
 
     @Override
-    public List<TestDTO> svcFindAll() {
+    public List<AnswerDetailDTO> svcFindAll() {
         return examRepository.findAll().stream()
-                .map(exam -> modelMapper.map(exam, TestDTO.class))
+                .map(exam -> modelMapper.map(exam, AnswerDetailDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<TestDTO> svcFindById(Long id) {
+    public Optional<AnswerDetailDTO> svcFindById(Long id) {
         return examRepository.findById(id)
-                .map(exam -> modelMapper.map(exam, TestDTO.class));
+                .map(exam -> modelMapper.map(exam, AnswerDetailDTO.class));
     }
 
     @Override
-    public void svcInsert(TestDTO dto) {
+    public void svcInsert(AnswerDetailDTO dto) {
         ExamEntity entity = modelMapper.map(dto, ExamEntity.class);
         examRepository.save(entity);
     }
 
     @Override
-    public void svcUpdate(TestDTO dto) {
+    public void svcUpdate(AnswerDetailDTO dto) {
         ExamEntity entity = modelMapper.map(dto, ExamEntity.class);
         examRepository.save(entity);
     }

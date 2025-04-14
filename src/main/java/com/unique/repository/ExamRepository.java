@@ -19,13 +19,20 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     @OrderBy("regdate ASC")
     List<ExamEntity> findAll();
 
-    //문제은행 카테고리별 문제 상세 보기
+    //문제은행 카테고리별 시험지 상세 보기
     @EntityGraph(attributePaths = {
             "quizList.quiz"
     })
     @Query("SELECT e FROM ExamEntity e")
-    List<ExamEntity> myFindAllExamWithQuizzes();
+    List<ExamEntity> findExamWithQuizList();
 
+//
+//    시험지 조회
+//    @EntityGraph(attributePaths = {
+//            "quizList"
+//    })
+//    @Query("SELECT e FROM ExamEntity e")
+//    List<ExamEntity> findExamWithQuizList();
 
 
 }
