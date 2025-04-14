@@ -1,8 +1,8 @@
 package com.unique.scheduler;
 
-import com.unique.dto.RoomTimeResponseDTO;
-import com.unique.entity.RoomEntity;
-import com.unique.repository.RoomRepository;
+import com.unique.dto.room.RoomTimeResponseDTO;
+import com.unique.entity.room.RoomEntity;
+import com.unique.repository.room.RoomRepository;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
