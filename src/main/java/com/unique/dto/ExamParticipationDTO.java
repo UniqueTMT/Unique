@@ -16,6 +16,8 @@ public class ExamParticipationDTO {
   private String roomName;
   private Integer limitTime;
   private String memberNickname;
+  // 웹소켓 구독을 위한 URL
+  private String websocketUrl;
 
   private List<QuizDTO> quizList; // 시험문제 리스트
   private List<Long> applicantUserIds; // 응시자 유저아이디 리스트

@@ -10,25 +10,30 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/room")
 @RequiredArgsConstructor
 public class RoomRestController {
     private final RoomServiceImpl roomService;
 
-    @GetMapping("/room")
-    public ResponseEntity<List<RoomEntity>> ctlRoomList()  {
-        return ResponseEntity.ok(roomService.svcRoomList());
-    }
 
     @GetMapping("/room/{id}")
     public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
         return ResponseEntity.ok(roomService.svcRoomDetail(id));
     }
 
+    // 시험방 생성
     @PostMapping("/room")
     public ResponseEntity<Long> ctlRoomInsert(@RequestBody RoomDTO roomDTO) {
 //        Long userSeq = getCurrentUserSeq(); // 로그인 유저 ID 가져오기
         Long roomSeq = roomService.svcRoomInsert(roomDTO, 1L);     // 일단 테스트용으로 1번 유저로 하드코딩
         return ResponseEntity.ok(roomSeq);
+    }
+
+    // 시험방 남은시간 알림 기능 구현
+    @GetMapping("/{roomSeq}/remaining-time")
+    public ResponseEntity<Long> getRemainingTime(@PathVariable Long roomSeq) {
+        Long remainingTime = roomService.getRemainingTime(roomSeq);
+        return ResponseEntity.ok(remainingTime);
     }
 
     @PutMapping("/room")

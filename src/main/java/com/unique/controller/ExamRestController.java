@@ -11,19 +11,20 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/exam")
 @RequiredArgsConstructor
 public class ExamRestController {
 
     private final ExamServiceImpl examService;
 
-    @GetMapping()
+    @GetMapping("/examlist")
     public ResponseEntity<List<AnswerDetailDTO>> ctlFindAll() {
         return ResponseEntity.ok(examService.svcFindAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<AnswerDetailDTO>> ctlFindById(@PathVariable(value="id") Long id) {
-        return ResponseEntity.ok(examService.svcFindById(id));
+    @GetMapping("/{userid}")
+    public ResponseEntity<Optional<AnswerDetailDTO>> ctlFindById(@PathVariable(value="userid") Long userid) {
+        return ResponseEntity.ok(examService.svcFindById(userid));
     }
 
     @PostMapping
@@ -36,10 +37,17 @@ public class ExamRestController {
         examService.svcUpdate(dto);
     }
 
-    @DeleteMapping("/{id}")
-    public void ctlDelete(@PathVariable(value="id") Long id) {
-        examService.svcDelete(id);
+    @DeleteMapping("/{userid}")
+    public void ctlDelete(@PathVariable(value="id") Long userid) {
+        examService.svcDelete(userid);
     }
+
+    //문제은행 리스트업
+//    @GetMapping("/quizbank/list")
+//    public ResponseEntity<List<SubjectSummary>> ctlFindGroupedSubjects() {
+//        return ResponseEntity.ok(examService.svcFindGroupedSubjects());
+//    }
+
 
     //문제은행 카테고리별 시험지 상세 보기
     @GetMapping("/quizbank-detail")

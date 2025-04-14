@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AnswerDTO {
     private Long answerSeq;
     private Long applysSeq;

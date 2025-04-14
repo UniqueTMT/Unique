@@ -17,7 +17,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberRestController {
     private final MemberServiceImpl memberService;
@@ -47,6 +47,12 @@ public class MemberRestController {
         memberService.svcMemberDelete(id);
     }
 
+
+
+//    @GetMapping("/member-info/{userSeq}")
+//    public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
+//        return ResponseEntity.ok(memberServiceImpl.svcGetMemberInfo(userSeq));
+//    }
 
 
 
@@ -119,4 +125,5 @@ public class MemberRestController {
                     .body("일치하는 정보가 없습니다.");
         }
     }
+
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.*;
 import java.util.Date;
-
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
