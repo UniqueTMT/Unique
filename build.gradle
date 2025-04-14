@@ -58,6 +58,12 @@ dependencies {
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // 또는 JSP
 
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // HTTP 통신
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     //APACHE TIKA -> 문서 인식

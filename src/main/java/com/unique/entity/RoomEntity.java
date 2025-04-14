@@ -19,6 +19,7 @@ import java.util.List;
 @Builder
 @Table(name = "ROOM")
 public class RoomEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROOM_SEQ")
     @SequenceGenerator(name = "ROOM_SEQ", sequenceName = "ROOM_SEQUENCE", allocationSize = 1)
@@ -53,6 +54,11 @@ public class RoomEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
+    @Column(name = "start_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;
+
     @PrePersist
     protected void onCreate() {
         if (this.regdate == null) this.regdate = new Date();
@@ -66,6 +72,5 @@ public class RoomEntity {
     @OneToOne
     @JoinColumn(name = "exam_seq")
     private ExamEntity exam;
-
 
 }
