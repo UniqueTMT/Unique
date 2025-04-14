@@ -1,5 +1,5 @@
 package com.unique.gpt;
-import com.unique.dto.QuizDTO;
+import com.unique.dto.quiz.QuizDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
