@@ -1,6 +1,7 @@
 package com.unique.service.appeal;
 
 import com.unique.dto.appeal.AppealDTO;
+import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
 import com.unique.entity.appeal.AppealEntity;
 
@@ -11,7 +12,7 @@ public interface AppealService {
 
     List<AppealDTO> svcAppealList();
 
-    Optional<AppealEntity> svcAppealDetail(Long id);
+    AppealDetailDTO svcAppealDetail(Long id);
     void svcAppealInsert(AppealEntity entity);
     void svcAppealUpdate(AppealEntity entity);
     void svcAppealDelete(Long id);

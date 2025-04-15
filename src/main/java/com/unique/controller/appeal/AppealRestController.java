@@ -1,6 +1,7 @@
 package com.unique.controller.appeal;
 
 import com.unique.dto.appeal.AppealDTO;
+import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
 import com.unique.entity.appeal.AppealEntity;
 import com.unique.impl.appeal.AppealServiceImpl;
@@ -21,21 +22,6 @@ public class AppealRestController {
     private final AppealServiceImpl appealService;
     private final SseEmitterRepository sseEmitterRepository;
 
-    /*
-    * function : 교수 이의제기 리스트
-    * author : 차경준
-    * regdate : 2025.04.15
-    * */
-    @GetMapping("/appeal")
-    public ResponseEntity<List<AppealDTO>> ctlAppealList() {
-        return ResponseEntity.ok(appealService.svcAppealList());
-    }
-
-    @GetMapping("/appeal/{id}")
-    public ResponseEntity<Optional<AppealEntity>> ctlAppealDetail(@PathVariable(value="id") Long id) {
-        return ResponseEntity.ok(appealService.svcAppealDetail(id));
-    }
-
     @PostMapping("/appeal")
     public void ctlAppealInsert(@RequestBody AppealEntity entity) {
         appealService.svcAppealInsert(entity);
@@ -46,13 +32,44 @@ public class AppealRestController {
         appealService.svcAppealUpdate(entity);
     }
 
+
+
+    /*
+    * function : 교수 이의제기 리스트
+    * author : 차경준
+    * regdate : 2025.04.15
+    * */
+    @GetMapping("/appeal")
+    public ResponseEntity<List<AppealDTO>> ctlAppealList() {
+        return ResponseEntity.ok(appealService.svcAppealList());
+    }
+    
+    /*
+     * function : 이의제기 세부 결과 - 아직 교수 번호 하드코딩 안해놓음.
+     * author : 차경준
+     * regdate : 2025.04.15
+     * */
+    @GetMapping("/detail/{appealSeq}")
+    public ResponseEntity<AppealDetailDTO> ctlAppealDetail(@PathVariable Long appealSeq) {
+        return ResponseEntity.ok(appealService.svcAppealDetail(appealSeq));
+    }
+
+    /*
+     * function : 이의제기 삭제
+     * author : 차경준
+     * regdate : 2025.04.15
+     * */
     @DeleteMapping("/{id}")
     public void ctlAppealDelete(@PathVariable(value="id") Long id) {
         appealService.svcAppealDelete(id);
     }
 
 
-    //유저 이의 제기 생성 -경준
+    /*
+     * function : 이의제기 생성
+     * author : 차경준
+     * regdate : 2025.04.15
+     * */
     @PostMapping("/create-appeal")
     public ResponseEntity<String> ctlAppealInsert(@RequestBody AppealPostDTO appealDTO) {
         try {
@@ -64,7 +81,11 @@ public class AppealRestController {
     }
 
 
-    // 교수용 SSE 구독 엔드포인트
+    /*
+     * function : 교수용 SSE 구독 엔드포인트 (알림용)
+     * author : 차경준
+     * regdate : 2025.04.15
+     * */
     @GetMapping("/subscribe/{userSeq}")
     public SseEmitter subscribe(@PathVariable Long userSeq) {
         return appealService.subscribe(userSeq);

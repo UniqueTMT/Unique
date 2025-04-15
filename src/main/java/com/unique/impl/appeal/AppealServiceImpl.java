@@ -1,15 +1,21 @@
 package com.unique.impl.appeal;
 
+import com.unique.dto.answer.AnswerDTO;
+import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
 import com.unique.dto.appeal.AppealDTO;
+import com.unique.dto.exam.ExamDTO;
+import com.unique.entity.answer.AnswerEntity;
 import com.unique.entity.applys.ApplysEntity;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.member.MemberEntity;
+import com.unique.repository.answer.AnswerRepository;
 import com.unique.repository.appeal.SseEmitterRepository;
 import com.unique.repository.applys.ApplysRepository;
 import com.unique.service.appeal.AppealService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +34,19 @@ public class AppealServiceImpl implements AppealService {
     private final AppealRepository appealRepository;
     private final ApplysRepository applysRepository;
     private final SseEmitterRepository sseEmitterRepository;
+    private final AnswerRepository answerRepository;
+    private final ModelMapper modelMapper;
+
+    public void svcAppealInsert(AppealEntity entity) {
+        appealRepository.save(entity);
+    }
+
+    public void svcAppealUpdate(AppealEntity entity) {
+        appealRepository.save(entity);
+    }
+
+
+
 
     /*
      * fucntion : 이의제기 이력 리스트 확인
@@ -73,23 +92,46 @@ public class AppealServiceImpl implements AppealService {
     * regdate : 25.04.15
     *  */
     @Override
-    public Optional<AppealEntity> svcAppealDetail(Long id) {
-        return appealRepository.findById(id);
+    public AppealDetailDTO svcAppealDetail(Long appealSeq) {
+        // 1. 이의제기 조회
+        AppealEntity appeal = appealRepository.findById(appealSeq)
+                .orElseThrow(() -> new RuntimeException("이의제기 없음"));
+        AppealDTO appealDTO = modelMapper.map(appeal, AppealDTO.class);
+
+        // 2. 시험 정보 조회
+        ExamEntity exam = appeal.getApplys().getExam();
+        ExamDTO examDTO = modelMapper.map(exam, ExamDTO.class);
+
+        // 3. 학생 답안 조회
+        List<AnswerEntity> answers = answerRepository.findByApplys(appeal.getApplys());
+        List<AnswerDTO> answerDTOs = answers.stream()
+                .map(a -> modelMapper.map(a, AnswerDTO.class))
+                .toList();
+
+        // 4. 응시 결과 계산
+        ApplysEntity applys = appeal.getApplys();
+        int totalScore = applys.getTotalScore();
+        int correctCount = applys.getCorrectCount();
+        int wrongCount = applys.getWrongCount();
+
+        return AppealDetailDTO.builder()
+                .appeal(appealDTO)
+                .exam(examDTO)
+                .answers(answerDTOs)
+                .currentTotalScore(totalScore)
+                .currentCorrectCount(correctCount)
+                .currentWrongCount(wrongCount)
+                .build();
     }
 
-    public void svcAppealInsert(AppealEntity entity) {
-        appealRepository.save(entity);
-    }
 
-    public void svcAppealUpdate(AppealEntity entity) {
-        appealRepository.save(entity);
-    }
 
-//    public void svcAppealDelete(Long id) {
-//        appealRepository.deleteById(id);
-//    }
 
-    // 이의제기 삭제 - 경준
+    /*
+     * funciton : 이의제기 삭제
+     * author : 차경준
+     * regdate : 25.04.15
+     * */
     @Override
     @Transactional
     public void svcAppealDelete(Long id) {
@@ -109,7 +151,11 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    //이의제기 생성 - 경준
+    /*
+    * funciton : 자신의 응시기록 조회 - > 이의제기 생성 -> sse 알림 전송
+    * author : 차경준
+    * regdate : 25.04.15
+    * */
     @Override
     @Transactional
     public AppealDTO svcAppealCreate(AppealPostDTO appealDTO) {
@@ -162,7 +208,11 @@ public class AppealServiceImpl implements AppealService {
     }
 
     
-    // 교수 구독
+    /*
+    * function : 교수 sse 연결
+    * author : 차경준
+    * regdate : 25.04.15
+    * */
     public SseEmitter subscribe(Long userSeq) {
         SseEmitter emitter = new SseEmitter(60_000L);
         sseEmitterRepository.addEmitter(userSeq, emitter);
@@ -172,6 +222,8 @@ public class AppealServiceImpl implements AppealService {
 
         return emitter;
     }
+
+
 
 
 
