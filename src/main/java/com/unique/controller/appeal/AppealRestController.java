@@ -3,6 +3,7 @@ package com.unique.controller.appeal;
 import com.unique.dto.appeal.AppealDTO;
 import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
+import com.unique.dto.appeal.AppealScoreAdjustRequestDTO;
 import com.unique.entity.appeal.AppealEntity;
 import com.unique.impl.appeal.AppealServiceImpl;
 import com.unique.repository.appeal.SseEmitterRepository;
@@ -27,9 +28,19 @@ public class AppealRestController {
         appealService.svcAppealInsert(entity);
     }
 
-    @PutMapping("/appeal")
-    public void ctlAppealUpdate(@RequestBody AppealEntity entity) {
-        appealService.svcAppealUpdate(entity);
+    
+    /*
+     * function : 이의제기 점수 수정 - 작성중
+     * author : 차경준
+     * regdate : 2025.04.15
+     * */
+    @PutMapping("/{appealSeq}/adjust")
+    public ResponseEntity<String> ctlAppealAcceptScoreUpdate(
+            @PathVariable Long appealSeq,
+            @RequestBody AppealScoreAdjustRequestDTO updateScore
+    ) {
+        appealService.svcAppealUpdate(appealSeq,updateScore);
+        return ResponseEntity.ok("성적 수정 완료");
     }
 
 

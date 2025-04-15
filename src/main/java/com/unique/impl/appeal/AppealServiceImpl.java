@@ -4,11 +4,13 @@ import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
 import com.unique.dto.appeal.AppealDTO;
+import com.unique.dto.appeal.AppealScoreAdjustRequestDTO;
 import com.unique.dto.exam.ExamDTO;
 import com.unique.entity.answer.AnswerEntity;
 import com.unique.entity.applys.ApplysEntity;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.member.MemberEntity;
+import com.unique.entity.quiz.QuizEntity;
 import com.unique.repository.answer.AnswerRepository;
 import com.unique.repository.appeal.SseEmitterRepository;
 import com.unique.repository.applys.ApplysRepository;
@@ -41,8 +43,40 @@ public class AppealServiceImpl implements AppealService {
         appealRepository.save(entity);
     }
 
-    public void svcAppealUpdate(AppealEntity entity) {
-        appealRepository.save(entity);
+
+
+    /*
+     * function : 이의제기 점수 수정 - 작성중
+     * author : 차경준
+     * regdate : 2025.04.15
+     * */
+    public void svcAppealUpdate(Long appealSeq, AppealScoreAdjustRequestDTO updateScore) {
+        // 1. 이의제기 및 응시 기록 조회
+        AppealEntity appeal = appealRepository.findById(appealSeq)
+                .orElseThrow(() -> new RuntimeException("이의제기 없음"));
+        ApplysEntity applys = appeal.getApplys();
+
+        // 2. 해당 답안 조회 및 점수 수정
+        AnswerEntity answer = answerRepository.findByApplysAndQuizSeq(applys, updateScore.getQuizSeq())
+                .orElseThrow(() -> new RuntimeException("답안 없음"));
+
+        // 3. 점수 유효성 검증 (예: 0 <= 점수 <= 문제 배점)
+        QuizEntity quiz = answer.getQuiz();
+        if (updateScore.getAdjustedScore() < 0 || updateScore.getAdjustedScore() > quiz.getCorrectScore()) {
+            throw new IllegalArgumentException("유효하지 않은 점수");
+        }
+
+        // 4. 답안 점수 업데이트
+        answer.setScore(updateScore.getAdjustedScore());
+        answerRepository.save(answer);
+
+        // 5. 응시 기록 총점 재계산
+        List<AnswerEntity> allAnswers = answerRepository.findByApplys(applys);
+        int newTotalScore = allAnswers.stream()
+                .mapToInt(AnswerEntity::getScore)
+                .sum();
+        applys.setTotalScore(newTotalScore);
+        applysRepository.save(applys);
     }
 
 
