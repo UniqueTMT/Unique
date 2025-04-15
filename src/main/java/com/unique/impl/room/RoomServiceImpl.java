@@ -1,6 +1,8 @@
 package com.unique.impl.room;
+
 import com.unique.dto.room.RoomDTO;
 import com.unique.entity.exam.ExamEntity;
+import com.unique.entity.quiz.QuizEntity;
 import com.unique.entity.member.MemberEntity;
 import com.unique.entity.room.RoomEntity;
 import com.unique.repository.room.RoomRepository;
@@ -9,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +29,7 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findById(id);
     }
 
+    // 시험방 저장 + Redis 정답, 힌트, 총점 저장
     public Long svcRoomInsert(RoomDTO roomDTO, Long userSeq) {
         RoomEntity roomEntity = RoomEntity.builder()
             .roomName(roomDTO.getRoomName())
@@ -31,7 +37,7 @@ public class RoomServiceImpl implements RoomService {
             .limitTime(roomDTO.getLimitTime())
             .limitCnt(roomDTO.getLimitCnt())
             .activeYn("Y")
-            .roomStatus("ACTIVE")
+            .roomStatus("진행전")       // 진행전, 진행중, 진행완료
             .shutdownYn("N")
             .viewYn("Y")
             .regdate(roomDTO.getRegdate())
@@ -52,11 +58,34 @@ public class RoomServiceImpl implements RoomService {
             roomEntity.setExam(examEntity);
         }
 
+        // 1. 시험방 저장
         roomRepository.save(roomEntity);
+
+        // 2. Redis 캐싱 - 정답 / 힌트 저장
+        ExamEntity examEntity = roomEntity.getExam();
+
+        if (examEntity != null && examEntity.getQuizList() != null) {
+            List<QuizEntity> quizList = examEntity.getQuizList();
+
+            for (QuizEntity quiz : quizList) {
+                String redisKey = "room:" + roomEntity.getRoomSeq() + ":quiz:" + quiz.getQuizSeq();
+
+                Map<String, String> quizMap = new HashMap<>();
+                quizMap.put("question", quiz.getQuiz());
+                quizMap.put("option1", quiz.getObj1());
+                quizMap.put("option2", quiz.getObj2());
+                quizMap.put("option3", quiz.getObj3());
+                quizMap.put("option4", quiz.getObj4());
+                quizMap.put("correct", quiz.getCorrectAnswer());
+                quizMap.put("hint", quiz.getHint());
+                quizMap.put("score", String.valueOf(quiz.getCorrectScore()));   // 총점 저장용
+
+                redisTemplate.opsForHash().putAll(redisKey, quizMap);
+            }
+        }
 
         return roomEntity.getRoomSeq();
     }
-
 
     public void svcRoomUpdate(RoomEntity entity) {
         roomRepository.save(entity);
@@ -67,10 +96,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     //시험 방 관리
-    public List<RoomDTO> findRoomWithExams(){
+    public List<RoomDTO> findRoomWithExams() {
         return roomRepository.findRoomWithExam().stream()
-                .map(room -> modelMapper.map(room, RoomDTO.class))
-                .collect(Collectors.toList());
+            .map(room -> modelMapper.map(room, RoomDTO.class))
+            .collect(Collectors.toList());
     }
 
     // 시험방 남은시간 알림

@@ -116,17 +116,17 @@ public class MemberExamHistoryDetailServiceImpl {
         // QuizEntity 조회 (AnswerEntity -> QuizEntity)
         QuizEntity quiz = entity.getQuiz();
 
-        return new AnswerDTO(
-                entity.getAnswerSeq(),
-                entity.getApplys().getApplysSeq(),
-                entity.getQuiz().getQuizSeq(),
-                entity.getUserAnswer(),
-                entity.getAnswerYn() != null ? entity.getAnswerYn().charAt(0) : null,
-                member.getUserid(),
-                member.getNickname(),
-                quiz.getCorrectScore(),
-                entity.getRegdate()
-        );
+        return AnswerDTO.builder()
+            .answerSeq(entity.getAnswerSeq())
+            .applysSeq(entity.getApplys().getApplysSeq())
+            .quizSeq(entity.getQuiz().getQuizSeq())
+            .userAnswer(entity.getUserAnswer())
+            .answerYn(entity.getAnswerYn() != null ? entity.getAnswerYn().charAt(0) : null)
+            .userid(member.getUserid())
+            .nickname(member.getNickname())
+            .correctScore(quiz.getCorrectScore())
+            .regdate(entity.getRegdate())
+            .build();
     }
 
 
