@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "QUIZ")
-public class QuizEntity {
+public class  QuizEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "QUIZ_SEQ")
     @SequenceGenerator(name = "QUIZ_SEQ", sequenceName = "QUIZ_SEQUENCE", allocationSize = 1)
@@ -28,7 +28,7 @@ public class QuizEntity {
     @Column(name = "quiz", length = 500)
     private String quiz;
 
-    @Column(name = "obj_yn", length = 1)
+    @Column(name = "obj_yn", length = 10)
     private String objYn;
 
     @Column(name = "obj1", length = 200)
