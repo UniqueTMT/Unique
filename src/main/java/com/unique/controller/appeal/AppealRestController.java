@@ -1,11 +1,14 @@
 package com.unique.controller.appeal;
 
+import com.unique.dto.appeal.AppealDTO;
 import com.unique.dto.appeal.AppealPostDTO;
 import com.unique.entity.appeal.AppealEntity;
 import com.unique.impl.appeal.AppealServiceImpl;
+import com.unique.repository.appeal.SseEmitterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +19,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AppealRestController {
     private final AppealServiceImpl appealService;
+    private final SseEmitterRepository sseEmitterRepository;
 
+    /*
+    * function : 교수 이의제기 리스트
+    * author : 차경준
+    * regdate : 2025.04.15
+    * */
     @GetMapping("/appeal")
-    public ResponseEntity<List<AppealEntity>> ctlAppealList() {
+    public ResponseEntity<List<AppealDTO>> ctlAppealList() {
         return ResponseEntity.ok(appealService.svcAppealList());
     }
 
@@ -53,5 +62,13 @@ public class AppealRestController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+    // 교수용 SSE 구독 엔드포인트
+    @GetMapping("/subscribe/{userSeq}")
+    public SseEmitter subscribe(@PathVariable Long userSeq) {
+        return appealService.subscribe(userSeq);
+    }
+
 
 }
