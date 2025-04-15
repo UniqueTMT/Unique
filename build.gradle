@@ -71,6 +71,13 @@ dependencies {
 
     //APACHE TIKA -> 문서 인식
 //	implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24'
+
+    //Kafka 의존성 추가
+    implementation 'org.springframework.kafka:spring-kafka'
+    //env 파일 의존성 추가
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+
 }
 
 tasks.named('test') {

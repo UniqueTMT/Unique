@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 public interface QuizService {
-    List<QuizEntity> svcQuizList();
     Optional<QuizEntity> svcQuizDetail(Long id);
     void svcQuizInsert(QuizEntity entity);
-    void svcQuizUpdate(QuizEntity entity);
-    void svcQuizDelete(Long id);
-    List<QuizDTO> generateQuizFromPdf(MultipartFile file, String prompt) throws IOException;
 
+    List<QuizDTO> svcGetQuizList(Long examSeq);
+    void svcUpdateQuiz(Long quizSeq, QuizDTO dto);
+    void svcDeleteQuiz(Long quizSeq);
+    void svcPublishExam(Long examSeq);
 }

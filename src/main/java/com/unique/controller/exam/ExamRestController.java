@@ -17,7 +17,7 @@ public class ExamRestController {
 
     private final ExamServiceImpl examService;
 
-    @GetMapping("/examlist")
+    @GetMapping("/list")
     public ResponseEntity<List<AnswerDetailDTO>> ctlFindAll() {
         return ResponseEntity.ok(examService.svcFindAll());
     }
