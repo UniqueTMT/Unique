@@ -2,12 +2,10 @@ package com.unique.impl.quiz;
 import com.unique.dto.quiz.QuizDTO;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.gpt.GPTClient;
-import com.unique.gpt.QuizParser;
 import com.unique.repository.quiz.QuizRepository;
 import com.unique.service.quiz.QuizService;
 import lombok.RequiredArgsConstructor;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,11 +17,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
-    private final GPTClient gptClient;
     private final QuizRepository quizRepository;
-    private final QuizParser quizParser;
     private final ModelMapper modelMapper;
-
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     public List<QuizEntity> svcQuizList() {
         return quizRepository.findAll();
@@ -58,51 +54,5 @@ public class QuizServiceImpl implements QuizService {
     public void svcQuizDelete(Long id) {
         quizRepository.deleteById(id);
     }
-
-//    public List<QuizDTO> generateQuizFromPdf(MultipartFile file, String prompt) throws IOException {
-//
-//        // 1. PDF 텍스트 추출
-//        String pdfText;
-//        try (PDDocument doc = PDDocument.load(file.getInputStream())) {
-//            pdfText = new PDFTextStripper().getText(doc);
-//        }
-//
-//        // 2. GPT 호출
-//        String fullPrompt = prompt + "\n\n" + pdfText;
-//        String gptResponse = gptClient.sendPrompt(fullPrompt);
-//
-//        // 3. 파싱 → QuizDTO 리스트
-//        List<QuizDTO> quizzes = quizParser.parse(gptResponse);
-//
-//        // 4. 저장 → QuizEntity
-//        List<QuizEntity> saved = quizRepository.saveAll(
-//                quizzes.stream().map(q -> modelMapper.map(q, QuizEntity.class)).toList()
-//        );
-//
-//        return saved.stream().map(q -> modelMapper.map(q, QuizDTO.class)).toList();
-//    }
-@Override
-public List<QuizDTO> generateQuizFromPdf(MultipartFile file, String prompt) throws IOException {
-    String pdfText = "";
-
-    if (file != null) {
-        try (PDDocument doc = PDDocument.load(file.getInputStream())) {
-            pdfText = new PDFTextStripper().getText(doc);
-        }
-    }
-
-    // GPT 호출
-    String fullPrompt = file != null ? prompt + "\n\n" + pdfText : prompt;
-    String gptResponse = gptClient.sendPrompt(fullPrompt);
-
-    // 파싱 및 저장
-    List<QuizDTO> quizzes = quizParser.parse(gptResponse);
-    List<QuizEntity> saved = quizRepository.saveAll(
-            quizzes.stream().map(q -> modelMapper.map(q, QuizEntity.class)).toList()
-    );
-
-    return saved.stream().map(q -> modelMapper.map(q, QuizDTO.class)).toList();
-}
-
 
 }

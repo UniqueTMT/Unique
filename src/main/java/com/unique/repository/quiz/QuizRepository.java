@@ -7,6 +7,4 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
-    List<QuizEntity> findAllByExamIsNull();
-
 }
