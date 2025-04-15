@@ -31,6 +31,6 @@ public class RoomDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
   
-   //시험 방관리
+    //시험 방관리
     private List<ExamDTO> examList;
 }

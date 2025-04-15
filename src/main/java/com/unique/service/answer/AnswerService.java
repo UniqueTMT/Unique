@@ -20,4 +20,6 @@ public interface AnswerService {
     //임의의 학생 시험 결과 확인
     List<AnswerDetailDTO> svcFindSelectedStudentResult(Long userid);
 
+    // 응시 답안 제출 -> 저장 -> 채점
+    void saveOrUpdateAnswer(AnswerDTO answerDTO);
 }

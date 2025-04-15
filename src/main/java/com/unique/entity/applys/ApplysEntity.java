@@ -32,6 +32,18 @@ public class ApplysEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
+    // 총점
+    @Column(name = "total_score")
+    private Integer totalScore;
+
+    // 맞힌문제
+    @Column(name = "correct_count")
+    private Integer correctCount;
+
+    // 틀린문제
+    @Column(name = "wrong_count")
+    private Integer wrongCount;
+
     @PrePersist
     protected void onCreate() {
         if (this.regdate == null) this.regdate = new Date();
