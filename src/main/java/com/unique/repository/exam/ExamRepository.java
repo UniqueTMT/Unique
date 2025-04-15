@@ -26,6 +26,8 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     @Query("SELECT e FROM ExamEntity e")
     List<ExamEntity> findExamWithQuizList();
 
+    ExamEntity findTopByOrderByExamSeqDesc();
+
 //
 //    시험지 조회
 //    @EntityGraph(attributePaths = {
