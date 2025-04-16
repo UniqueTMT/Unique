@@ -29,7 +29,7 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findById(id);
     }
 
-    // 시험방 저장 + Redis 정답, 힌트, 총점 저장
+    // 시험방 저장 + Redis 정답, 힌트, 배점 저장
     public Long svcRoomInsert(RoomDTO roomDTO, Long userSeq) {
         RoomEntity roomEntity = RoomEntity.builder()
             .roomName(roomDTO.getRoomName())
@@ -61,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
         // 1. 시험방 저장
         roomRepository.save(roomEntity);
 
-        // 2. Redis 캐싱 - 정답 / 힌트 저장
+        // 2. Redis 캐싱 - 정답 / 힌트 / 배점 저장
         ExamEntity examEntity = roomEntity.getExam();
 
         if (examEntity != null && examEntity.getQuizList() != null) {
@@ -72,13 +72,14 @@ public class RoomServiceImpl implements RoomService {
 
                 Map<String, String> quizMap = new HashMap<>();
                 quizMap.put("question", quiz.getQuiz());
+                quizMap.put("objYn", quiz.getObjYn());                  // 1: 객관식 2: 주관식 3: 혼합방식 확인용
                 quizMap.put("option1", quiz.getObj1());
                 quizMap.put("option2", quiz.getObj2());
                 quizMap.put("option3", quiz.getObj3());
                 quizMap.put("option4", quiz.getObj4());
                 quizMap.put("correct", quiz.getCorrectAnswer());
                 quizMap.put("hint", quiz.getHint());
-                quizMap.put("score", String.valueOf(quiz.getCorrectScore()));   // 총점 저장용
+                quizMap.put("score", String.valueOf(quiz.getCorrectScore()));   // 배점 저장용
 
                 redisTemplate.opsForHash().putAll(redisKey, quizMap);
             }
