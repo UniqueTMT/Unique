@@ -12,7 +12,7 @@ public class QuizDTO {
     private Long quizSeq;
     private Long examSeq;
     private String quiz;
-    private Character objYn;
+    private String objYn;
     private String obj1;
     private String obj2;
     private String obj3;
