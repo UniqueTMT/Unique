@@ -24,7 +24,6 @@ public class QuizEntity {
     @SequenceGenerator(name = "QUIZ_SEQ", sequenceName = "QUIZ_SEQUENCE", allocationSize = 1)
     private Long quizSeq;
 
-
     @Column(name = "quiz", length = 500)
     private String quiz;
 

@@ -34,6 +34,23 @@ public class AnswerEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date regdate;
 
+    // GPT 1차 채점 결과
+    @Column(name = "ai_score")
+    private Integer aiScore;
+
+    @Column(name = "ai_feedback", length = 1000)
+    private String aiFeedback;
+
+    // 교수 2차 채점 결과
+    @Column(name = "professor_score")
+    private Integer professorScore;
+
+    @Column(name = "professor_feedback", length = 1000)
+    private String professorFeedback;
+
+    @Column(name = "confirmed")
+    private Boolean confirmed; // true면 확정됨
+
     @PrePersist
     protected void onCreate() {
         if (this.regdate == null) this.regdate = new Date();
