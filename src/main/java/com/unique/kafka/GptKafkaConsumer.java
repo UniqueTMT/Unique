@@ -2,6 +2,7 @@ package com.unique.kafka;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.repository.exam.ExamRepository;
 import com.unique.repository.quiz.QuizRepository;
@@ -25,8 +26,15 @@ public class GptKafkaConsumer {
     public void consume(String message) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> data = mapper.readValue(message, new TypeReference<>() {});
+
+        Long examSeq = Long.valueOf(data.get("examSeq"));
+        ExamEntity exam = examRepository.findById(examSeq)
+                .orElseThrow(() -> new IllegalArgumentException("시험 정보 없음: " + examSeq));
+
         String gptResult = gptService.svcCallGpt(data.get("text"), data.get("prompt"));
-        List<QuizEntity> quizzes = gptService.svcParseGptResponse(gptResult, examRepository.findTopByOrderByExamSeqDesc());
+        List<QuizEntity> quizzes = gptService.svcParseGptResponse(gptResult, exam);
+
         quizRepository.saveAll(quizzes);
     }
+
 }

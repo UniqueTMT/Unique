@@ -24,13 +24,13 @@ public class QuizRestController {
     }
 
     //특정 문제(quizSeq)에 대해 사용자가 내용을 수정한 결과를 저장
-    @PutMapping("/{quizSeq}")
+    @PutMapping("/edit/{quizSeq}")
     public void ctlUpdateQuiz(@PathVariable Long quizSeq, @RequestBody QuizDTO dto) {
         quizService.svcUpdateQuiz(quizSeq, dto);
     }
 
     //특정 문제(quizSeq)를 삭제
-    @DeleteMapping("/{quizSeq}")
+    @DeleteMapping("/delete/{quizSeq}")
     public void ctlDeleteQuiz(@PathVariable Long quizSeq) {
         quizService.svcDeleteQuiz(quizSeq);
     }
