@@ -13,9 +13,9 @@ public class GptKafkaProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
-    public void sendQuestionRequest(String text, String prompt) {
+    public void sendQuestionRequest(String text, String prompt, Long examSeq) {
         try {
-            String json = objectMapper.writeValueAsString(Map.of("text", text, "prompt", prompt));
+            String json = objectMapper.writeValueAsString(Map.of("text", text, "prompt", prompt, "examSeq", examSeq));
             kafkaTemplate.send("gpt-question-request", json);
         } catch (Exception e) {
             throw new RuntimeException("Kafka 전송 실패", e);
