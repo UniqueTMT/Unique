@@ -22,7 +22,7 @@ public class GptKafkaConsumer {
     private final QuizRepository quizRepository;
     private final ExamRepository examRepository;
 
-    @KafkaListener(topics = "gpt-question-request", groupId = "gpt-group")
+    @KafkaListener(topics = "gpt-question-request", groupId = "gpt-consumer", containerFactory = "stringKafkaListenerContainerFactory")
     public void consume(String message) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> data = mapper.readValue(message, new TypeReference<>() {});

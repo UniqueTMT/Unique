@@ -9,46 +9,42 @@ public class GptPromptServiceImpl implements GptPromptService {
     @Override
     public String svcBuildPrompt(String category, String chapter, String type, String count, String userPrompt, String text) {
         return String.format("""
-            당신은 교육 전문가입니다. 다음 학습 자료를 바탕으로 문제를 생성해주세요.
+        당신은 교육용 문제를 JSON 형식으로 생성하는 AI입니다.
 
-            📂 카테고리: %s
-            📖 챕터: %s
-            🧾 문제 유형: %s  (1: 객관식, 2: 주관식, 3: 혼합)
-            🔢 문제 개수: %s
-            🧠 추가 지시사항: %s
+        다음 조건을 참고해 문제를 완전히 생성하세요:
 
-                JSON 배열 형식으로 다음 항목을 포함해서 반환해주세요:
-                - quiz
-                - objYn ("1" = 객관식, "2" = 주관식, "3" = 혼합)
-                - obj1 ~ obj4
-                - correctAnswer
-                - correctScore
-                - hint
-                - comments
-                
-                예시 형식:
-                [
-                  {
-                    "quiz": "배열이란 무엇인가요?",
-                    "objYn": "1",
-                    "obj1": "선형 자료구조",
-                    "obj2": "비선형 자료구조",
-                    "obj3": "정렬된 트리",
-                    "obj4": "링크드 리스트",
-                    "correctAnswer": "1",
-                    "correctScore": 10,
-                    "hint": "배열은 메모리가 연속된 공간에 존재함",
-                    "comments": "객관식 문제로 배열 구조에 대한 개념 테스트"
-                  }
-                ]
-                
+        📂 카테고리: %s
+        📖 챕터: %s
+        🧾 문제 유형: %s (1: 객관식, 2: 주관식, 3: 혼합)
+        🔢 문제 개수: %s
+        🧠 추가 지시사항: %s
 
-            [학습자료 시작]
-            %s
-            [학습자료 끝]
+        [출력 지침]
+        - 반드시 JSON 배열 형식으로만 응답하세요. 그 외의 텍스트는 절대 포함하지 마세요.
+        - 문제 수는 정확히 %s개여야 합니다.
+        - 모든 항목은 쌍따옴표(")로 감싸고, 누락 없이 정확한 형식을 지켜야 합니다.
+        - JSON 예시 형식을 철저히 따르세요.
 
-            ⚠️ 모든 항목은 JSON key-value 형식으로 정확하게 작성해주세요.
-            """, category, chapter, type, count, userPrompt, text);
+        [예시]
+        [
+          {
+            "quiz": "변수란 무엇인가요?",
+            "objYn": "1",
+            "obj1": "값을 저장하는 공간",
+            "obj2": "함수의 이름",
+            "obj3": "반복문",
+            "obj4": "조건문",
+            "correctAnswer": "1",
+            "correctScore": 10,
+            "hint": "변수는 데이터를 담는 공간입니다.",
+            "comments": "객관식 문제입니다."
+          }
+        ]
+
+        [학습자료 시작]
+        %s
+        [학습자료 끝]
+        """, category, chapter, type, count, userPrompt, count, text);
     }
 
 }

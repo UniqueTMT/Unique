@@ -35,6 +35,21 @@ public class KafkaProducerConfig {
     return new KafkaTemplate<>(producerFactory());
   }
 
+  // gpt kafka template
+  @Bean
+  public ProducerFactory<String, String> stringProducerFactory() {
+    Map<String, Object> config = new HashMap<>();
+    config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+    config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    return new DefaultKafkaProducerFactory<>(config);
+  }
+
+  @Bean
+  public KafkaTemplate<String, String> stringKafkaTemplate() {
+    return new KafkaTemplate<>(stringProducerFactory());
+  }
+
   // Consumer 구성 ---------------------------------------------------------------------------------------------------------------
 
   @Bean
@@ -45,6 +60,7 @@ public class KafkaProducerConfig {
     config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, org.apache.kafka.common.serialization.StringDeserializer.class);
     config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
     config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+    config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.unique.kafka.AnswerKafkaDTO");
     return new DefaultKafkaConsumerFactory<>(config);
   }
 
@@ -54,4 +70,23 @@ public class KafkaProducerConfig {
     factory.setConsumerFactory(consumerFactory());
     return factory;
   }
+
+  // gpt kafka template
+  @Bean
+  public ConsumerFactory<String, String> stringConsumerFactory() {
+    Map<String, Object> config = new HashMap<>();
+    config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+    config.put(ConsumerConfig.GROUP_ID_CONFIG, "gpt-consumer");
+    config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, org.apache.kafka.common.serialization.StringDeserializer.class);
+    config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, org.apache.kafka.common.serialization.StringDeserializer.class);
+    return new DefaultKafkaConsumerFactory<>(config);
+  }
+
+  @Bean
+  public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaListenerContainerFactory() {
+    ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    factory.setConsumerFactory(stringConsumerFactory());
+    return factory;
+  }
+
 }
