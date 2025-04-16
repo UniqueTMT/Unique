@@ -3,10 +3,8 @@ import com.unique.dto.quiz.QuizDTO;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.service.quiz.QuizService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/quiz")

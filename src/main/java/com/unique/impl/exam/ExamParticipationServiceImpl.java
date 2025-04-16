@@ -49,7 +49,7 @@ public class ExamParticipationServiceImpl implements ExamParticipationService {
         quizEntity.getQuizSeq(),
         quizEntity.getExam().getExamSeq(),
         quizEntity.getQuiz(),
-        quizEntity.getObjYn() != null ? quizEntity.getObjYn().charAt(0) : null,
+        quizEntity.getObjYn(),
         quizEntity.getObj1(),
         quizEntity.getObj2(),
         quizEntity.getObj3(),

@@ -106,7 +106,7 @@ public class QuizServiceImpl implements QuizService {
         quiz.setObj2(dto.getObj2());
         quiz.setObj3(dto.getObj3());
         quiz.setObj4(dto.getObj4());
-//        quiz.setObjYn(dto.getObjYn());
+        quiz.setObjYn(dto.getObjYn());
         quiz.setCorrectScore(dto.getCorrectScore());
         quiz.setHint(dto.getHint());
         quiz.setComments(dto.getComments());
