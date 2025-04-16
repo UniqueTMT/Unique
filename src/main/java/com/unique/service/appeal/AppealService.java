@@ -3,6 +3,7 @@ package com.unique.service.appeal;
 import com.unique.dto.appeal.AppealDTO;
 import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
+import com.unique.dto.appeal.AppealScoreAdjustRequestDTO;
 import com.unique.entity.appeal.AppealEntity;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface AppealService {
 
     AppealDetailDTO svcAppealDetail(Long id);
     void svcAppealInsert(AppealEntity entity);
-    void svcAppealUpdate(AppealEntity entity);
+    void svcAppealUpdate(Long appealSeq, Long quizSeq);
     void svcAppealDelete(Long id);
     //이의제기 생성 - 경준
     AppealDTO svcAppealCreate(AppealPostDTO appealDTO);

@@ -46,4 +46,23 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
     * regdate : 25.04.15
     * */
     List<AnswerEntity> findByApplys(ApplysEntity applys);
+
+    /*
+     * function : 응시 기록 및 답안 조회
+     * author : 차경준
+     * regdate : 25.04.15
+     * */
+    @Query("SELECT a FROM AnswerEntity a JOIN FETCH a.quiz WHERE a.applys = :applys")
+    List<AnswerEntity> findByApplysWithQuiz(@Param("applys") ApplysEntity applys);
+
+    /*
+     * function : 응시 기록, 답안 조회
+     * author : 차경준
+     * regdate : 25.04.15
+     * */
+    @Query("SELECT a FROM AnswerEntity a WHERE a.applys = :applys AND a.quiz.quizSeq = :quizSeq")
+    Optional<AnswerEntity> findByApplysAndQuizSeq(
+            @Param("applys") ApplysEntity applys,
+            @Param("quizSeq") Long quizSeq
+    );
 }

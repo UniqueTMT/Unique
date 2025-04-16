@@ -50,32 +50,38 @@ public class AppealServiceImpl implements AppealService {
      * author : 차경준
      * regdate : 2025.04.15
      * */
-    public void svcAppealUpdate(Long appealSeq, AppealScoreAdjustRequestDTO updateScore) {
+    public void svcAppealUpdate(Long appealSeq, Long quizSeq) {
         // 1. 이의제기 및 응시 기록 조회
         AppealEntity appeal = appealRepository.findById(appealSeq)
                 .orElseThrow(() -> new RuntimeException("이의제기 없음"));
         ApplysEntity applys = appeal.getApplys();
 
-        // 2. 해당 답안 조회 및 점수 수정
-        AnswerEntity answer = answerRepository.findByApplysAndQuizSeq(applys, updateScore.getQuizSeq())
+        // 2. 해당 답안 조회 및 answerYn 수정
+        AnswerEntity answer = answerRepository.findByApplysAndQuizSeq(applys, quizSeq)
                 .orElseThrow(() -> new RuntimeException("답안 없음"));
-
-        // 3. 점수 유효성 검증 (예: 0 <= 점수 <= 문제 배점)
-        QuizEntity quiz = answer.getQuiz();
-        if (updateScore.getAdjustedScore() < 0 || updateScore.getAdjustedScore() > quiz.getCorrectScore()) {
-            throw new IllegalArgumentException("유효하지 않은 점수");
-        }
-
-        // 4. 답안 점수 업데이트
-        answer.setScore(updateScore.getAdjustedScore());
+        // 3. 답안 정답 처리 (answerYn을 '1'로 변경)
+        answer.setAnswerYn("1");
         answerRepository.save(answer);
 
-        // 5. 응시 기록 총점 재계산
-        List<AnswerEntity> allAnswers = answerRepository.findByApplys(applys);
-        int newTotalScore = allAnswers.stream()
-                .mapToInt(AnswerEntity::getScore)
-                .sum();
+        // 4. 모든 답안 재계산 (총점, 정답/오답 개수)
+        List<AnswerEntity> allAnswers = answerRepository.findByApplysWithQuiz(applys);
+        int newTotalScore = 0;
+        int newCorrectCount = 0;
+        int newWrongCount = 0;
+
+        for (AnswerEntity a : allAnswers) {
+            if ("1".equals(a.getAnswerYn())) {
+                newTotalScore += a.getQuiz().getCorrectScore();
+                newCorrectCount++;
+            } else {
+                newWrongCount++;
+            }
+        }
+
+        // 5. 응시 기록 업데이트
         applys.setTotalScore(newTotalScore);
+        applys.setCorrectCount(newCorrectCount);
+        applys.setWrongCount(newWrongCount);
         applysRepository.save(applys);
     }
 

@@ -37,9 +37,9 @@ public class AppealRestController {
     @PutMapping("/{appealSeq}/adjust")
     public ResponseEntity<String> ctlAppealAcceptScoreUpdate(
             @PathVariable Long appealSeq,
-            @RequestBody AppealScoreAdjustRequestDTO updateScore
+            @RequestParam Long quizSeq
     ) {
-        appealService.svcAppealUpdate(appealSeq,updateScore);
+        appealService.svcAppealUpdate(appealSeq,quizSeq);
         return ResponseEntity.ok("성적 수정 완료");
     }
 
