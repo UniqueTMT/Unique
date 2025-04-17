@@ -38,6 +38,13 @@ public class RoomRestController {
         return ResponseEntity.ok(roomSeq);
     }
 
+    //시험 방 관리 - 정렬
+    @GetMapping("/room-array")
+    public ResponseEntity<List<RoomEntity>> ctlGetRoomList(
+            @RequestParam(defaultValue = "asc") String sort) {
+        return ResponseEntity.ok(roomService.svcGetRoomsByOrder(sort));
+    }
+
     // 시험방 남은시간 알림 기능 구현
     @GetMapping("/{roomSeq}/remaining-time")
     public ResponseEntity<Long> getRemainingTime(@PathVariable Long roomSeq) {

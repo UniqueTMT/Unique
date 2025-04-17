@@ -10,11 +10,12 @@ public interface RoomService {
     Long svcRoomInsert(RoomDTO roomDTO, Long userSeq);
     void svcRoomUpdate(RoomEntity entity);
     void svcRoomDelete(Long id);
-
-
      //시험 방 관리
      List<RoomDTO> findRoomWithExams();
 
      // 시험방 남은시간 알림 기능
      Long getRemainingTime(Long roomSeq);
+
+    //시험 방 관리 - 정렬
+    List<RoomEntity> svcGetRoomsByOrder(String sort);
 }
