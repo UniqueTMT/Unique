@@ -50,7 +50,7 @@ public class AppealRestController {
     * author : 차경준
     * regdate : 2025.04.15
     * */
-    @GetMapping("/appeal")
+    @GetMapping("/")
     public ResponseEntity<List<AppealDTO>> ctlAppealList() {
         return ResponseEntity.ok(appealService.svcAppealList());
     }

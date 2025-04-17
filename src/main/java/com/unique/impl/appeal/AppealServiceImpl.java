@@ -50,6 +50,7 @@ public class AppealServiceImpl implements AppealService {
      * author : 차경준
      * regdate : 2025.04.15
      * */
+    @Transactional
     public void svcAppealUpdate(Long appealSeq, Long quizSeq) {
         // 1. 이의제기 및 응시 기록 조회
         AppealEntity appeal = appealRepository.findById(appealSeq)
@@ -60,7 +61,9 @@ public class AppealServiceImpl implements AppealService {
         AnswerEntity answer = answerRepository.findByApplysAndQuizSeq(applys, quizSeq)
                 .orElseThrow(() -> new RuntimeException("답안 없음"));
         // 3. 답안 정답 처리 (answerYn을 '1'로 변경)
-        answer.setAnswerYn("1");
+        answer.setAnswerYn("Y");
+        answer.setAiFeedback("정답처리");
+        answer.setProfessorFeedback("재정답처리되었습니다.");
         answerRepository.save(answer);
 
         // 4. 모든 답안 재계산 (총점, 정답/오답 개수)
@@ -70,7 +73,7 @@ public class AppealServiceImpl implements AppealService {
         int newWrongCount = 0;
 
         for (AnswerEntity a : allAnswers) {
-            if ("1".equals(a.getAnswerYn())) {
+            if ("Y".equals(a.getAnswerYn())) {
                 newTotalScore += a.getQuiz().getCorrectScore();
                 newCorrectCount++;
             } else {
@@ -95,7 +98,7 @@ public class AppealServiceImpl implements AppealService {
      * */
     @Override
     public List<AppealDTO> svcAppealList() {
-        Long hardcodedUserSeq = 3L;
+        Long hardcodedUserSeq = 2L;
         List<AppealEntity> appeals = appealRepository.myFindAppealList(hardcodedUserSeq);
         return appeals.stream()
                 .map(this::convertToDTO)

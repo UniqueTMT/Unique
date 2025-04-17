@@ -28,20 +28,17 @@ public interface ApplysRepository extends JpaRepository<ApplysEntity, Long> {
                 m.userid, 
                 m.username,  
                 a.applysSeq,
-                CAST(SUM(q.correctScore) AS integer), 
-                CAST(SUM(CASE WHEN ans.answerYn = '1' THEN q.correctScore ELSE 0 END) AS integer),
+                a.totalScore,
+                a.correctCount,
+                a.wrongCount,
                 a.regdate
             )
-            FROM ApplysEntity a
-            JOIN a.exam e
-            JOIN a.member m 
-            JOIN e.member c 
-            JOIN e.quizList q
-            LEFT JOIN AnswerEntity ans ON ans.quiz.quizSeq = q.quizSeq AND ans.applys.applysSeq = a.applysSeq
-            WHERE m.userSeq = :userSeq
-            GROUP BY a.applysSeq, e.examSeq, e.subjectCode, e.subjectName, e.examTitle, 
-                     m.userSeq, c.username, m.userid, m.username, a.regdate
-            ORDER BY a.regdate DESC
+               FROM ApplysEntity a
+               JOIN a.exam e
+               JOIN a.member m\s
+               JOIN e.member c\s
+               WHERE m.userSeq = :userSeq
+               ORDER BY a.regdate DESC
         """)
         List<MemberExamHistoryDTO> myFindAllExamHistory(@Param("userSeq") Long userSeq);
 

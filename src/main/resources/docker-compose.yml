@@ -34,4 +34,4 @@ services:
       - kafka
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:909
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
