@@ -59,6 +59,17 @@ public class MemberEntity {
         }
     }
 
+    // 멤버 활성 여부 필요 시 추가 => CustomUserDetailService에서 활성여부 관리
+//    private boolean active = true; // 기본 true
+//
+//    public boolean isActive() {
+//        return active;
+//    }
+//
+//    public void setActive(boolean active) {
+//        this.active = active;
+//    }
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @BatchSize(size = 10)
