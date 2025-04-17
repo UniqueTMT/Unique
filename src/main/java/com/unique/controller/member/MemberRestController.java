@@ -2,9 +2,6 @@ package com.unique.controller.member;
 
 import com.unique.dto.member.MemberInfoDTO;
 import com.unique.dto.member.FindIdRequestDTO;
-import com.unique.dto.member.FindPwRequestDTO;
-import com.unique.dto.member.LoginRequestDTO;
-import com.unique.entity.member.MemberEntity;
 import com.unique.impl.member.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,6 +58,27 @@ public class MemberRestController {
                 "message", message
         ).toString());
     }
+
+    /**
+     * [POST] /api/member/find-id
+     * - 설명: 사용자 이름과 이메일을 입력받아 해당하는 사용자의 userId(학번)를 마스킹된 형태로 반환
+     * - 예: 사용자 userId = "20140293" → "20****93"
+     *
+     * @param request FindIdRequestDTO 객체 (username, email)
+     * @return ResponseEntity<String> 마스킹된 userId 또는 오류 메시지
+     */
+    @PostMapping("/find-id")
+    public ResponseEntity<String> ctlFindUserId(@RequestBody FindIdRequestDTO request) {
+        String maskUserId = memberService.svcFindUserIdByInfo(request.getUsername(), request.getEmail());
+
+        if (maskUserId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("일치하는 정보가 없습니다.");
+        }
+
+        return ResponseEntity.ok("회원님의 아이디는 " + maskUserId + " 입니다.");
+    }
+
 //    @GetMapping("/member")
 //    public ResponseEntity<List<MemberEntity>> ctlMemberList() {
 //        return ResponseEntity.ok(memberService.svcMemberList());
