@@ -41,4 +41,14 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
      * @return Optional<MemberEntity>
      */
     Optional<MemberEntity> findByUserid(Long userId);
+
+    /**
+     * 사용자 이름과 이메일을 기준으로 회원 정보를 조회
+     * 사용시기 : 아이디 찾기
+     * @param username
+     * @param email
+     * @return Optional<MemberEntity> 해당 조건에 일치하는 사용자 정보
+     */
+    Optional<MemberEntity> findByUsernameAndEmail(String username, String email);
+
 }
