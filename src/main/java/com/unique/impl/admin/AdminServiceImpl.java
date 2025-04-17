@@ -1,4 +1,4 @@
-package com.unique.service.admin;
+package com.unique.impl.admin;
 
 import com.unique.dto.admin.*;
 import com.unique.repository.admin.AdminRepository;
