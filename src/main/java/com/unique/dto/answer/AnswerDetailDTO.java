@@ -1,11 +1,13 @@
 package com.unique.dto.answer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.unique.dto.quiz.QuizDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class AnswerDetailDTO {
     private String username;
     private Long quizSeq;
     private Long examSeq;
-    private String quiz;
+    private List<QuizDTO> quizList;
     private String objYn;
     private String obj1;
     private String obj2;

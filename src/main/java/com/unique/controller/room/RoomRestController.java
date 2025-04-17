@@ -18,10 +18,16 @@ public class RoomRestController {
     private final RoomServiceImpl roomService;
     private final AnswerService answerService;
 
-
-    @GetMapping("/room/{id}")
+    // 특정 시험방 + 특정 시험지 정보 한번에 조회
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
         return ResponseEntity.ok(roomService.svcRoomDetail(id));
+    }
+
+    //전체 시험 방 조회
+    @GetMapping("/list")
+    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
+        return ResponseEntity.ok(roomService.findRoomWithExams());
     }
 
     // 시험방 생성
@@ -51,14 +57,10 @@ public class RoomRestController {
         roomService.svcRoomUpdate(entity);
     }
 
+    //시험방 삭제
     @DeleteMapping("/room/{id}")
     public void ctlRoomDelete(@PathVariable(value="id") Long id) {
         roomService.svcRoomDelete(id);
     }
 
-    //시험 방관리
-    @GetMapping("/roomlist")
-    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
-        return ResponseEntity.ok(roomService.findRoomWithExams());
-    }
 }
