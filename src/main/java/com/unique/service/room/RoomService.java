@@ -1,4 +1,5 @@
 package com.unique.service.room;
+import com.unique.dto.member.MemberExamHistoryDTO;
 import com.unique.dto.room.RoomDTO;
 import com.unique.entity.room.RoomEntity;
 
