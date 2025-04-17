@@ -1,5 +1,6 @@
 package com.unique.repository.exam;
 
+import com.unique.dto.exam.CategoryQuizCountDTO;
 import com.unique.entity.exam.ExamEntity;
 import jakarta.persistence.OrderBy;
 import org.hibernate.annotations.BatchSize;
@@ -26,15 +27,11 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     @Query("SELECT e FROM ExamEntity e")
     List<ExamEntity> findExamWithQuizList();
 
-    ExamEntity findTopByOrderByExamSeqDesc();
-
-//
-//    시험지 조회
-//    @EntityGraph(attributePaths = {
-//            "quizList"
-//    })
-//    @Query("SELECT e FROM ExamEntity e")
-//    List<ExamEntity> findExamWithQuizList();
+    //문제은행 리스트 업
+    @Query("SELECT new com.unique.dto.exam.CategoryQuizCountDTO(e.subjectName, e.subjectCode, COUNT(q.quizSeq)) " +
+            "FROM ExamEntity e JOIN e.quizList q " +
+            "GROUP BY e.subjectName, e.subjectCode")
+    List<CategoryQuizCountDTO> findQuizCountGroupedByCategory();
 
 
 }

@@ -43,7 +43,11 @@ public interface ApplysRepository extends JpaRepository<ApplysEntity, Long> {
                      m.userSeq, c.username, m.userid, m.username, a.regdate
             ORDER BY a.regdate DESC
         """)
+
         List<MemberExamHistoryDTO> myFindAllExamHistory(@Param("userSeq") Long userSeq);
+        List<ApplysEntity> findByMemberUserSeqOrderByRegdateAsc(Long userSeq); // 오래된 순
+        List<ApplysEntity> findByMemberUserSeqOrderByRegdateDesc(Long userSeq); // 최신 순
+
 
 
 }

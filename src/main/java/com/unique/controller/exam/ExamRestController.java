@@ -2,6 +2,7 @@ package com.unique.controller.exam;
 
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
+import com.unique.dto.exam.CategoryQuizCountDTO;
 import com.unique.impl.exam.ExamServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,6 @@ import java.util.Optional;
 @RequestMapping("/api/exam")
 @RequiredArgsConstructor
 public class ExamRestController {
-
     private final ExamServiceImpl examService;
 
     @GetMapping("/list")
@@ -47,7 +47,10 @@ public class ExamRestController {
 //    public ResponseEntity<List<SubjectSummary>> ctlFindGroupedSubjects() {
 //        return ResponseEntity.ok(examService.svcFindGroupedSubjects());
 //    }
-
+    @GetMapping("/quizbank-list")
+    public ResponseEntity<List<CategoryQuizCountDTO>> ctlGetQuizCountByCategory() {
+        return ResponseEntity.ok(examService.svcGetQuizCountByCategory());
+    }
 
     //문제은행 카테고리별 시험지 상세 보기
     @GetMapping("/quizbank-detail")

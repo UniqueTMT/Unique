@@ -14,7 +14,8 @@ public interface ApplysService {
     void svcApplysInsert(ApplysEntity entity);
     void svcApplysUpdate(ApplysEntity entity);
     void svcApplysDelete(Long id);
-    
+
+    List<MemberExamHistoryDTO> svcExamHistorySorted(Long userSeq, String sort);
     //시험이력 검색 기능 - 경준
     List<MemberExamHistoryDTO> svcSearchUserExamHistory(Long userSeq, String subjectName, String creatorName, String examTitle);
 }
