@@ -3,6 +3,7 @@ package com.unique.controller.gpt;
 import com.unique.client.GptClient;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.quiz.QuizEntity;
+import com.unique.kafka.GptKafkaProducer;
 import com.unique.repository.exam.ExamRepository;
 import com.unique.repository.quiz.QuizRepository;
 import com.unique.service.gpt.GptPromptService;
@@ -26,7 +27,7 @@ public class GptQuestionController {
     private final GptClient gptClient;
     private final PdfParseService pdfParseService;
     private final GptService gptService;
-
+    private final GptKafkaProducer gptKafkaProducer;
     private final ExamRepository examRepository;
     private final QuizRepository quizRepository;
 
@@ -57,7 +58,7 @@ public class GptQuestionController {
         // 3) GPT 호출
         String gptResponse = gptClient.sendToGpt(prompt);
 
-        // 4) 시험 저장
+        // 4) 시험 저장 - Consumer가 quiz에 참조
         ExamEntity exam = examRepository.save(
                 ExamEntity.builder()
                         .examTitle(userPrompt + " 기반 시험")
@@ -68,6 +69,7 @@ public class GptQuestionController {
                         .regdate(new Date())
                         .build()
         );
+        gptKafkaProducer.sendQuestionRequest(text, gptPromptService.svcBuildPrompt(category, chapter, type, count, userPrompt, text), exam.getExamSeq());
 
         // 5) GPT 응답 파싱 → 문제 리스트로 변환
         List<QuizEntity> quizList = gptService.svcParseGptResponse(gptResponse, exam);

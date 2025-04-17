@@ -29,6 +29,21 @@ public class ApplysServiceImpl implements ApplysService {
                 .collect(Collectors.toList());
     }
 
+    //시험 이력 - 정렬
+    @Override
+    public List<MemberExamHistoryDTO> svcExamHistorySorted(Long userSeq, String sort) {
+        List<ApplysEntity> list;
+        if ("asc".equalsIgnoreCase(sort)) {
+            list = applysRepository.findByMemberUserSeqOrderByRegdateAsc(userSeq);
+        } else {
+            list = applysRepository.findByMemberUserSeqOrderByRegdateDesc(userSeq);
+        }
+
+        return list.stream()
+                .map(applys -> modelMapper.map(applys, MemberExamHistoryDTO.class))
+                .toList();
+    }
+
     //시험이력 검색 - 경준
     /**
      * 사용자의 시험 이력 검색

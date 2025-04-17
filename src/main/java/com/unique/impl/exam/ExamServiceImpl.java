@@ -1,6 +1,5 @@
 package com.unique.impl.exam;
-
-
+import com.unique.dto.exam.CategoryQuizCountDTO;
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
 import com.unique.entity.exam.ExamEntity;
@@ -9,6 +8,7 @@ import com.unique.service.exam.ExamService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +18,12 @@ import java.util.stream.Collectors;
 public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
     private final ModelMapper modelMapper;
+
+    //문제은행 리스트 업
+    @Override
+    public List<CategoryQuizCountDTO> svcGetQuizCountByCategory() {
+        return examRepository.findQuizCountGroupedByCategory();
+    }
 
     //문제은행 카테고리별 시험지 상세 보기
     @Override

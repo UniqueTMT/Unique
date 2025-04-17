@@ -18,10 +18,16 @@ public class RoomRestController {
     private final RoomServiceImpl roomService;
     private final AnswerService answerService;
 
-
-    @GetMapping("/room/{id}")
+    // 특정 시험방 + 특정 시험지 정보 한번에 조회
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
         return ResponseEntity.ok(roomService.svcRoomDetail(id));
+    }
+
+    //전체 시험 방 조회
+    @GetMapping("/list")
+    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
+        return ResponseEntity.ok(roomService.findRoomWithExams());
     }
 
     // 시험방 생성
@@ -30,6 +36,13 @@ public class RoomRestController {
 //        Long userSeq = getCurrentUserSeq(); //로그인 유저 ID 가져오기
         Long roomSeq = roomService.svcRoomInsert(roomDTO, 1L);     // 일단 테스트용으로 1번 유저로 하드코딩
         return ResponseEntity.ok(roomSeq);
+    }
+
+    //시험 방 관리 - 정렬
+    @GetMapping("/room-array")
+    public ResponseEntity<List<RoomEntity>> ctlGetRoomList(
+            @RequestParam(defaultValue = "asc") String sort) {
+        return ResponseEntity.ok(roomService.svcGetRoomsByOrder(sort));
     }
 
     // 시험방 남은시간 알림 기능 구현
@@ -51,14 +64,10 @@ public class RoomRestController {
         roomService.svcRoomUpdate(entity);
     }
 
+    //시험방 삭제
     @DeleteMapping("/room/{id}")
     public void ctlRoomDelete(@PathVariable(value="id") Long id) {
         roomService.svcRoomDelete(id);
     }
 
-    //시험 방관리
-    @GetMapping("/roomlist")
-    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
-        return ResponseEntity.ok(roomService.findRoomWithExams());
-    }
 }

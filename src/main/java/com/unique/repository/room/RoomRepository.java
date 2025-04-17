@@ -18,8 +18,12 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
     @Query("SELECT r FROM RoomEntity r")
     List<RoomEntity> findRoomWithExam();
 
-  
-  @EntityGraph(attributePaths = {
+    //시험 방 관리 - 정렬
+    List<RoomEntity> findAllByOrderByRegdateAsc();
+    List<RoomEntity> findAllByOrderByRegdateDesc();
+
+
+    @EntityGraph(attributePaths = {
       "exam",
       "exam.member",
       "exam.quizList"

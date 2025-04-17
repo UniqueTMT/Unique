@@ -103,6 +103,16 @@ public class RoomServiceImpl implements RoomService {
             .collect(Collectors.toList());
     }
 
+    //시험 방 관리 - 정렬
+    @Override
+    public List<RoomEntity> svcGetRoomsByOrder(String sort) {
+        if ("desc".equalsIgnoreCase(sort)) {
+            return roomRepository.findAllByOrderByRegdateDesc();
+        } else {
+            return roomRepository.findAllByOrderByRegdateAsc();
+        }
+    }
+
     // 시험방 남은시간 알림
     public Long getRemainingTime(Long roomSeq) {
         String remainingTimeKey = "room:" + roomSeq + ":remainingTime";

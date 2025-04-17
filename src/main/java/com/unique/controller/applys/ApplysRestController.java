@@ -52,6 +52,13 @@ public class ApplysRestController {
         return ResponseEntity.ok(applysService.myFindAllExamHistory(userSeq));
     }
 
+    @GetMapping("/apply-history/{userSeq}/sorted")
+    public ResponseEntity<List<MemberExamHistoryDTO>> ctlExamHistorySorted(
+            @PathVariable("userSeq") Long userSeq,
+            @RequestParam(defaultValue = "desc") String sort) {
+        return ResponseEntity.ok(applysService.svcExamHistorySorted(userSeq, sort));
+    }
+
     //유저 응시 시험 세부 결과 - 경준
     @GetMapping("/apply-history/{userSeq}/{examSeq}")
     public ResponseEntity<MemberExamHistoryDetailDTO> ctlGetExamResult(
