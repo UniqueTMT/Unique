@@ -37,7 +37,5 @@ out/
 .vscode/
 
 # 민감 정보 보호
+.env
 src/main/resources/application.properties
-
-##Intellij properties
-application.properties

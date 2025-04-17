@@ -96,7 +96,7 @@ public class MemberExamHistoryDetailServiceImpl {
                 entity.getQuizSeq(),
                 entity.getExam().getExamSeq(),
                 entity.getQuiz(),
-                entity.getObjYn() != null ? entity.getObjYn().charAt(0) : null,
+                entity.getObjYn() != null ? String.valueOf(entity.getObjYn().charAt(0)) : null,
                 entity.getObj1(),
                 entity.getObj2(),
                 entity.getObj3(),

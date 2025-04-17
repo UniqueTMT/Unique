@@ -4,6 +4,7 @@ import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
 import com.unique.entity.answer.AnswerEntity;
 import com.unique.impl.answer.AnswerServiceImpl;
+import com.unique.kafka.AnswerConfirmDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +41,10 @@ public class AnswerRestController {
         answerService.svcCreateAnswer(answer);
     }
 
-    @PutMapping("/answers")
-    public void ctlUpdateAnswer(@RequestBody AnswerEntity answer) {
-        answerService.svcUpdateAnswer(answer);
+    @PutMapping("/grade/confirm")
+    public ResponseEntity<String> confirmGrading(@RequestBody AnswerConfirmDTO dto) {
+        answerService.confirmGrading(dto);
+        return ResponseEntity.ok("교수 2차 채점 완료");
     }
 
     @DeleteMapping("/answers/{userid}")
