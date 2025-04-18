@@ -59,8 +59,10 @@ public class ApplysRestController {
         HashMap<String, List<MemberExamHistoryDTO>> map = new HashMap<>();
         map.put("ds1",applysService.myFindAllExamHistory(userSeq));
         return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
                 .body(map);
     }
+
 
     /*
      * function : 유저 응시 시험 리스트 결과 (정렬)
