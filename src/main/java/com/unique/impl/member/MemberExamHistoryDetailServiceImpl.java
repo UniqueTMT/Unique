@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,9 @@ public class MemberExamHistoryDetailServiceImpl {
         // 4. DTO 변환
         return convertToDTO(applysEntity, quizList, answerList);
     }
+
+
+
 
     private MemberExamHistoryDetailDTO convertToDTO(
             ApplysEntity applys,
@@ -79,7 +83,7 @@ public class MemberExamHistoryDetailServiceImpl {
                 .collect(Collectors.toMap(QuizEntity::getQuizSeq, QuizEntity::getCorrectScore));
 
         int obtainedScore = answerList.stream()
-                .filter(ans -> "1".equals(ans.getAnswerYn()))
+                .filter(ans -> "Y".equals(ans.getAnswerYn()))
                 .mapToInt(ans -> scoreMap.getOrDefault(ans.getQuiz().getQuizSeq(), 0))
                 .sum();
 
@@ -129,5 +133,40 @@ public class MemberExamHistoryDetailServiceImpl {
             .build();
     }
 
+    public MemberExamHistoryDetailDTO svcGetExamResultWrongAnswers(Long userSeq, Long examSeq) {
+        // 1. 기본 정보 조회 (컬렉션 제외)
+        ApplysEntity applysEntity = memberExamHistoryDetailRepository.findApplysWithExamAndMember(userSeq, examSeq);
+        if (applysEntity == null) throw new RuntimeException("응시 기록 없음");
+
+        // 2. 문제 목록 조회 (별도 쿼리)
+        List<QuizEntity> quizList = memberExamHistoryDetailRepository.findQuizzesByExamSeq(examSeq);
+
+        // 3. 답변 목록 조회 (별도 쿼리)
+        List<AnswerEntity> wrongAnswerList = memberExamHistoryDetailRepository.findWrongAnswersByApplysSeq(applysEntity.getApplysSeq());
+
+        // 4. DTO 변환
+        return convertToWrongAnswerDTO(applysEntity, quizList, wrongAnswerList);
+    }
+
+    private MemberExamHistoryDetailDTO convertToWrongAnswerDTO(
+            ApplysEntity applys,
+            List<QuizEntity> allQuizList,
+            List<AnswerEntity> wrongAnswerList
+    ) {
+        // 1. 오답 문제의 quizSeq 추출
+        Set<Long> wrongQuizSeqs = wrongAnswerList.stream()
+                .map(answer -> answer.getQuiz().getQuizSeq())
+                .collect(Collectors.toSet());
+
+        // 2. 전체 문제 중 오답 문제만 필터링
+        List<QuizEntity> wrongQuizList = allQuizList.stream()
+                .filter(quiz -> wrongQuizSeqs.contains(quiz.getQuizSeq()))
+                .collect(Collectors.toList());
+
+        // 3. DTO 변환 (오답 문제 + 오답 답변)
+        MemberExamHistoryDetailDTO dto = convertToDTO(applys, wrongQuizList, wrongAnswerList);
+
+        return dto;
+    }
 
 }
