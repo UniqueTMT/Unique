@@ -52,4 +52,15 @@ public interface MemberExamHistoryDetailRepository extends JpaRepository<ApplysE
 
 
 
+    // 4차 쿼리: 오답만 조회
+    @Query("""
+        SELECT ans 
+        FROM AnswerEntity ans 
+        WHERE ans.applys.applysSeq = :applysSeq 
+        AND ans.answerYn = 'N' 
+        ORDER BY ans.quiz.quizSeq
+    """)
+    List<AnswerEntity> findWrongAnswersByApplysSeq(@Param("applysSeq") Long applysSeq);
+
+
 }

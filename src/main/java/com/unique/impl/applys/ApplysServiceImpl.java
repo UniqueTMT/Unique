@@ -79,20 +79,21 @@ public class ApplysServiceImpl implements ApplysService {
                 .mapToInt(ans -> ans.getQuiz().getCorrectScore())
                 .sum();
 
-        return new MemberExamHistoryDTO(
-                applys.getExam().getExamSeq(),
-                applys.getExam().getSubjectCode(),
-                applys.getExam().getSubjectName(),
-                applys.getExam().getExamTitle(),
-                applys.getMember().getUserSeq(),
-                applys.getExam().getMember().getUsername(),
-                applys.getMember().getUserid(),
-                applys.getMember().getUsername(),
-                applys.getApplysSeq(),
-                totalScore,
-                obtainedScore,
-                applys.getRegdate()
-        );
+        return MemberExamHistoryDTO.builder()
+                .examSeq(applys.getExam().getExamSeq())
+                .subjectCode(applys.getExam().getSubjectCode())
+                .subjectName(applys.getExam().getSubjectName())
+                .examTitle(applys.getExam().getExamTitle())
+                .userSeq(applys.getMember().getUserSeq())
+                .creatorName(applys.getExam().getMember().getUsername())
+                .userid(applys.getMember().getUserid())
+                .userName(applys.getMember().getUsername())
+                .applysSeq(applys.getApplysSeq())
+                .totalScore(applys.getTotalScore())
+                .correctCount(applys.getCorrectCount())
+                .wrongCount(applys.getWrongCount())
+                .regdate(applys.getRegdate())
+                .build();
     }
 
 

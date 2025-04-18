@@ -2,6 +2,8 @@ package com.unique.repository.answer;
 
 import com.unique.entity.answer.AnswerEntity;
 import java.util.Optional;
+
+import com.unique.entity.applys.ApplysEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,9 +34,35 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
     })
     @Query("SELECT a FROM AnswerEntity a")
     List<AnswerEntity> findGetAllMembersAnswers();
-
+    
 
     // 응시 답안 제출 -> 저장 -> 채점
     Optional<AnswerEntity> findByApplys_ApplysSeqAndQuiz_QuizSeq(Long applysSeq, Long quizSeq);
 
+    
+    /*
+    * function : 응시 기록 (Applys) 으로 답안 조회
+    * author : 차경준
+    * regdate : 25.04.15
+    * */
+    List<AnswerEntity> findByApplys(ApplysEntity applys);
+
+    /*
+     * function : 응시 기록 및 답안 조회
+     * author : 차경준
+     * regdate : 25.04.15
+     * */
+    @Query("SELECT a FROM AnswerEntity a JOIN FETCH a.quiz WHERE a.applys = :applys")
+    List<AnswerEntity> findByApplysWithQuiz(@Param("applys") ApplysEntity applys);
+
+    /*
+     * function : 응시 기록, 답안 조회
+     * author : 차경준
+     * regdate : 25.04.15
+     * */
+    @Query("SELECT a FROM AnswerEntity a WHERE a.applys = :applys AND a.quiz.quizSeq = :quizSeq")
+    Optional<AnswerEntity> findByApplysAndQuizSeq(
+            @Param("applys") ApplysEntity applys,
+            @Param("quizSeq") Long quizSeq
+    );
 }
