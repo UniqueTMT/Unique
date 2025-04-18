@@ -14,6 +14,33 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
+    /**
+     * 사용자 이름과 이메일을 기반으로 userId(학번)를 조회하고 마스킹 처리하여 반환
+     * <p>
+     * 예시: userId가 "20140293"일 경우 → "20****93"으로 반환
+     * </p>
+     *
+     * @param username 사용자 이름
+     * @param email 사용자 이메일
+     * @return 마스킹된 userId 문자열, 일치하는 사용자가 없으면 null
+     */
+    @Override
+    public String svcFindUserIdByInfo(String username, String email) {
+        Optional<MemberEntity> memberEntity = memberRepository.findByUsernameAndEmail(username, email);
+
+        if (memberEntity.isEmpty()) return null;
+
+        Long userId = memberEntity.get().getUserid();   // DB에서 조회한 사용자 학번
+        String idStr = String.valueOf(userId);          // 마스킹 처리를 위한 타입변환
+
+        if (idStr.length() >= 6) {
+            return idStr.substring(0, 2) + "****" + idStr.substring(idStr.length() - 2);
+        } else {
+            return "****"; // 너무 짧은 ID인 경우 최소한의 보호 처리
+        }
+    }
+
+
     public List<MemberEntity> svcMemberList() {
         return memberRepository.findAll();
     }

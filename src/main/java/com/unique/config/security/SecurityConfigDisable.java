@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * [Config]
  * - 설명 : REST API 방식 로그인 환경을 위한 Spring Security 설정 클래스
  * - 특징 : formLogin()을 비활성화하고, JSON 요청 기반으로 로그인 처리
- * - 사용시기 : exBuilder6, React 등 프론트에서 REST 방식으로 로그인 구현할 때 사용
+ * - 사용시기 : exBuilder6, React 등 프론트에서 REST 방식으로 로그인 구현할 때 사용함.
  */
 //@Configuration      // 스프링 설정 클래스로 등록
 @EnableWebSecurity  // Spring Security 활성화
