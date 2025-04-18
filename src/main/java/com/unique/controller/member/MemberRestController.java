@@ -1,5 +1,6 @@
 package com.unique.controller.member;
 
+import com.unique.dto.member.FindPwRequestDTO;
 import com.unique.dto.member.MemberInfoDTO;
 import com.unique.dto.member.FindIdRequestDTO;
 import com.unique.impl.member.MemberServiceImpl;
@@ -78,6 +79,36 @@ public class MemberRestController {
 
         return ResponseEntity.ok("회원님의 아이디는 " + maskUserId + " 입니다.");
     }
+
+    /**
+     * [POST] /api/member/find-password
+     * <p>
+     * 설명 : 학번(userId), 이름(username), 이메일(email)을 입력받아 해당 회원 정보가 일치할 경우
+     *         무작위 임시 비밀번호를 생성하여 회원 이메일로 전송하고, DB의 비밀번호를 임시 비밀번호로 업데이트한다.
+     *         성공 시 "임시 비밀번호가 이메일로 전송되었습니다." 메시지 반환.
+     * </p>
+     *
+     * @param request FindPwRequestDTO 객체 (userId, username, email)
+     * @return ResponseEntity<String> 결과 메시지
+     */
+    @PostMapping("/find-password")
+    public ResponseEntity<String> ctlFindPassword(@RequestBody FindPwRequestDTO request) {
+
+        try {
+            boolean success = memberService.svcFindAndResetPassword(request.getUserId(), request.getUsername(), request.getEmail());
+
+            if (success) {
+                return ResponseEntity.ok("임시 비밀번호가 회원님의 이메일로 전송되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("임시 비밀번호 재설정에 실패하였습니다.");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
 
 //    @GetMapping("/member")
 //    public ResponseEntity<List<MemberEntity>> ctlMemberList() {
