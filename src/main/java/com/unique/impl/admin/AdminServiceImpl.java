@@ -1,7 +1,7 @@
 package com.unique.impl.admin;
 
 import com.unique.dto.admin.*;
-import com.unique.repository.admin.AdminRepository;
+import com.unique.repository.admin.*;
 import com.unique.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,42 +12,66 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-    private final AdminRepository adminRepository;
+    private final AdminExamStatsRepository examStatsRepo;
+    private final AdminExamMonthlyStatsRepository examMonthlyRepo;
+    private final AdminRecentExamRepository recentExamRepo;
+    private final AdminRoomRepository roomRepo;
+    private final AdminMemberLogRepository logRepo;
 
-    // 1-1. 카테고리별 전체 시험 수
+    /**
+     * Repository를 통해 과목별 전체 시험 수를 조회하고 반환
+     * @return
+     */
     @Override
-    public List<AdminExamStatsDTO> getExamStatsByCategory() {
-        return adminRepository.getExamStatsByCategory();
+    public List<AdminExamStatsDTO> svcGetExamStatsByCategory() {
+        return examStatsRepo.getExamStatsByCategory();
     }
 
-    // 1-2. 월별 시험 응시 추이
+    /**
+     * Repository를 통해 월별 응시 추이를 조회하고 반환
+     * @return
+     */
     @Override
-    public List<AdminExamMonthlyStatsDTO> getMonthlyApplyStats() {
-        return adminRepository.getMonthlyApplyStats();
+    public List<AdminExamMonthDTO> svcGetMonthlyApplyStats() {
+        return examMonthlyRepo.getMonthlyApplyStats();
     }
 
-    // 1-3. 최근 시험 목록
+    /**
+     * Repository를 통해 최근 생성된 시험 목록을 조회하고 반환
+     * @return
+     */
     @Override
-    public List<AdminRecentExamDTO> getRecentExams() {
-        return adminRepository.getRecentExams();
+    public List<AdminRecentExamDTO> svcGetRecentExams() {
+        return recentExamRepo.getRecentExams();
     }
 
-    // 2-1. 진행 중인 시험방 수
+    /**
+     * Repository를 통해 진행 중인 시험방 수를 조회하고 DTO로 포장하여 반환
+     * @return
+     */
     @Override
-    public AdminRoomCountDTO getRunningRoomCount() {
-        Long count = adminRepository.getRunningRoomCount();
+    public AdminRoomCountDTO svcGetRunningRoomCount() {
+        Long count = roomRepo.getRunningRoomCount();
         return new AdminRoomCountDTO(count);
     }
 
-    // 2-2. 시험방 목록
+    /**
+     * Repository를 통해 전체 시험방 목록을 조회하고 반환
+     * @return
+     */
     @Override
-    public List<AdminRoomDTO> getRoomList() {
-        return adminRepository.getRoomList();
+    public List<AdminRoomDTO> svcGetRoomList() {
+        return roomRepo.getRoomList();
     }
 
-    // 3. 회원 접속 로그
+    /**
+     * Repository를 통해 회원 접속 로그를 최신순으로 조회하고 반환
+     * @return
+     */
     @Override
-    public List<AdminUserLogDTO> getUserLogs() {
-        return adminRepository.getUserLogs();
+    public List<AdminUserLogDTO> svcGetUserLogs() {
+        return logRepo.getUserLogs();
     }
+
+
 }
