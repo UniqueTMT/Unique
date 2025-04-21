@@ -75,6 +75,7 @@ public class AdminRestController {
         return adminService.getRecentExams();
     }
 
+
     // 2-1. 진행 중인 시험방 수
     @GetMapping("/rooms/active-count")
     @Operation(summary = "진행 중인 시험방 수", description = "현재 진행 중인 시험방의 개수를 조회합니다.")
