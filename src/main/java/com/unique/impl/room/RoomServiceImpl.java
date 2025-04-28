@@ -1,10 +1,14 @@
 package com.unique.impl.room;
 
+import com.unique.dto.exam.ExamDTO;
+import com.unique.dto.quiz.QuizDTO;
+import com.unique.dto.room.OpenRoomDTO;
 import com.unique.dto.room.RoomDTO;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.entity.member.MemberEntity;
 import com.unique.entity.room.RoomEntity;
+import com.unique.repository.exam.ExamRepository;
 import com.unique.repository.room.RoomRepository;
 import com.unique.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
-    private final ModelMapper modelMapper;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public Optional<RoomEntity> svcRoomDetail(Long id) {
@@ -96,12 +99,35 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.deleteById(id);
     }
 
-    //시험 방 관리
-    public List<RoomDTO> findRoomWithExams() {
-        return roomRepository.findRoomWithExam().stream()
-            .map(room -> modelMapper.map(room, RoomDTO.class))
+    // 열려있는 시험 전체 조회
+    public List<OpenRoomDTO> findActiveRooms() {
+        return roomRepository.findAllActiveRooms().stream()
+            .map(room -> {
+                OpenRoomDTO dto = new OpenRoomDTO();
+
+                dto.setRoomSeq(room.getRoomSeq());
+                dto.setRoomName(room.getRoomName());
+                dto.setStartTime(room.getStartTime());
+                dto.setLimitCnt(room.getLimitCnt());
+                dto.setLimitTime(room.getLimitTime());
+                dto.setHasPassword(
+                    (room.getRoomPw() != null && !room.getRoomPw().isEmpty()) ? "Y" : "N");
+                dto.setPassword(room.getRoomPw());
+
+                // category, creatorNickname
+                if (room.getExam() != null) {
+                    dto.setCategory(room.getExam().getSubjectName());
+
+                    if (room.getExam().getMember() != null) {
+                        dto.setCreatorNickname(room.getExam().getMember().getNickname());
+                    }
+                }
+
+                return dto;
+            })
             .collect(Collectors.toList());
     }
+
 
     //시험 방 관리 - 정렬
     @Override

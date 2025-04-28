@@ -4,6 +4,7 @@ import com.unique.dto.answer.AnswerDetailDTO;
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.exam.CategoryQuizCountDTO;
 
+import com.unique.entity.exam.ExamEntity;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,7 @@ public interface ExamService {
 
     //문제은행 카테고리별 시험지 상세 보기
     List<ExamDTO> svcFindExamWithQuizList();
+
+    // 유저가 생성한 시험지 조회
+    List<ExamEntity> getSubjectListByLoginUser(Long userSeq);
 }

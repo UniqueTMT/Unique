@@ -33,5 +33,9 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
             "GROUP BY e.subjectName, e.subjectCode")
     List<CategoryQuizCountDTO> findQuizCountGroupedByCategory();
 
+    // 유저가 생성한 시험지 조회
+    @Query("SELECT e FROM ExamEntity e WHERE e.member.userSeq = :userSeq")
+    List<ExamEntity> findByUserSeq(Long userSeq);
+
 
 }

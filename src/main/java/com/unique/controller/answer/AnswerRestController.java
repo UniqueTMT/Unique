@@ -57,6 +57,7 @@ public class AnswerRestController {
 //    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
 //        return ResponseEntity.ok(answerService.findAnswerWithApplysMemberAndQuiz());
 //    }
+    // 이거 시험관리 -> 시험 클릭 -> 상세 시험 map으로 감싸라 혹시 안 하고 병합하면 지워도된다.
     @GetMapping("/memberlist")
     public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
         List<AnswerDTO> result = answerService.svcGetAllMembersAnswers();

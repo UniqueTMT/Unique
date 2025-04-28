@@ -1,9 +1,12 @@
 package com.unique.controller.room;
 import com.unique.dto.answer.AnswerDTO;
+import com.unique.dto.room.OpenRoomDTO;
 import com.unique.dto.room.RoomDTO;
 import com.unique.entity.room.RoomEntity;
 import com.unique.impl.room.RoomServiceImpl;
 import com.unique.service.answer.AnswerService;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +29,17 @@ public class RoomRestController {
 
     //전체 시험 방 조회
     @GetMapping("/list")
-    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
-        return ResponseEntity.ok(roomService.findRoomWithExams());
-    }
+    public ResponseEntity<Map<String, Object>> ctlFindAll() {
 
+        List<OpenRoomDTO> list = roomService.findActiveRooms();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("examList_msm", list);
+
+        return ResponseEntity.ok(result);
+    }
     // 시험방 생성
-    @PostMapping("/room")
+    @PostMapping("/create")
     public ResponseEntity<Long> ctlRoomInsert(@RequestBody RoomDTO roomDTO) {
 //        Long userSeq = getCurrentUserSeq(); //로그인 유저 ID 가져오기
         Long roomSeq = roomService.svcRoomInsert(roomDTO, 1L);     // 일단 테스트용으로 1번 유저로 하드코딩
