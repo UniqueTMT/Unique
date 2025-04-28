@@ -25,5 +25,5 @@ public interface MemberService {
     Optional<MemberInfoDTO> svcGetMemberInfo(Long id);
     
     // 유저 비밀번호 변경 - 경준
-    boolean svcChangePassword(Long userSeq,String oldPassword,String newPassword);
+    boolean svcChangePassword(Long userSeq,Long userid, String oldPassword,String newPassword);
 }

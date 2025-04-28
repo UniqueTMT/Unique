@@ -18,6 +18,7 @@ public class AppealDTO {
     private Long subjectSeq; // 과목 시퀀스
     private String subjectName; // 과목 이름
     private String examTitle; // 시험 제목
+    private Long userid; //유저 학번
     private Long userSeq; // 유저 시퀀스
     private String username; // 학생명
     private Long creatorSeq; //교수시퀀스
