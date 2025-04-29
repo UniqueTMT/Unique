@@ -2,6 +2,7 @@ package com.unique.impl.answer;
 
 import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
+import com.unique.dto.answer.StudentExamResultDTO;
 import com.unique.kafka.*;
 import com.unique.entity.answer.AnswerEntity;
 import com.unique.entity.applys.ApplysEntity;
@@ -56,6 +57,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     //임의의 학생 시험 결과 확인
+    @Override
+    public List<StudentExamResultDTO> svcFindStudentExamResultsByUserid(Long userid) {
+        return answerRepository.findStudentExamResultsByUserid(userid);
+    }
+
     public List<AnswerDetailDTO> svcFindSelectedStudentResult(Long userid) {
         return answerRepository.findSelectedStudentResult(userid).stream()
                 .map(answer -> modelMapper.map(answer, AnswerDetailDTO.class))
