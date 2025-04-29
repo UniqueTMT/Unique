@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gpt")
@@ -39,7 +41,7 @@ public class GptQuestionController {
     private final int APPROX_CHARS_PER_TOKEN = 2;
 
     @PostMapping(value = "/generate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> ctlGenerateQuestionsWithTemplate(
+    public ResponseEntity<Map<String, Object>> ctlGenerateQuestionsWithTemplate(
             @RequestPart("pdf") MultipartFile pdfFile,
             @RequestParam("category") String category,
             @RequestParam("chapter") String chapter,
@@ -86,6 +88,17 @@ public class GptQuestionController {
         quizRepository.saveAll(quizList);
 
         // 8. 응답 반환
-        return ResponseEntity.ok("문제 생성 및 저장 완료. 시험번호: " + exam.getExamSeq());
+//        return ResponseEntity.ok("문제 생성 및 저장 완료. 시험번호: " + exam.getExamSeq());
+        // ✅ 응답 데이터 구성
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "문제 생성 및 저장 완료");
+        result.put("examSeq", exam.getExamSeq());
+        result.put("examTitle", exam.getExamTitle());
+        result.put("quizList", quizList); // JSON 직렬화에 문제가 없도록 DTO 변환 권장
+
+        return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
+                .body(result);
+
     }
 }

@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +21,18 @@ public class RoomRestController {
     private final AnswerService answerService;
 
     // 특정 시험방 + 특정 시험지 정보 한번에 조회
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
+//        return ResponseEntity.ok(roomService.svcRoomDetail(id));
+//    }
+//
+//    //전체 시험 방 조회
+//    @GetMapping("/list")
+//    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
+//        return ResponseEntity.ok(roomService.findRoomWithExams());
+//    }
+
+    // 특정 시험방 + 특정 시험지 정보 한번에 조회
     @GetMapping("/{id}")
     public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
         return ResponseEntity.ok(roomService.svcRoomDetail(id));
@@ -26,8 +40,15 @@ public class RoomRestController {
 
     //전체 시험 방 조회
     @GetMapping("/list")
-    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
-        return ResponseEntity.ok(roomService.findRoomWithExams());
+    public ResponseEntity<Map<String, List<RoomDTO>>> ctlFindAll() {
+        List<RoomDTO> roomList = roomService.findRoomWithExams();
+
+        Map<String, List<RoomDTO>> map = new HashMap<>();
+        map.put("dmRoomInfo", roomList); // "dsRoomList"는 eXBuilder6 DataSet 이름과 일치시켜야 함
+
+        return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
+                .body(map);
     }
 
     // 시험방 생성

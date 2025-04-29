@@ -6,21 +6,39 @@ import java.util.List;
 
 public interface AdminService {
 
-    // 1-1. 카테고리별 전체 시험 수 조회
-    List<AdminExamStatsDTO> getExamStatsByCategory();
+    /**
+     * 카테고리별 전체 시험 수 조회
+     * @return List of AdminExamStatsDTO
+     */
+    List<AdminExamStatsDTO> svcGetExamStatsByCategory();
 
-    // 1-2. 카테고리별 월 기준 시험 응시 추이
-    List<AdminExamMonthlyStatsDTO> getMonthlyApplyStats();
+    /**
+     * 카테고리별 월별 시험 응시 추이 조회
+     * @return List of AdminExamMonthDTO
+     */
+    List<AdminExamMonthDTO> svcGetMonthlyApplyStats();
 
-    // 1-3. 최근 생성된 시험 목록
-    List<AdminRecentExamDTO> getRecentExams();
+    /**
+     * 최근 생성된 시험 목록 조회
+     * @return List of AdminRecentExamDTO
+     */
+    List<AdminRecentExamDTO> svcGetRecentExams();
 
-    // 2-1. 진행 중인 시험방 수
-    AdminRoomCountDTO getRunningRoomCount();
+    /**
+     * 현재 진행 중인 시험방 수 조회
+     * @return AdminRoomCountDTO
+     */
+    AdminRoomCountDTO svcGetRunningRoomCount();
 
-    // 2-2. 시험방 목록 조회
-    List<AdminRoomDTO> getRoomList();
+    /**
+     * 시험방 목록 조회
+     * @return List of AdminRoomDTO
+     */
+    List<AdminRoomDTO> svcGetRoomList();
 
-    // 3. 회원 접속 로그 조회
-    List<AdminUserLogDTO> getUserLogs();
+    /**
+     * 회원 접속 로그 조회
+     * @return List of AdminUserLogDTO
+     */
+    List<AdminUserLogDTO> svcGetUserLogs();
 }
