@@ -41,7 +41,7 @@ public class GptQuestionController {
     private final int APPROX_CHARS_PER_TOKEN = 2;
 
     @PostMapping(value = "/generate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> ctlGenerateQuestionsWithTemplate(
+    public ResponseEntity<Map<String, Object>> ctlGenerateQuestionsWithTemplate(
             @RequestPart("pdf") MultipartFile pdfFile,
             @RequestParam("category") String category,
             @RequestParam("chapter") String chapter,
