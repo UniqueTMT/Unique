@@ -35,7 +35,7 @@ import java.util.List;
  * </ul>
  * </p>
  */
-//@Configuration      // 스프링 설정 클래스로 등록
+@Configuration      // 스프링 설정 클래스로 등록
 @EnableWebSecurity  // Spring Security 활성화
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true) // @PreAuthorize, @Secured 등 메서드 단위 권한 부여 허용
 @RequiredArgsConstructor
@@ -49,9 +49,9 @@ public class SecurityConfigDisable {
 
 
     /**
-     * CORS 설정 소스.
+     * eXBuilder6 UI(로컬 개발 서버)에서 오는 AJAX 요청을 허용하는 CORS 설정
      * <p>
-     * ExBuilder6 개발 서버 또는 미리보기에서 띄운 UI 호스트(예: http://127.0.0.1:52194,
+     * eXBuilder6 개발 서버 또는 미리보기에서 띄운 UI 호스트(예: http://127.0.0.1:52194,
      * http://localhost:52194)에서 오는 AJAX 요청을 허용
      * </p>
      *
@@ -108,10 +108,22 @@ public class SecurityConfigDisable {
 
                 // 권한별 URL 접근 설정
                 .authorizeHttpRequests(auth -> auth
+                		
+                		// (1) 정적 리소스 및 클라이언트 화면: 항상 허용
+                        .requestMatchers(
+                            "/ui/**",           // .clx 파일
+                            "/resource/**",     // cleopatra.js, css, 이미지 등
+                            "/static/**",       // static 디렉터리 (필요시)
+                            "/favicon.ico",      // 파비콘
+                            "/error"              // <-- 여기에 추가
+                        ).permitAll()
+                        
                         // 프리플라이트 요청 허용
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
+                        
                         .requestMatchers("/api/member/login").permitAll()         // 로그인 API는 누구나 접근 가능
+                        .requestMatchers("/api/member/find-id").permitAll()       
+                        .requestMatchers("/api/member//find-password").permitAll()
                         .requestMatchers("/api/member/route").authenticated()     // 로그인 후 권한 분기 (인증된 사용자만)
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
