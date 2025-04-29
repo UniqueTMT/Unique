@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,8 +20,16 @@ public class ExamRestController {
     private final ExamServiceImpl examService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<AnswerDetailDTO>> ctlFindAll() {
-        return ResponseEntity.ok(examService.svcFindAll());
+//    public ResponseEntity<List<AnswerDetailDTO>> ctlFindAll() {
+//        return ResponseEntity.ok(examService.svcFindAll());
+//    }
+    public ResponseEntity<Map<String, List<AnswerDetailDTO>>> ctlFindAll() {
+        List<AnswerDetailDTO> list = examService.svcFindAll();
+
+        Map<String, List<AnswerDetailDTO>> resultMap = new HashMap<>();
+        resultMap.put("subRoomList", list); // 원하는 키값으로 변경 가능
+
+        return ResponseEntity.ok(resultMap);
     }
 
     @GetMapping("/{userid}")
@@ -43,20 +53,41 @@ public class ExamRestController {
     }
 
     //문제은행 리스트업
-//    @GetMapping("/quizbank/list")
-//    public ResponseEntity<List<SubjectSummary>> ctlFindGroupedSubjects() {
-//        return ResponseEntity.ok(examService.svcFindGroupedSubjects());
+//    @GetMapping("/quizbank-list")
+//    public ResponseEntity<List<CategoryQuizCountDTO>> ctlGetQuizCountByCategory() {
+//        return ResponseEntity.ok(examService.svcGetQuizCountByCategory());
 //    }
+//
+//    //문제은행 카테고리별 시험지 상세 보기
+//    @GetMapping("/quizbank-detail")
+//    public ResponseEntity<List<ExamDTO>> ctlFindExamWithQuizList() {
+//        return ResponseEntity.ok(examService.svcFindExamWithQuizList());
+//    }
+
+    //문제은행 리스트업
     @GetMapping("/quizbank-list")
-    public ResponseEntity<List<CategoryQuizCountDTO>> ctlGetQuizCountByCategory() {
-        return ResponseEntity.ok(examService.svcGetQuizCountByCategory());
+    public ResponseEntity<Map<String, List<CategoryQuizCountDTO>>> ctlGetQuizCountByCategory() {
+        List<CategoryQuizCountDTO> quizCountList = examService.svcGetQuizCountByCategory();
+
+        Map<String, List<CategoryQuizCountDTO>> map = new HashMap<>();
+        map.put("dsQuizCount", quizCountList); // eXbuilder6에서 바인딩할 키 이름
+
+        return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
+                .body(map);
     }
+
 
     //문제은행 카테고리별 시험지 상세 보기
     @GetMapping("/quizbank-detail")
-    public ResponseEntity<List<ExamDTO>> ctlFindExamWithQuizList() {
-        return ResponseEntity.ok(examService.svcFindExamWithQuizList());
+    public ResponseEntity<Map<String, List<ExamDTO>>> ctlFindExamWithQuizList() {
+        List<ExamDTO> examList = examService.svcFindExamWithQuizList();
+
+        Map<String, List<ExamDTO>> map = new HashMap<>();
+        map.put("dsQuizBankList", examList); // 원하는 alias로 지정
+
+        return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
+                .body(map);
     }
-
-
 }
