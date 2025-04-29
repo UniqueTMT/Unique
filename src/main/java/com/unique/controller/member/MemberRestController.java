@@ -1,8 +1,6 @@
 package com.unique.controller.member;
 
-import com.unique.dto.member.FindPwRequestDTO;
-import com.unique.dto.member.MemberInfoDTO;
-import com.unique.dto.member.FindIdRequestDTO;
+import com.unique.dto.member.*;
 import com.unique.impl.member.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,9 +28,13 @@ public class MemberRestController {
      * @return 권한에 맞게 페이지 이동
      */
     @GetMapping("/route")
-    public ResponseEntity<String> ctlRouteByRole(Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> ctlRouteByRole(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("로그인 후 이용 가능합니다.");
+            return ResponseEntity.status(401)
+                    .body(Map.of(
+                            "dmRoute",
+                            Map.of("message", "로그인 후 이용 가능합니다.", "roles", "[]")
+                    ));
         }
 
         String userId = authentication.getName(); // 로그인한 사용자 ID
@@ -41,23 +44,33 @@ public class MemberRestController {
 
         String message;
 
+        System.out.println("로그인 사용자 : " + userId);
+        System.out.println("로그인 사용자의 권한 : " + roles);
+
         if (roles.contains("ROLE_ADMIN")) {
             message = "관리자 페이지로 이동";
         } else if (roles.contains("ROLE_PROFESSOR") || roles.contains("ROLE_STUDENT")) {
             message = "사용자 페이지로 이동";
         } else {
-            return ResponseEntity.status(403).body(Map.of(
+            Map<String,Object> payload = Map.of(
                     "userId", userId,
                     "roles", roles,
                     "message", "권한이 없습니다."
-            ).toString());
+            );
+
+            return ResponseEntity.status(403).body(Map.of("dmRoute", payload));
         }
 
-        return ResponseEntity.ok(Map.of(
+        Map<String, Object> dmRoutePayload = Map.of(
                 "userId", userId,
                 "roles", roles,
                 "message", message
-        ).toString());
+        );
+
+        Map<String, Object> responseBody = Map.of("dmRoute", dmRoutePayload);
+        System.out.println("responseBody : " + responseBody);
+
+        return ResponseEntity.ok(responseBody);
     }
 
     /**
@@ -69,16 +82,48 @@ public class MemberRestController {
      * @return ResponseEntity<String> 마스킹된 userId 또는 오류 메시지
      */
     @PostMapping("/find-id")
-    public ResponseEntity<String> ctlFindUserId(@RequestBody FindIdRequestDTO request) {
-        String maskUserId = memberService.svcFindUserIdByInfo(request.getUsername(), request.getEmail());
+    public ResponseEntity<Map<String,Object>> ctlFindUserId(@RequestBody FindIdRequestWrapper wrapper){
 
-        if (maskUserId == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("일치하는 정보가 없습니다.");
+        // 래퍼에서 실제 DTO 꺼내기
+        FindIdRequestDTO req = wrapper.getData().getDmFindId();
+        String username = req.getUsername();
+        String email    = req.getEmail();
+
+        System.out.println("username" + username);
+        System.out.println("email" + email);
+
+        // null 체크
+        if (username == null || email == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("dmFindId",
+                            Map.of("message","이름과 이메일을 모두 입력하세요.")));
         }
 
-        return ResponseEntity.ok("회원님의 아이디는 " + maskUserId + " 입니다.");
+        // 서비스 호출
+        String mask = memberService.svcFindUserIdByInfo(username, email);
+
+        Map<String,String> payload = new HashMap<>();
+        if (mask != null) {
+            payload.put("userId",   mask);
+            payload.put("message", "아이디 조회 성공");
+        } else {
+            payload.put("message","일치하는 정보가 없습니다.");
+        }
+
+        return ResponseEntity.ok(Map.of("dmFindId", payload));
     }
+
+//    @PostMapping("/find-id")
+//    public ResponseEntity<String> ctlFindUserId(@RequestBody FindIdRequestDTO request) {
+//        String maskUserId = memberService.svcFindUserIdByInfo(request.getUsername(), request.getEmail());
+//
+//        if (maskUserId == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("일치하는 정보가 없습니다.");
+//        }
+//
+//        return ResponseEntity.ok("회원님의 아이디는 " + maskUserId + " 입니다.");
+//    }
 
     /**
      * [POST] /api/member/find-password
@@ -92,20 +137,48 @@ public class MemberRestController {
      * @return ResponseEntity<String> 결과 메시지
      */
     @PostMapping("/find-password")
-    public ResponseEntity<String> ctlFindPassword(@RequestBody FindPwRequestDTO request) {
+    public ResponseEntity<Map<String,Object>> ctlFindPassword(
+            @RequestBody FindPwRequestWrapper wrapper) {
+
+        // (1) 래퍼에서 실제 DTO 꺼내기
+        FindPwRequestDTO req = wrapper.getData().getDmFindPw();
+        Long   userId   = req.getUserId();
+        String username = req.getUsername();
+        String email    = req.getEmail();
+
+        // (2) 필수값 체크
+        if (userId == null || username == null || email == null) {
+            return ResponseEntity
+                    .badRequest()
+                    // ★ ★ 최상위 키를 dmFindPw 로!
+                    .body(Map.of("dmFindPw",
+                            Map.of("message", "학번·이름·이메일을 모두 입력하세요.")
+                    ));
+        }
 
         try {
-            boolean success = memberService.svcFindAndResetPassword(request.getUserId(), request.getUsername(), request.getEmail());
+            // (3) 서비스 호출
+            boolean success = memberService.svcFindAndResetPassword(userId, username, email);
 
-            if (success) {
-                return ResponseEntity.ok("임시 비밀번호가 회원님의 이메일로 전송되었습니다.");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("임시 비밀번호 재설정에 실패하였습니다.");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
+            // (4) payload 구성 — 무조건 "message" 하나만
+            Map<String,String> payload = new HashMap<>();
+            payload.put("message",
+                    success
+                            ? "임시 비밀번호가 이메일로 전송되었습니다."
+                            : "임시 비밀번호 재설정에 실패했습니다."
+            );
+            System.out.println("payload : " + payload);
+            System.out.println("Map.of(\"dmFindPw\", payload) : " + Map.of("dmFindPw", payload));
+
+            // (5) 최종 JSON: { "dmFindPw": { "message": "..." } }
+            return ResponseEntity.ok(Map.of("dmFindPw", payload));
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("dmFindPw",
+                            Map.of("message", ex.getMessage())
+                    ));
         }
     }
 
@@ -170,48 +243,5 @@ public class MemberRestController {
         }
     }
 
-//    // [1] 로그인 - 이제무
-//    @PostMapping("/login")
-//    public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
-//        String testId = "20140293";
-//        String testPw = "111";
-//
-//        if (testId.equals(loginRequest.getUserId()) && testPw.equals(loginRequest.getPassword())) {
-//            return ResponseEntity.ok("로그인되었습니다.");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body("아이디와 비밀번호를 확인하세요");
-//        }
-//    }
-//
-//    // [2] 아이디 찾기 - 이제무
-//    @PostMapping("/find-id")
-//    public ResponseEntity<String> findId(@RequestBody FindIdRequestDTO request) {
-//        String testName = "아무개";
-//        String testEmail = "dd@dd.com";
-//        String testUserId = "20140293";
-//
-//        if (testName.equals(request.getName()) && testEmail.equals(request.getEmail())) {
-//            return ResponseEntity.ok("아이디는 " + testUserId + "입니다.");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("일치하는 정보가 없습니다.");
-//        }
-//    }
-//
-//    // [3] 비밀번호 찾기 - 이제무
-//    @PostMapping("/find-password")
-//    public ResponseEntity<String> findPassword(@RequestBody FindPwRequestDTO request) {
-//        String testUserId = "20140293";
-//        String testEmail = "dd@dd.com";
-//        String tempPw = "111";
-//
-//        if (testUserId.equals(request.getUserId()) && testEmail.equals(request.getEmail())) {
-//            return ResponseEntity.ok("임시 비밀번호는 " + tempPw + "입니다.");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("일치하는 정보가 없습니다.");
-//        }
-//    }
 
 }

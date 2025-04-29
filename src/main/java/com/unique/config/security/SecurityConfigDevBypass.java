@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 모든 요청을 통과시키지만, 브라우저 → 백엔드 간 AJAX 호출을 위해
  * 반드시 CORS 설정을 추가해야 합니다.</p>
  */
-@Configuration
+//@Configuration
 //@Configuration  // 실서비스 시에는 이 클래스가 아닌 SecurityConfigDisable 을 사용하세요
 @EnableWebSecurity
 public class SecurityConfigDevBypass implements WebMvcConfigurer {
