@@ -1,6 +1,7 @@
 package com.unique.repository.exam;
 
 import com.unique.dto.exam.CategoryQuizCountDTO;
+import com.unique.dto.answer.StudentExamResultDTO;
 import com.unique.entity.exam.ExamEntity;
 import jakarta.persistence.OrderBy;
 import org.hibernate.annotations.BatchSize;
