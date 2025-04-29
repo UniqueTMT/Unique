@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -58,25 +60,52 @@ public class AnswerRestController {
 //    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
 //        return ResponseEntity.ok(answerService.findAnswerWithApplysMemberAndQuiz());
 //    }
-    @GetMapping("/memberlist")
-    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
-        List<AnswerDTO> result = answerService.svcGetAllMembersAnswers();
-        return ResponseEntity.ok(result);
+//    @GetMapping("/memberlist")
+//    public ResponseEntity<List<AnswerDTO>> ctlGetAllMembersAnswers() {
+//        List<AnswerDTO> result = answerService.svcGetAllMembersAnswers();
+//        return ResponseEntity.ok(result);
+//    }
+//
+//    //임의의 학생 시험 결과 확인 userid = 20220293로 호출
+//    @GetMapping("/result/{userid}")
+//    public ResponseEntity<List<AnswerDetailDTO>> ctlFindSelectedStudentResult(@PathVariable Long userid) {
+//        List<AnswerDetailDTO> result = answerService.svcFindSelectedStudentResult(userid);
+//        return ResponseEntity.ok(result);
+//    }
+//
+//    @GetMapping("/student-results/{userid}")
+//    public ResponseEntity<List<StudentExamResultDTO>> ctlFindStudentExamResultsByUserid(
+//            @PathVariable Long userid
+//    ) {
+//        List<StudentExamResultDTO> result = answerService.svcFindStudentExamResultsByUserid(userid);
+//        return ResponseEntity.ok(result);
+//    }
+
+    @GetMapping("/result/memberlist")
+    public ResponseEntity<Map<String, Object>> ctlGetAllMembersAnswers() {
+        List<AnswerDTO> result = answerService.svcGetAllMembersAnswers(); // JOIN 결과 조회
+        Map<String, Object> map = new HashMap<>();
+        map.put("dsAnswer", result);
+        return ResponseEntity.ok(map);
     }
 
-    //임의의 학생 시험 결과 확인 userid = 20220293로 호출
+    //임의의 학생 시험 결과 확인 userid = 20251111로 호출
     @GetMapping("/result/{userid}")
-    public ResponseEntity<List<AnswerDetailDTO>> ctlFindSelectedStudentResult(@PathVariable Long userid) {
+    public ResponseEntity<Map<String, Object>> ctlFindSelectedStudentResult(@PathVariable("userid") Long userid) {
         List<AnswerDetailDTO> result = answerService.svcFindSelectedStudentResult(userid);
-        return ResponseEntity.ok(result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("dsAnswerList", result);
+        return ResponseEntity.ok(map);
     }
 
     @GetMapping("/student-results/{userid}")
-    public ResponseEntity<List<StudentExamResultDTO>> ctlFindStudentExamResultsByUserid(
-            @PathVariable Long userid
+    public ResponseEntity<Map<String, Object>> ctlFindStudentExamResultsByUserid(
+            @PathVariable("userid") Long userid
     ) {
         List<StudentExamResultDTO> result = answerService.svcFindStudentExamResultsByUserid(userid);
-        return ResponseEntity.ok(result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("dsStudentResult", result);
+        return ResponseEntity.ok(map);
     }
 
 }
