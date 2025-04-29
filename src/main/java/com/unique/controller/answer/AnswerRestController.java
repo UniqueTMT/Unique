@@ -2,6 +2,7 @@ package com.unique.controller.answer;
 
 import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
+import com.unique.dto.answer.StudentExamResultDTO;
 import com.unique.entity.answer.AnswerEntity;
 import com.unique.impl.answer.AnswerServiceImpl;
 import com.unique.kafka.AnswerConfirmDTO;
@@ -70,7 +71,13 @@ public class AnswerRestController {
         return ResponseEntity.ok(result);
     }
 
-
+    @GetMapping("/student-results/{userid}")
+    public ResponseEntity<List<StudentExamResultDTO>> ctlFindStudentExamResultsByUserid(
+            @PathVariable Long userid
+    ) {
+        List<StudentExamResultDTO> result = answerService.svcFindStudentExamResultsByUserid(userid);
+        return ResponseEntity.ok(result);
+    }
 
 }
 

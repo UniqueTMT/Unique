@@ -2,6 +2,7 @@ package com.unique.service.answer;
 
 import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
+import com.unique.dto.answer.StudentExamResultDTO;
 import com.unique.entity.answer.AnswerEntity;
 
 import com.unique.kafka.AnswerConfirmDTO;
@@ -18,6 +19,7 @@ public interface AnswerService {
     List<AnswerDTO> svcGetAllMembersAnswers();
 
     //임의의 학생 시험 결과 확인
+    List<StudentExamResultDTO> svcFindStudentExamResultsByUserid(Long userid);
     List<AnswerDetailDTO> svcFindSelectedStudentResult(Long userid);
 
     // 응시 답안 제출 -> 저장 -> 채점

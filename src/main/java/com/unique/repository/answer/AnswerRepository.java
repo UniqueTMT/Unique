@@ -1,8 +1,8 @@
 package com.unique.repository.answer;
 
+import com.unique.dto.answer.StudentExamResultDTO;
 import com.unique.entity.answer.AnswerEntity;
 import java.util.Optional;
-
 import com.unique.entity.applys.ApplysEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,7 +34,32 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
     })
     @Query("SELECT a FROM AnswerEntity a")
     List<AnswerEntity> findGetAllMembersAnswers();
-    
+
+    @EntityGraph(attributePaths = {
+            "applys",
+            "applys.member",
+            "quiz",
+            "quiz.exam",
+            "quiz.exam.room"
+    })
+    @Query("""
+    SELECT new com.unique.dto.answer.StudentExamResultDTO(
+        e.subjectName,
+        r.roomName,
+        a.professorScore,
+        m.userid,
+        m.username
+    )
+    FROM AnswerEntity a
+    JOIN a.applys ap
+    JOIN ap.member m
+    JOIN a.quiz q
+    JOIN q.exam e
+    JOIN e.room r
+    WHERE m.userid = :userid
+""")
+    List<StudentExamResultDTO> findStudentExamResultsByUserid(@Param("userid") Long userid);
+
 
     // 응시 답안 제출 -> 저장 -> 채점
     Optional<AnswerEntity> findByApplys_ApplysSeqAndQuiz_QuizSeq(Long applysSeq, Long quizSeq);
