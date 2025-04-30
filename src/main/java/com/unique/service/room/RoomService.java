@@ -21,4 +21,7 @@ public interface RoomService {
 
     // 제한시간 알림
     RoomDetailDTO getRoomDetail(Long roomSeq);
+
+    //전체 시험 방 조회
+    List<RoomDTO> findRoomWithExams();
 }

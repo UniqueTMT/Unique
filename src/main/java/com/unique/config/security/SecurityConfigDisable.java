@@ -64,7 +64,8 @@ public class SecurityConfigDisable {
         // 실제 브라우저 주소창에 찍히는 호스트:포트 명시
         cfg.setAllowedOriginPatterns(List.of(
             "http://127.0.0.1:52194",
-            "http://localhost:52194"
+            "http://localhost:52194",
+            "*"
         ));
         cfg.setAllowedHeaders(List.of(CorsConfiguration.ALL));
         // JSON 로그인 요청 및 기타 REST 호출, 프리플라이트(OPTIONS) 허용
@@ -126,9 +127,10 @@ public class SecurityConfigDisable {
                 .requestMatchers("/api/member//find-password").permitAll()
                 .requestMatchers("/api/member/route").authenticated()     // 로그인 후 권한 분기 (인증된 사용자만)
 
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
-                .requestMatchers("/api/**").hasAnyRole("STUDENT", "PROFESSOR")  // 유저 전용
-                .anyRequest().denyAll()                                     // 그 외 요청은 모두 제한
+//                .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
+//                .requestMatchers("/api/**").hasAnyRole("STUDENT", "PROFESSOR")  // 유저 전용
+//                .anyRequest().denyAll()                                     // 그 외 요청은 모두 제한
+                .anyRequest().permitAll()
             )
 
             // formLogin() 비활성화 : REST 방식에서는 리다이렉션 기반 로그인 사용하지 않기 때문

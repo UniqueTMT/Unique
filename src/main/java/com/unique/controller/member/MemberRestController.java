@@ -31,58 +31,52 @@ public class MemberRestController {
     @GetMapping("/route")
     public ResponseEntity<Map<String, Object>> ctlRouteByRole(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401)
-                .body(Map.of("dmRoute",
-                    Map.of("message", "로그인 후 이용 가능합니다.", "roles", "[]")));
+            System.out.println("인증되지 않은 사용자 요청");
+            return ResponseEntity.status(401).body(Map.of(
+                "dmRoute",
+                Map.of("message", "로그인 후 이용 가능합니다.", "roles", "[]")
+            ));
         }
 
-        String userIdStr = authentication.getName(); // 로그인한 사용자 학번 (String)
+        String userIdStr = authentication.getName();
+        System.out.println("로그인된 userId (String): " + userIdStr);
+
         Long userId;
         try {
-            userId = Long.parseLong(userIdStr); // 🔁 Long 변환
+            userId = Long.parseLong(userIdStr);
+            System.out.println("Long 변환된 userId: " + userId);
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest()
-                .body(Map.of("dmRoute", Map.of("message", "잘못된 사용자 ID입니다.")));
+            System.out.println("userId 변환 실패: " + userIdStr);
+            return ResponseEntity.badRequest().body(Map.of("dmRoute", Map.of("message", "잘못된 사용자 ID입니다.")));
         }
 
         List<String> roles = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .toList();
+        System.out.println("🔐 권한 목록: " + roles);
 
-        // 🔍 Member 조회 → userSeq 얻기
         Optional<MemberEntity> memberOpt = memberService.svcFindByUserid(userId);
         if (memberOpt.isEmpty()) {
-            return ResponseEntity.status(404)
-                .body(Map.of("dmRoute", Map.of("message", "해당 사용자를 찾을 수 없습니다.")));
+            System.out.println("DB에서 userId로 회원 찾기 실패: " + userId);
+            return ResponseEntity.status(404).body(Map.of("dmRoute", Map.of("message", "해당 사용자를 찾을 수 없습니다.")));
         }
 
         MemberEntity member = memberOpt.get();
         Long userSeq = member.getUserSeq();
+        System.out.println("DB에서 찾은 userSeq: " + userSeq);
 
-        String message;
-        if (roles.contains("ROLE_ADMIN")) {
-            message = "관리자 페이지로 이동";
-        } else if (roles.contains("ROLE_PROFESSOR") || roles.contains("ROLE_STUDENT")) {
-            message = "사용자 페이지로 이동";
-        } else {
-            return ResponseEntity.status(403).body(Map.of("dmRoute", Map.of(
-                "userId", userId,
-                "userSeq", userSeq,
-                "roles", roles,
-                "message", "권한이 없습니다."
-            )));
-        }
-
-        // 최종 응답 payload에 userSeq 포함
+        // 응답 JSON 구성
         Map<String, Object> dmRoutePayload = Map.of(
             "userId", userId,
-            "userSeq", userSeq,     // ← 여기에 포함!
+            "userSeq", userSeq,
             "roles", roles,
-            "message", message
+            "message", roles.contains("ROLE_ADMIN") ? "관리자 페이지로 이동" : "사용자 페이지로 이동"
         );
 
+        System.out.println("최종 응답 dmRoute: " + dmRoutePayload);
         return ResponseEntity.ok(Map.of("dmRoute", dmRoutePayload));
     }
+
 
 
     /**

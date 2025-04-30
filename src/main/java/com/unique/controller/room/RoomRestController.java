@@ -36,9 +36,9 @@ public class RoomRestController {
         return ResponseEntity.ok(roomService.svcRoomDetail(id));
     }
 
-    //전체 시험 방 조회
+    //열린 시험방 조회
     @GetMapping("/list")
-    public ResponseEntity<Map<String, Object>> ctlFindAll() {
+    public ResponseEntity<Map<String, Object>> ctlFindOpenAll() {
 
         List<OpenRoomDTO> list = roomService.findActiveRooms();
 
@@ -46,6 +46,19 @@ public class RoomRestController {
         result.put("examList_msm", list);
 
         return ResponseEntity.ok(result);
+    }
+
+    // 전체 방 조회
+    @GetMapping("/total/list")
+    public ResponseEntity<Map<String, List<RoomDTO>>> ctlFindAll() {
+        List<RoomDTO> roomList = roomService.findRoomWithExams();
+
+        Map<String, List<RoomDTO>> map = new HashMap<>();
+        map.put("dmRoomInfo", roomList); // "dsRoomList"는 eXBuilder6 DataSet 이름과 일치시켜야 함
+
+        return ResponseEntity.ok()
+            .header("Access-Control-Expose-Headers", "Content-Disposition")
+            .body(map);
     }
     // 시험방 생성
     @PostMapping("/create")

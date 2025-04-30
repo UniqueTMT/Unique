@@ -32,6 +32,7 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ExamRepository examRepository;
+    private final ModelMapper modelMapper;
 
     public Optional<RoomEntity> svcRoomDetail(Long id) {
         return roomRepository.findById(id);
@@ -190,5 +191,12 @@ public class RoomServiceImpl implements RoomService {
         calendar.setTime(startTime);
         calendar.add(Calendar.MINUTE, limitTimeMinutes);
         return calendar.getTime();
+    }
+
+    //시험 방 관리
+    public List<RoomDTO> findRoomWithExams() {
+        return roomRepository.findRoomWithExam().stream()
+            .map(room -> modelMapper.map(room, RoomDTO.class))
+            .collect(Collectors.toList());
     }
 }

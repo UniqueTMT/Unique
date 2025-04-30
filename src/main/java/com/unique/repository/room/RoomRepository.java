@@ -34,4 +34,11 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
   @Query("SELECT r FROM RoomEntity r WHERE r.roomSeq = :roomSeq")
   RoomEntity findRoomWithExamAndMemberAndQuizList(Long roomSeq);
 
+  // 시험 방 관리
+  @EntityGraph(attributePaths = {
+      "exam"
+  })
+  @Query("SELECT r FROM RoomEntity r")
+  List<RoomEntity> findRoomWithExam();
+
 }
