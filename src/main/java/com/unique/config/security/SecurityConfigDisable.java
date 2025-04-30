@@ -63,17 +63,18 @@ public class SecurityConfigDisable {
         cfg.setAllowCredentials(true);
         // 실제 브라우저 주소창에 찍히는 호스트:포트 명시
         cfg.setAllowedOriginPatterns(List.of(
-                "http://127.0.0.1:52194",
-                "http://localhost:52194"
+            "http://127.0.0.1:52194",
+            "http://localhost:52194",
+            "*"
         ));
         cfg.setAllowedHeaders(List.of(CorsConfiguration.ALL));
         // JSON 로그인 요청 및 기타 REST 호출, 프리플라이트(OPTIONS) 허용
         cfg.setAllowedMethods(List.of(
-                HttpMethod.GET.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name(),
-                HttpMethod.OPTIONS.name()
+            HttpMethod.GET.name(),
+            HttpMethod.POST.name(),
+            HttpMethod.PUT.name(),
+            HttpMethod.DELETE.name(),
+            HttpMethod.OPTIONS.name()
         ));
 
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
@@ -141,7 +142,6 @@ public class SecurityConfigDisable {
                         .logoutSuccessHandler(logoutSuccessHandler) // ✅ 적용됨!
                         .invalidateHttpSession(true)
                 );
-
 
         // 설정된 http 보안 필터 체인 반환
         return http.build();

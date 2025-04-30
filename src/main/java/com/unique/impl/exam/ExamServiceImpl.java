@@ -19,6 +19,12 @@ public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
     private final ModelMapper modelMapper;
 
+    // 유저가 생성한 시험지 조회
+    @Override
+    public List<ExamEntity> getSubjectListByLoginUser(Long userSeq){
+        return examRepository.findByUserSeq(userSeq);
+    }
+
     //문제은행 리스트 업
     @Override
     public List<CategoryQuizCountDTO> svcGetQuizCountByCategory() {

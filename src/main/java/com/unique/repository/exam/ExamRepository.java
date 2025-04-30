@@ -2,6 +2,8 @@ package com.unique.repository.exam;
 
 import com.unique.dto.exam.CategoryQuizCountDTO;
 import com.unique.dto.answer.StudentExamResultDTO;
+import io.lettuce.core.dynamic.annotation.Param;
+import java.util.Optional;
 import com.unique.entity.exam.ExamEntity;
 import jakarta.persistence.OrderBy;
 import org.hibernate.annotations.BatchSize;
@@ -21,6 +23,10 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     @OrderBy("regdate ASC")
     List<ExamEntity> findAll();
 
+    // Lazy로딩일 경우 quizList를 Redis에 캐싱할 수 없음 때문에 Eager로딩으로 변경
+    @Query("SELECT e FROM ExamEntity e JOIN FETCH e.quizList WHERE e.examSeq = :examSeq")
+    Optional<ExamEntity> findWithQuizListByExamSeq(@Param("examSeq") Long examSeq);
+
     //문제은행 카테고리별 시험지 상세 보기
     @EntityGraph(attributePaths = {
             "quizList.quiz"
@@ -33,6 +39,10 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
             "FROM ExamEntity e JOIN e.quizList q " +
             "GROUP BY e.subjectName, e.subjectCode")
     List<CategoryQuizCountDTO> findQuizCountGroupedByCategory();
+
+    // 유저가 생성한 시험지 조회
+    @Query("SELECT e FROM ExamEntity e WHERE e.member.userSeq = :userSeq")
+    List<ExamEntity> findByUserSeq(Long userSeq);
 
 
 }

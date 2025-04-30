@@ -145,4 +145,9 @@ public class MemberServiceImpl implements MemberService {
 
             return true;
     }
+
+    public Optional<MemberEntity> svcFindByUserid(Long userId) {
+        return memberRepository.findByUserid(userId);
+    }
+
 }

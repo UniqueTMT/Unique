@@ -3,7 +3,12 @@ package com.unique.controller.exam;
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
 import com.unique.dto.exam.CategoryQuizCountDTO;
+import com.unique.dto.exam.ExamParticipationDTO;
+import com.unique.dto.room.OpenRoomDTO;
+import com.unique.entity.exam.ExamEntity;
 import com.unique.impl.exam.ExamServiceImpl;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,4 +95,16 @@ public class ExamRestController {
                 .header("Access-Control-Expose-Headers", "Content-Disposition")
                 .body(map);
     }
+
+  // 유저가 생성한 시험지 조회
+  @GetMapping("/create-examList")
+  public ResponseEntity<Map<String, Object>> getMySubjectList(Long userSeq) {
+
+    List<ExamEntity> list = examService.getSubjectListByLoginUser(userSeq);
+
+    Map<String, Object> result = new HashMap<>();
+    result.put("examList", list);
+
+    return ResponseEntity.ok(result);
+  }
 }
