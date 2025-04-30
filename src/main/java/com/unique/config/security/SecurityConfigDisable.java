@@ -63,17 +63,17 @@ public class SecurityConfigDisable {
         cfg.setAllowCredentials(true);
         // 실제 브라우저 주소창에 찍히는 호스트:포트 명시
         cfg.setAllowedOriginPatterns(List.of(
-                "http://127.0.0.1:52194",
-                "http://localhost:52194"
+            "http://127.0.0.1:52194",
+            "http://localhost:52194"
         ));
         cfg.setAllowedHeaders(List.of(CorsConfiguration.ALL));
         // JSON 로그인 요청 및 기타 REST 호출, 프리플라이트(OPTIONS) 허용
         cfg.setAllowedMethods(List.of(
-                HttpMethod.GET.name(),
-                HttpMethod.POST.name(),
-                HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name(),
-                HttpMethod.OPTIONS.name()
+            HttpMethod.GET.name(),
+            HttpMethod.POST.name(),
+            HttpMethod.PUT.name(),
+            HttpMethod.DELETE.name(),
+            HttpMethod.OPTIONS.name()
         ));
 
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
@@ -93,53 +93,53 @@ public class SecurityConfigDisable {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CORS 람다 구성 → Deprecated 해결
-                .cors(cors -> cors
-                        .configurationSource(corsConfigurationSource())
-                )
+            // CORS 람다 구성 → Deprecated 해결
+            .cors(cors -> cors
+                .configurationSource(corsConfigurationSource())
+            )
 
-                // REST API 용으로 CSRF 보안 토큰 비활성화
-                .csrf(csrf -> csrf.disable())
+            // REST API 용으로 CSRF 보안 토큰 비활성화
+            .csrf(csrf -> csrf.disable())
 
-                // 인증 예외 처리(JSON 401)
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                )
+            // 인증 예외 처리(JSON 401)
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+            )
 
-                // 권한별 URL 접근 설정
-                .authorizeHttpRequests(auth -> auth
-                		
-                		// (1) 정적 리소스 및 클라이언트 화면: 항상 허용
-                        .requestMatchers(
-                            "/ui/**",           // .clx 파일
-                            "/resource/**",     // cleopatra.js, css, 이미지 등
-                            "/static/**",       // static 디렉터리 (필요시)
-                            "/favicon.ico",      // 파비콘
-                            "/error"              // <-- 여기에 추가
-                        ).permitAll()
-                        
-                        // 프리플라이트 요청 허용
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        
-                        .requestMatchers("/api/member/login").permitAll()         // 로그인 API는 누구나 접근 가능
-                        .requestMatchers("/api/member/find-id").permitAll()       
-                        .requestMatchers("/api/member//find-password").permitAll()
-                        .requestMatchers("/api/member/route").authenticated()     // 로그인 후 권한 분기 (인증된 사용자만)
+            // 권한별 URL 접근 설정
+            .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
-                        .requestMatchers("/api/**").hasAnyRole("STUDENT", "PROFESSOR")  // 유저 전용
-                        .anyRequest().denyAll()                                     // 그 외 요청은 모두 제한
-                )
+                // (1) 정적 리소스 및 클라이언트 화면: 항상 허용
+                .requestMatchers(
+                    "/ui/**",           // .clx 파일
+                    "/resource/**",     // cleopatra.js, css, 이미지 등
+                    "/static/**",       // static 디렉터리 (필요시)
+                    "/favicon.ico",      // 파비콘
+                    "/error"              // <-- 여기에 추가
+                ).permitAll()
 
-                // formLogin() 비활성화 : REST 방식에서는 리다이렉션 기반 로그인 사용하지 않기 때문
-                .formLogin(form -> form.disable())    // ✅ REST 방식에서는 비활성화
+                // 프리플라이트 요청 허용
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // 로그아웃 핸들러 등록 : 응답을 JSON 메시지로 커스터마이징
-                .logout(logout -> logout
-                        .logoutUrl("/api/member/logout")
-                        .logoutSuccessHandler(logoutSuccessHandler) // ✅ 적용됨!
-                        .invalidateHttpSession(true)
-                );
+                .requestMatchers("/api/member/login").permitAll()         // 로그인 API는 누구나 접근 가능
+                .requestMatchers("/api/member/find-id").permitAll()
+                .requestMatchers("/api/member//find-password").permitAll()
+                .requestMatchers("/api/member/route").authenticated()     // 로그인 후 권한 분기 (인증된 사용자만)
+
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
+                .requestMatchers("/api/**").hasAnyRole("STUDENT", "PROFESSOR")  // 유저 전용
+                .anyRequest().denyAll()                                     // 그 외 요청은 모두 제한
+            )
+
+            // formLogin() 비활성화 : REST 방식에서는 리다이렉션 기반 로그인 사용하지 않기 때문
+            .formLogin(form -> form.disable())    // ✅ REST 방식에서는 비활성화
+
+            // 로그아웃 핸들러 등록 : 응답을 JSON 메시지로 커스터마이징
+            .logout(logout -> logout
+                .logoutUrl("/api/member/logout")
+                .logoutSuccessHandler(logoutSuccessHandler) // ✅ 적용됨!
+                .invalidateHttpSession(true)
+            );
 
 
         // 설정된 http 보안 필터 체인 반환

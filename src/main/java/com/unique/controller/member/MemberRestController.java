@@ -1,6 +1,7 @@
 package com.unique.controller.member;
 
 import com.unique.dto.member.*;
+import com.unique.entity.member.MemberEntity;
 import com.unique.impl.member.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,47 +32,58 @@ public class MemberRestController {
     public ResponseEntity<Map<String, Object>> ctlRouteByRole(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401)
-                    .body(Map.of(
-                            "dmRoute",
-                            Map.of("message", "로그인 후 이용 가능합니다.", "roles", "[]")
-                    ));
+                .body(Map.of("dmRoute",
+                    Map.of("message", "로그인 후 이용 가능합니다.", "roles", "[]")));
         }
 
-        String userId = authentication.getName(); // 로그인한 사용자 ID
+        String userIdStr = authentication.getName(); // 로그인한 사용자 학번 (String)
+        Long userId;
+        try {
+            userId = Long.parseLong(userIdStr); // 🔁 Long 변환
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("dmRoute", Map.of("message", "잘못된 사용자 ID입니다.")));
+        }
+
         List<String> roles = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList(); // 역할 리스트
+            .map(GrantedAuthority::getAuthority)
+            .toList();
+
+        // 🔍 Member 조회 → userSeq 얻기
+        Optional<MemberEntity> memberOpt = memberService.svcFindByUserid(userId);
+        if (memberOpt.isEmpty()) {
+            return ResponseEntity.status(404)
+                .body(Map.of("dmRoute", Map.of("message", "해당 사용자를 찾을 수 없습니다.")));
+        }
+
+        MemberEntity member = memberOpt.get();
+        Long userSeq = member.getUserSeq();
 
         String message;
-
-        System.out.println("로그인 사용자 : " + userId);
-        System.out.println("로그인 사용자의 권한 : " + roles);
-
         if (roles.contains("ROLE_ADMIN")) {
             message = "관리자 페이지로 이동";
         } else if (roles.contains("ROLE_PROFESSOR") || roles.contains("ROLE_STUDENT")) {
             message = "사용자 페이지로 이동";
         } else {
-            Map<String,Object> payload = Map.of(
-                    "userId", userId,
-                    "roles", roles,
-                    "message", "권한이 없습니다."
-            );
-
-            return ResponseEntity.status(403).body(Map.of("dmRoute", payload));
+            return ResponseEntity.status(403).body(Map.of("dmRoute", Map.of(
+                "userId", userId,
+                "userSeq", userSeq,
+                "roles", roles,
+                "message", "권한이 없습니다."
+            )));
         }
 
+        // 최종 응답 payload에 userSeq 포함
         Map<String, Object> dmRoutePayload = Map.of(
-                "userId", userId,
-                "roles", roles,
-                "message", message
+            "userId", userId,
+            "userSeq", userSeq,     // ← 여기에 포함!
+            "roles", roles,
+            "message", message
         );
 
-        Map<String, Object> responseBody = Map.of("dmRoute", dmRoutePayload);
-        System.out.println("responseBody : " + responseBody);
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(Map.of("dmRoute", dmRoutePayload));
     }
+
 
     /**
      * [POST] /api/member/find-id
@@ -95,8 +107,8 @@ public class MemberRestController {
         // null 체크
         if (username == null || email == null) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("dmFindId",
-                            Map.of("message","이름과 이메일을 모두 입력하세요.")));
+                .body(Map.of("dmFindId",
+                    Map.of("message","이름과 이메일을 모두 입력하세요.")));
         }
 
         // 서비스 호출
@@ -138,7 +150,7 @@ public class MemberRestController {
      */
     @PostMapping("/find-password")
     public ResponseEntity<Map<String,Object>> ctlFindPassword(
-            @RequestBody FindPwRequestWrapper wrapper) {
+        @RequestBody FindPwRequestWrapper wrapper) {
 
         // (1) 래퍼에서 실제 DTO 꺼내기
         FindPwRequestDTO req = wrapper.getData().getDmFindPw();
@@ -149,11 +161,11 @@ public class MemberRestController {
         // (2) 필수값 체크
         if (userId == null || username == null || email == null) {
             return ResponseEntity
-                    .badRequest()
-                    // ★ ★ 최상위 키를 dmFindPw 로!
-                    .body(Map.of("dmFindPw",
-                            Map.of("message", "학번·이름·이메일을 모두 입력하세요.")
-                    ));
+                .badRequest()
+                // ★ ★ 최상위 키를 dmFindPw 로!
+                .body(Map.of("dmFindPw",
+                    Map.of("message", "학번·이름·이메일을 모두 입력하세요.")
+                ));
         }
 
         try {
@@ -163,9 +175,9 @@ public class MemberRestController {
             // (4) payload 구성 — 무조건 "message" 하나만
             Map<String,String> payload = new HashMap<>();
             payload.put("message",
-                    success
-                            ? "임시 비밀번호가 이메일로 전송되었습니다."
-                            : "임시 비밀번호 재설정에 실패했습니다."
+                success
+                    ? "임시 비밀번호가 이메일로 전송되었습니다."
+                    : "임시 비밀번호 재설정에 실패했습니다."
             );
             System.out.println("payload : " + payload);
             System.out.println("Map.of(\"dmFindPw\", payload) : " + Map.of("dmFindPw", payload));
@@ -175,10 +187,10 @@ public class MemberRestController {
 
         } catch (RuntimeException ex) {
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("dmFindPw",
-                            Map.of("message", ex.getMessage())
-                    ));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("dmFindPw",
+                    Map.of("message", ex.getMessage())
+                ));
         }
     }
 
@@ -222,15 +234,15 @@ public class MemberRestController {
     public ResponseEntity<Optional<MemberInfoDTO>> ctlMemberInfo(@PathVariable(value = "userSeq") Long userSeq) {
         return ResponseEntity.ok(memberService.svcGetMemberInfo(userSeq));
     }
-    
-    
+
+
     // 유저 비밀번호 변경 - 경준
     @PutMapping("/change-password/{userSeq}")
     public ResponseEntity<String> ctlChangePassword(
-            @PathVariable(value = "userSeq") Long userSeq
-            ,@RequestParam(value = "oldPassword") String oldPassword
-            ,@RequestParam(value = "newPassword") String newPassword
-            ) {
+        @PathVariable(value = "userSeq") Long userSeq
+        ,@RequestParam(value = "oldPassword") String oldPassword
+        ,@RequestParam(value = "newPassword") String newPassword
+    ) {
         try {
             boolean success = memberService.svcChangePassword(userSeq,oldPassword,newPassword);
             if (success) {
