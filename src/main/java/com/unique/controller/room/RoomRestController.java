@@ -5,13 +5,13 @@ import com.unique.dto.room.RoomDTO;
 import com.unique.entity.room.RoomEntity;
 import com.unique.impl.room.RoomServiceImpl;
 import com.unique.service.answer.AnswerService;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +20,18 @@ import java.util.Optional;
 public class RoomRestController {
     private final RoomServiceImpl roomService;
     private final AnswerService answerService;
+
+    // 특정 시험방 + 특정 시험지 정보 한번에 조회
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Optional<RoomEntity>> ctlRoomDetail(@PathVariable(value="id") Long id) {
+//        return ResponseEntity.ok(roomService.svcRoomDetail(id));
+//    }
+//
+//    //전체 시험 방 조회
+//    @GetMapping("/list")
+//    public ResponseEntity<List<RoomDTO>> ctlFindAll() {
+//        return ResponseEntity.ok(roomService.findRoomWithExams());
+//    }
 
     // 특정 시험방 + 특정 시험지 정보 한번에 조회
     @GetMapping("/{id}")
@@ -38,6 +50,7 @@ public class RoomRestController {
 
         return ResponseEntity.ok(result);
     }
+
     // 시험방 생성
     @PostMapping("/create")
     public ResponseEntity<Long> ctlRoomInsert(@RequestBody RoomDTO roomDTO) {

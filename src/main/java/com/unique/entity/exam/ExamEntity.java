@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unique.entity.member.MemberEntity;
 import com.unique.entity.quiz.QuizEntity;
+import com.unique.entity.room.RoomEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -61,5 +62,12 @@ public class ExamEntity {
     @BatchSize(size = 10)
     @OrderBy("regdate ASC")
     private List<QuizEntity> quizList;
+    
+    //응시자 답안 상세
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_seq") // ★ EXAM 테이블의 room_seq 외래키 기준
+    @JsonIgnore
+    private RoomEntity room;
+
 
 }
