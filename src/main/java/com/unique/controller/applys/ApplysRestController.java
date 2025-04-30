@@ -80,7 +80,7 @@ public class ApplysRestController {
     /*
     * function : 유저 응시 시험 세부 결과
     * author : 차경준
-    * regdate : 25.04.15
+    * regdate : 25.04.15 04.30 변경
     * */
     @GetMapping("/apply-history/{userSeq}/{examSeq}")
     public ResponseEntity<MemberExamHistoryDetailDTO> ctlGetExamResult(
@@ -92,7 +92,7 @@ public class ApplysRestController {
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             System.err.println("Error fetching exam result: " + e.getMessage());
-            e.printStackTrace(); // 예외 내용을 출력
+//            e.printStackTrace(); // 예외 내용을 출력
             return ResponseEntity.notFound().build();
         }
     }
