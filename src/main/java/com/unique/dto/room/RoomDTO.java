@@ -21,6 +21,7 @@ public class RoomDTO {
     private Integer limitTime;     // 제한 시간
     private Integer limitCnt;      // 인원 제한
     private String roomStatus;     // 방 상태 (진행전, 진행중, 진행완료)
+    private String viewYn;         // 공개방/비공개방 유무
     private Long userSeq;
 
     private ExamDTO exam;          // 선택된 시험지

@@ -12,7 +12,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-  // 도커 연결 시도 HostName, Port, Password
   @Bean
   public RedisConnectionFactory redisConnectionFactory() {
     RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
@@ -25,8 +24,19 @@ public class RedisConfig {
   public RedisTemplate<String, Object> redisTemplate() {
     RedisTemplate<String, Object> template = new RedisTemplate<>();
     template.setConnectionFactory(redisConnectionFactory());
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+    // 문자열 key용 직렬화기
+    StringRedisSerializer stringSerializer = new StringRedisSerializer();
+    // JSON value 직렬화기
+    GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer();
+
+    // Key, Value, HashKey, HashValue 모두 명시적으로 설정
+    template.setKeySerializer(stringSerializer);
+    template.setValueSerializer(jsonSerializer);
+    template.setHashKeySerializer(stringSerializer);
+    template.setHashValueSerializer(jsonSerializer);
+
+    template.afterPropertiesSet();
     return template;
   }
 }

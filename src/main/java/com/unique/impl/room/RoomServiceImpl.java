@@ -4,6 +4,7 @@ import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.quiz.QuizDTO;
 import com.unique.dto.room.OpenRoomDTO;
 import com.unique.dto.room.RoomDTO;
+import com.unique.dto.room.RoomDetailDTO;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.entity.member.MemberEntity;
@@ -11,6 +12,9 @@ import com.unique.entity.room.RoomEntity;
 import com.unique.repository.exam.ExamRepository;
 import com.unique.repository.room.RoomRepository;
 import com.unique.service.room.RoomService;
+import java.time.Duration;
+import java.util.Calendar;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,6 +31,7 @@ import java.util.stream.Collectors;
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ExamRepository examRepository;
 
     public Optional<RoomEntity> svcRoomDetail(Long id) {
         return roomRepository.findById(id);
@@ -34,38 +39,44 @@ public class RoomServiceImpl implements RoomService {
 
     // 시험방 저장 + Redis 정답, 힌트, 배점 저장
     public Long svcRoomInsert(RoomDTO roomDTO, Long userSeq) {
+        // 1. RoomEntity 생성
         RoomEntity roomEntity = RoomEntity.builder()
             .roomName(roomDTO.getRoomName())
             .roomPw(roomDTO.getRoomPw())
             .limitTime(roomDTO.getLimitTime())
             .limitCnt(roomDTO.getLimitCnt())
             .activeYn("Y")
-            .roomStatus("진행전")       // 진행전, 진행중, 진행완료
+            .roomStatus("진행전") // 진행전, 진행중, 진행완료
             .shutdownYn("N")
-            .viewYn("Y")
+            .startTime(roomDTO.getStartTime())
+            .viewYn(roomDTO.getViewYn())
             .regdate(roomDTO.getRegdate())
             .build();
 
-        // 출제자 (유저) 매핑
+        // 2. Member 연관 설정
         MemberEntity memberEntity = MemberEntity.builder()
             .userSeq(userSeq)
             .build();
-
         roomEntity.setMember(memberEntity);
 
-        // 시험지 연관
-        if (roomDTO.getExam() != null && roomDTO.getExam().getExamSeq() != null) {
-            ExamEntity examEntity = ExamEntity.builder()
-                .examSeq(roomDTO.getExam().getExamSeq())
-                .build();
+        // 3. 시험지 연결
+        if (roomDTO.getExam() == null) {
+            roomDTO.setExam(new ExamDTO());
+        }
+
+        Long examSeq = roomDTO.getExam().getExamSeq();
+        if (examSeq != null) {
+            ExamEntity examEntity = examRepository.findWithQuizListByExamSeq(examSeq)
+                .orElseThrow(() -> new IllegalArgumentException("해당 시험지를 찾을 수 없습니다."));
             roomEntity.setExam(examEntity);
         }
 
-        // 1. 시험방 저장
+        // 4. 시험방 저장
         roomRepository.save(roomEntity);
 
-        // 2. Redis 캐싱 - 정답 / 힌트 / 배점 저장
+        // 5. Redis 캐싱 - 정답 / 힌트 / 배점 저장
         ExamEntity examEntity = roomEntity.getExam();
+        System.out.println("퀴즈 수: " + (examEntity.getQuizList() == null ? "null" : examEntity.getQuizList().size()));
 
         if (examEntity != null && examEntity.getQuizList() != null) {
             List<QuizEntity> quizList = examEntity.getQuizList();
@@ -75,21 +86,38 @@ public class RoomServiceImpl implements RoomService {
 
                 Map<String, String> quizMap = new HashMap<>();
                 quizMap.put("question", quiz.getQuiz());
-                quizMap.put("objYn", quiz.getObjYn());                  // 1: 객관식 2: 주관식 3: 혼합방식 확인용
+                quizMap.put("objYn", quiz.getObjYn());                  // 1: 객관식 2: 주관식 3: 혼합
                 quizMap.put("option1", quiz.getObj1());
                 quizMap.put("option2", quiz.getObj2());
                 quizMap.put("option3", quiz.getObj3());
                 quizMap.put("option4", quiz.getObj4());
                 quizMap.put("correct", quiz.getCorrectAnswer());
                 quizMap.put("hint", quiz.getHint());
-                quizMap.put("score", String.valueOf(quiz.getCorrectScore()));   // 배점 저장용
+                quizMap.put("score", String.valueOf(quiz.getCorrectScore()));
 
+                // Redis 저장
                 redisTemplate.opsForHash().putAll(redisKey, quizMap);
+
+                // TTL 설정: 방 시작시간 + 제한시간 + buffer - 현재시간
+                Date startTime = roomEntity.getStartTime();
+                Integer limitMinutes = roomEntity.getLimitTime();
+                long nowMillis = System.currentTimeMillis();
+                long endTimeMillis = startTime.getTime() + (limitMinutes * 60 * 1000L);
+                long bufferMillis = 5 * 60 * 1000L; // 5분 buffer
+                long ttlMillis = endTimeMillis - nowMillis + bufferMillis;
+
+                if (ttlMillis > 0) {
+                    redisTemplate.expire(redisKey, Duration.ofMillis(ttlMillis));
+                    System.out.println("TTL 설정 완료: " + (ttlMillis / 1000) + "초");
+                } else {
+                    System.out.println("TTL 미설정: 시작 시간이 이미 지났거나 이상함");
+                }
             }
         }
 
         return roomEntity.getRoomSeq();
     }
+
 
     public void svcRoomUpdate(RoomEntity entity) {
         roomRepository.save(entity);
@@ -139,27 +167,28 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
-    // 시험방 남은시간 알림
-    public Long getRemainingTime(Long roomSeq) {
-        String remainingTimeKey = "room:" + roomSeq + ":remainingTime";
-        Object redisValue = redisTemplate.opsForValue().get(remainingTimeKey);
-
-        if (redisValue != null) {
-            return Long.parseLong(redisValue.toString());
-        }
-
-        // Redis 없으면 DB fallback
+    // 제한시간 알림
+    @Override
+    public RoomDetailDTO getRoomDetail(Long roomSeq) {
         RoomEntity room = roomRepository.findById(roomSeq)
-            .orElseThrow(() -> new RuntimeException("시험방을 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("방을 찾을 수 없습니다."));
 
-        if (room.getStartTime() == null || room.getLimitTime() == null) {
-            throw new RuntimeException("시험이 아직 시작되지 않았습니다.");
-        }
+        RoomDetailDTO dto = new RoomDetailDTO();
+        dto.setRoomName(room.getRoomName());
+        dto.setStartTime(room.getStartTime());
+        dto.setLimitTime(room.getLimitTime());
 
-        long elapsedMillis = System.currentTimeMillis() - room.getStartTime().getTime();
-        long totalMillis = room.getLimitTime() * 60 * 1000L;
-        long remainingMillis = totalMillis - elapsedMillis;
+        // expiredAt 계산
+        dto.setExpiredAt(calculateExpiredAt(room.getStartTime(), room.getLimitTime()));
 
-        return Math.max(remainingMillis / 1000, 0); // 초 단위 반환
+        return dto;
+    }
+
+    // 시작시간 + 제한시간(분) 더해서 만료시간 계산
+    private Date calculateExpiredAt(Date startTime, Integer limitTimeMinutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startTime);
+        calendar.add(Calendar.MINUTE, limitTimeMinutes);
+        return calendar.getTime();
     }
 }
