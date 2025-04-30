@@ -120,8 +120,21 @@ public class ApplysRestController {
 
 
     //시험이력 검색기능 - 경준
+//    @GetMapping("/search/{userSeq}")
+//    public ResponseEntity<List<MemberExamHistoryDTO>> ctlSearchUserExamHistory(
+//            @PathVariable Long userSeq,
+//            @RequestParam(required = false) String subjectName,
+//            @RequestParam(required = false) String creatorName,
+//            @RequestParam(required = false) String examTitle) {
+//
+//        List<MemberExamHistoryDTO> result =
+//                applysService.svcSearchUserExamHistory(userSeq, subjectName, creatorName, examTitle);
+//
+//        return ResponseEntity.ok(result);
+//    }
+
     @GetMapping("/search/{userSeq}")
-    public ResponseEntity<List<MemberExamHistoryDTO>> ctlSearchUserExamHistory(
+    public ResponseEntity<Map<String, Object>> ctlSearchUserExamHistory(
             @PathVariable Long userSeq,
             @RequestParam(required = false) String subjectName,
             @RequestParam(required = false) String creatorName,
@@ -130,6 +143,11 @@ public class ApplysRestController {
         List<MemberExamHistoryDTO> result =
                 applysService.svcSearchUserExamHistory(userSeq, subjectName, creatorName, examTitle);
 
-        return ResponseEntity.ok(result);
+        Map<String, Object> response = new HashMap<>();
+        response.put("dm1", result); // 검색 결과를 dm1 키에 담음
+
+        return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
+                .body(response);
     }
 }

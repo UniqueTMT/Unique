@@ -120,6 +120,7 @@ public class AppealServiceImpl implements AppealService {
                 .subjectSeq(exam.getSubjectCode())
                 .subjectName(exam.getSubjectName())
                 .examTitle(exam.getExamTitle())
+                .userid(applys.getMember().getUserid())
                 .userSeq(applys.getMember().getUserSeq())      // 학생 userSeq
                 .username(applys.getMember().getUsername())    // 학생 이름
                 .creatorSeq(applys.getExam().getMember().getUserSeq())  // 교수 userSeq

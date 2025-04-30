@@ -123,14 +123,17 @@ public class MemberServiceImpl implements MemberService {
     
     // 유저 비밀번호 변경 - 경준
     @Override
-    public boolean svcChangePassword(Long userSeq, String oldPassword, String newPassword) {
+    public boolean svcChangePassword(Long userSeq, Long userid, String oldPassword, String newPassword) {
             // 유저 조회
             MemberEntity user = memberRepository.findByUserSeq(userSeq);
 
             if (user == null) {
                 throw new RuntimeException("유저를 찾을 수 없습니다.");
             }
-
+            // 유저 아이디 검증 (userid 먼저!)
+            if (!user.getUserid().equals(userid)) {
+                throw new RuntimeException("유저 아이디가 일치하지 않습니다.");
+            }
             // 기존 비밀번호 검증
             if (!user.getUserpw().equals(oldPassword)) {
                 throw new RuntimeException("기존 비밀번호가 일치하지 않습니다.");
