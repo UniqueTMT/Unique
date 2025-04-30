@@ -227,7 +227,7 @@ public class MemberRestController {
         Map<String, Object> map = new HashMap<>();
         map.put("dm1", memberService.svcGetMemberInfo(userSeq).orElse(null));
         return ResponseEntity.ok()
-                .header("Access-Control-Expose-Headers", "Content-Disposition")
+//                .header("Access-Control-Expose-Headers", "Content-Disposition")
                 .body(map);
     }
 

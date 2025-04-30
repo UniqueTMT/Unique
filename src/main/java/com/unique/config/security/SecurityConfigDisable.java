@@ -126,9 +126,10 @@ public class SecurityConfigDisable {
                         .requestMatchers("/api/member//find-password").permitAll()
                         .requestMatchers("/api/member/route").authenticated()     // 로그인 후 권한 분기 (인증된 사용자만)
 
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
-                        .requestMatchers("/api/**").hasAnyRole("STUDENT", "PROFESSOR")  // 유저 전용
-                        .anyRequest().denyAll()                                     // 그 외 요청은 모두 제한
+//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")        // ADMIN 전용
+//                        .requestMatchers("/api/**").hasAnyRole("STUDENT", "PROFESSOR")  // 유저 전용
+//                        .anyRequest().denyAll()                                     // 그 외 요청은 모두 제한
+                                .anyRequest().permitAll()
                 )
 
                 // formLogin() 비활성화 : REST 방식에서는 리다이렉션 기반 로그인 사용하지 않기 때문
