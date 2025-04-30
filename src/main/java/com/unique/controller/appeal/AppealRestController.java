@@ -1,5 +1,6 @@
 package com.unique.controller.appeal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unique.dto.appeal.AppealDTO;
 import com.unique.dto.appeal.AppealDetailDTO;
 import com.unique.dto.appeal.AppealPostDTO;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,7 +31,14 @@ public class AppealRestController {
         appealService.svcAppealInsert(entity);
     }
 
-    
+//    @PostMapping("/board")
+//    public ResponseEntity<?> indexBoard(DataRequest dataRequest) {
+//
+//        ParameterGroup parameterGroup = dataRequest.getParameterGroup("id");
+//        Entity beanData = (Entity) parameterGroup.getBeanData(Entity.class);
+//    }
+
+
     /*
      * function : 이의제기 점수 수정 - 작성중
      * author : 차경준
@@ -50,9 +60,13 @@ public class AppealRestController {
     * author : 차경준
     * regdate : 2025.04.15
     * */
-    @GetMapping("/")
-    public ResponseEntity<List<AppealDTO>> ctlAppealList() {
-        return ResponseEntity.ok(appealService.svcAppealList());
+    @GetMapping("/appealList")
+    public ResponseEntity<Map<String, List<AppealDTO>>> ctlAppealList() {
+        HashMap<String, List<AppealDTO>> map = new HashMap<>();
+        map.put("dsAppealList", appealService.svcAppealList());
+        return ResponseEntity.ok()
+                .header("Access-Control-Expose-Headers", "Content-Disposition")
+                .body(map);
     }
     
     /*
@@ -81,13 +95,33 @@ public class AppealRestController {
      * author : 차경준
      * regdate : 2025.04.15
      * */
+//    @PostMapping("/create-appeal")
+//    public ResponseEntity<String> ctlAppealInsert(@RequestBody AppealPostDTO appealDTO) {
+//        try {
+//            appealService.svcAppealCreate(appealDTO);
+//            return ResponseEntity.ok("이의제기가 등록되었습니다.");
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
+
     @PostMapping("/create-appeal")
-    public ResponseEntity<String> ctlAppealInsert(@RequestBody AppealPostDTO appealDTO) {
+    public ResponseEntity<Map<String, Object>> ctlAppealInsert(@RequestBody Map<String, Object> requestMap) {
+        Map<String, Object> response = new HashMap<>();
         try {
-            appealService.svcAppealCreate(appealDTO);
-            return ResponseEntity.ok("이의제기가 등록되었습니다.");
+            // "data" → "dmAppeal" 추출
+            Map<String, Object> dataMap = (Map<String, Object>) requestMap.get("data");
+            Map<String, Object> dmAppealMap = (Map<String, Object>) dataMap.get("dmAppeal");
+            ObjectMapper mapper = new ObjectMapper();
+            AppealPostDTO appealDTO = mapper.convertValue(dmAppealMap, AppealPostDTO.class);
+
+            AppealDTO savedAppeal = appealService.svcAppealCreate(appealDTO);
+            response.put("dmAppeal", savedAppeal);
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            response.put("dmAppeal", null);
+            response.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
