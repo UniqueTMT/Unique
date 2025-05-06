@@ -231,23 +231,23 @@ public class MemberRestController {
 
 
     // 유저 비밀번호 변경 - 경준
-    @PutMapping("/change-password/{userSeq}")
-    public ResponseEntity<String> ctlChangePassword(
-        @PathVariable(value = "userSeq") Long userSeq
-        ,@RequestParam(value = "oldPassword") String oldPassword
-        ,@RequestParam(value = "newPassword") String newPassword
-    ) {
-        try {
-            boolean success = memberService.svcChangePassword(userSeq,oldPassword,newPassword);
-            if (success) {
-                return ResponseEntity.ok("비밀번호 변경완료");
-            }else {
-                return ResponseEntity.badRequest().body("비밀번호 변경실패");
-            }
-        }catch (RuntimeException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PutMapping("/change-password/{userSeq}")
+//    public ResponseEntity<String> ctlChangePassword(
+//        @PathVariable(value = "userSeq") Long userSeq
+//        ,@RequestParam(value = "oldPassword") String oldPassword
+//        ,@RequestParam(value = "newPassword") String newPassword
+//    ) {
+//        try {
+//            boolean success = memberService.svcChangePassword(userSeq,oldPassword,newPassword);
+//            if (success) {
+//                return ResponseEntity.ok("비밀번호 변경완료");
+//            }else {
+//                return ResponseEntity.badRequest().body("비밀번호 변경실패");
+//            }
+//        }catch (RuntimeException e){
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
 
 }

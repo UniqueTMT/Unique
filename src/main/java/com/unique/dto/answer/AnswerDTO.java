@@ -15,6 +15,7 @@ public class AnswerDTO {
     private Long quizSeq;
     private String userAnswer;
     private Character answerYn;
+    private Long userSeq;
     private Long roomSeq; // Redis 접근용
 
     private Long userid;          // from member

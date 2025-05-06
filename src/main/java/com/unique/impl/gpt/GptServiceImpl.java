@@ -3,6 +3,7 @@ package com.unique.impl.gpt;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unique.client.GptClient;
+import com.unique.dto.gpt.GPTScoreResult;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.service.gpt.GptService;
@@ -67,4 +68,50 @@ public class GptServiceImpl implements GptService {
         } catch (Exception ignored) {}
         return defaultVal;
     }
+
+    // GPT 채점 로직 (모의 응답 또는 API 연동 가능)
+    @Override
+    public GPTScoreResult gradeAnswer(String userAnswer, String referenceAnswer, int fullScore) {
+        String prompt = buildGradingPrompt(userAnswer, referenceAnswer, fullScore);
+
+        try {
+            String gptResponse = gptClient.sendToGpt(prompt);
+
+            int score = 0;
+            String feedback = "";
+
+            for (String line : gptResponse.split("\n")) {
+                if (line.contains("점수")) {
+                    score = Integer.parseInt(line.replaceAll("[^0-9]", ""));
+                } else if (line.contains("피드백")) {
+                    feedback = line.replaceFirst("피드백[:：]?", "").trim();
+                }
+            }
+
+            return new GPTScoreResult(score, feedback);
+
+        } catch (Exception e) {
+            return new GPTScoreResult(0, "GPT 채점 실패: " + e.getMessage());
+        }
+    }
+
+
+    private String buildGradingPrompt(String userAnswer, String referenceAnswer, int fullScore) {
+        return """
+        아래는 수험자의 답변과 정답 예시입니다. 정답 예시를 기준으로 수험자의 답변을 채점해주세요.
+        만점은 %d점이며, 완전히 정답일 경우 %d점을 부여하고, 부분 정답일 경우 내용을 기반으로 적절히 감점 후 점수를 부여해주세요.
+
+        [정답 예시]
+        %s
+
+        [수험자 답변]
+        %s
+
+        출력 형식:
+        점수: <숫자>
+        피드백: <간단한 평가 코멘트>
+        """.formatted(fullScore, fullScore, referenceAnswer, userAnswer);
+    }
+
+
 }

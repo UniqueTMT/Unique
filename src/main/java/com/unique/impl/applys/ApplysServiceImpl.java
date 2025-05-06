@@ -1,5 +1,6 @@
 package com.unique.impl.applys;
 
+import com.unique.dto.applys.ApplysConfirmStatusDTO;
 import com.unique.dto.member.MemberExamHistoryDTO;
 import com.unique.entity.applys.ApplysEntity;
 import com.unique.entity.quiz.QuizEntity;
@@ -94,6 +95,12 @@ public class ApplysServiceImpl implements ApplysService {
                 .wrongCount(applys.getWrongCount())
                 .regdate(applys.getRegdate())
                 .build();
+    }
+
+    // 시험 방 관리 - 응시한 유저 수 조회
+    @Override
+    public List<ApplysConfirmStatusDTO> getConfirmStatusByRoom(Long roomSeq) {
+        return applysRepository.findApplysStatusByRoom(roomSeq);
     }
 
 

@@ -2,10 +2,16 @@ package com.unique.impl.exam;
 
 import com.unique.dto.exam.ExamParticipationDTO;
 import com.unique.dto.quiz.QuizDTO;
+import com.unique.entity.applys.ApplysEntity;
+import com.unique.entity.exam.ExamEntity;
+import com.unique.entity.member.MemberEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.entity.room.RoomEntity;
+import com.unique.repository.applys.ApplysRepository;
 import com.unique.repository.exam.ExamParticipationRepository;
+import com.unique.repository.member.MemberRepository;
 import com.unique.service.exam.ExamParticipationService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,32 +23,49 @@ import java.util.stream.Collectors;
 public class ExamParticipationServiceImpl implements ExamParticipationService {
 
   private final ExamParticipationRepository examParticipationRepository;
+  private final ApplysRepository applysRepository;
+  private final MemberRepository memberRepository;
 
   @Override
-  public ExamParticipationDTO getExamParticipationDetail(Long roomSeq) {
-    // 1. 방 정보 + 시험지 + 방 생성자 + 문제 리스트
+  public ExamParticipationDTO getExamParticipationDetail(Long roomSeq, Long userSeq) {
     RoomEntity roomEntity = examParticipationRepository.findRoomDetailWithExamAndMember(roomSeq);
 
-    // 2. 문제 DTO 변환 (QuizDTO 사용)
+    // 응시자 등록이 안되어 있다면 Applys 생성
+    Optional<ApplysEntity> existing = applysRepository.findByUserSeqAndRoomSeq(userSeq, roomSeq);
+    if (existing.isEmpty()) {
+      ExamEntity exam = roomEntity.getExam();
+      MemberEntity member = memberRepository.findById(userSeq).orElseThrow();
+
+      ApplysEntity apply = ApplysEntity.builder()
+          .member(member)
+          .exam(exam)
+          .room(roomEntity)
+          .totalScore(0)
+          .correctCount(0)
+          .wrongCount(0)
+          .build();
+
+      applysRepository.save(apply);
+    }
+
     List<QuizDTO> quizList = roomEntity.getExam().getQuizList().stream()
         .map(this::convertToQuizDTO)
         .collect(Collectors.toList());
 
-    // 3. 응시자 userId 가져오기
     List<Long> applicantUserIds = examParticipationRepository
         .findApplicantUserIdsByExam_ExamSeq(roomEntity.getExam().getExamSeq());
 
-    // 4. DTO 조립
     return new ExamParticipationDTO(
         roomEntity.getRoomSeq(),
         roomEntity.getRoomName(),
         roomEntity.getLimitTime(),
         roomEntity.getMember().getNickname(),
-        "ws://localhost:5000/ws", // 웹소켓 URL
+        "ws://localhost:5000/ws",
         quizList,
         applicantUserIds
     );
   }
+
 
   private QuizDTO convertToQuizDTO(QuizEntity quizEntity) {
     return new QuizDTO(

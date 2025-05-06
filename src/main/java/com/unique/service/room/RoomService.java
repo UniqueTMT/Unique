@@ -1,7 +1,9 @@
 package com.unique.service.room;
+import com.unique.dto.room.MyRoomStatusDTO;
 import com.unique.dto.room.OpenRoomDTO;
 import com.unique.dto.room.RoomDTO;
 import com.unique.dto.room.RoomDetailDTO;
+import com.unique.entity.answer.AnswerEntity;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.room.RoomEntity;
 
@@ -24,4 +26,8 @@ public interface RoomService {
 
     //전체 시험 방 조회
     List<RoomDTO> findRoomWithExams();
+
+    // 유저가 만든 방 조회
+    List<MyRoomStatusDTO> getMyRoomStatus(Long userSeq);
+
 }

@@ -6,6 +6,7 @@ import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.member.MemberEntity;
 import com.unique.entity.answer.AnswerEntity;
 import com.unique.entity.appeal.AppealEntity;
+import com.unique.entity.room.RoomEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -67,5 +68,9 @@ public class ApplysEntity {
     @JsonIgnore
     private ExamEntity exam;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_seq")
+    @JsonIgnore
+    private RoomEntity room;
 
 }
