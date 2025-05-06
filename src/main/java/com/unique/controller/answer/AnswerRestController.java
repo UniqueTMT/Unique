@@ -2,10 +2,15 @@ package com.unique.controller.answer;
 
 import com.unique.dto.answer.AnswerDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
+import com.unique.dto.answer.AnswerSubmitDTO;
 import com.unique.dto.answer.StudentExamResultDTO;
+import com.unique.dto.answer.WrapperAnswerSubmitDTO;
+import com.unique.dto.applys.ApplyCheckDTO;
 import com.unique.entity.answer.AnswerEntity;
+import com.unique.entity.applys.ApplysEntity;
 import com.unique.impl.answer.AnswerServiceImpl;
 import com.unique.kafka.AnswerConfirmDTO;
+import com.unique.repository.applys.ApplysRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AnswerRestController {
     private final AnswerServiceImpl answerService;
+    private final ApplysRepository applysRepository;
 
     //------------------------------- 수민 조인 샘플 예시 ---------------------------
 //    @GetMapping("/test")
@@ -45,10 +51,13 @@ public class AnswerRestController {
     }
 
     @PutMapping("/grade/confirm")
-    public ResponseEntity<String> confirmGrading(@RequestBody AnswerConfirmDTO dto) {
+    public ResponseEntity<Map<String, String>> confirmGrading(@RequestBody AnswerConfirmDTO dto) {
         answerService.confirmGrading(dto);
-        return ResponseEntity.ok("교수 2차 채점 완료");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "모든 2차 채점이 완료되었습니다.");
+        return ResponseEntity.ok(response); // Content-Type: application/json
     }
+
 
     @DeleteMapping("/answers/{userid}")
     public void ctlDeleteAnswer(@PathVariable(value="id") Long id) {
@@ -107,6 +116,42 @@ public class AnswerRestController {
         map.put("dsStudentResult", result);
         return ResponseEntity.ok(map);
     }
+
+    // 응시자 1차 채점 확인
+    @GetMapping("/grading-detail")
+    public Map<String, Object> getGradingDetail(@RequestParam Long userSeq, @RequestParam Long roomSeq) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("answerList", answerService.getGradingDetail(userSeq, roomSeq));
+        return result;
+    }
+
+    // 답안 제출 및 채점
+    @PostMapping("/submit")
+    public ResponseEntity<?> submitAnswers(@RequestBody WrapperAnswerSubmitDTO wrapperDTO) {
+        if (wrapperDTO == null || wrapperDTO.getData() == null) {
+            return ResponseEntity.badRequest().body("❌ data 래핑된 구조가 없습니다.");
+        }
+
+        AnswerSubmitDTO submitDTO = wrapperDTO.getData();
+        System.out.println("🟢 받은 전체 데이터: " + submitDTO);
+
+        Long userSeq = submitDTO.getUserSeq();
+        Long roomSeq = submitDTO.getRoomSeq();
+
+        if (userSeq == null || roomSeq == null) {
+            return ResponseEntity.badRequest().body("❌ userSeq 또는 roomSeq 누락됨");
+        }
+
+        Optional<ApplysEntity> applysOpt = applysRepository.findByUserSeqAndRoomSeq(userSeq, roomSeq);
+        if (applysOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("❌ 응시 내역이 존재하지 않습니다.");
+        }
+
+        answerService.saveAllAnswers(submitDTO, applysOpt.get().getApplysSeq());
+        return ResponseEntity.ok("✅ 답안 제출 및 채점 완료");
+    }
+
+
 
 }
 

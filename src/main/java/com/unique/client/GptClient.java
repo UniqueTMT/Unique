@@ -21,7 +21,7 @@ import java.util.Map;
 public class GptClient {
 
 //    @Value("${openai.api-key}")
-    private String apiKey = "";
+    private String apiKey="";
 
     private final String GPT_API_URL = "https://api.openai.com/v1/chat/completions";
 

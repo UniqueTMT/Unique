@@ -1,5 +1,6 @@
 package com.unique.service.applys;
 
+import com.unique.dto.applys.ApplysConfirmStatusDTO;
 import com.unique.dto.member.MemberExamHistoryDTO;
 import com.unique.entity.applys.ApplysEntity;
 
@@ -18,4 +19,9 @@ public interface ApplysService {
     List<MemberExamHistoryDTO> svcExamHistorySorted(Long userSeq, String sort);
     //시험이력 검색 기능 - 경준
     List<MemberExamHistoryDTO> svcSearchUserExamHistory(Long userSeq, String subjectName, String creatorName, String examTitle);
+
+    // 시험 방 관리 - 응시한 유저 수 조회
+    List<ApplysConfirmStatusDTO> getConfirmStatusByRoom(Long roomSeq);
+
+
 }

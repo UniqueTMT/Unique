@@ -19,14 +19,14 @@ public class ExamParticipationController {
 
   // 시험응시 : 시험방 리스트 클릭 -> 입장
   @GetMapping("/{roomSeq}")
-  public ResponseEntity<Map<String, Object>> getExamParticipationDetail(@PathVariable Long roomSeq) {
-
-    ExamParticipationDTO dto = examParticipationService.getExamParticipationDetail(roomSeq);
-
+  public ResponseEntity<Map<String, Object>> getExamParticipationDetail(
+      @PathVariable Long roomSeq,
+      @RequestParam Long userSeq // 프론트에서 전달
+  ) {
+    ExamParticipationDTO dto = examParticipationService.getExamParticipationDetail(roomSeq, userSeq);
     Map<String, Object> result = new HashMap<>();
     result.put("entry_room", dto);
-
     return ResponseEntity.ok(result);
-
   }
+
 }

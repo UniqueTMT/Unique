@@ -2,6 +2,7 @@ package com.unique.repository.answer;
 
 import com.unique.dto.answer.StudentExamResultDTO;
 import com.unique.entity.answer.AnswerEntity;
+import com.unique.dto.answer.AnswerGradingDetailDTO;
 import java.util.Optional;
 import com.unique.entity.applys.ApplysEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -55,16 +56,12 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
     JOIN ap.member m
     JOIN a.quiz q
     JOIN q.exam e
-    JOIN e.room r
+    JOIN RoomEntity r ON r.exam.examSeq = e.examSeq
     WHERE m.userid = :userid
 """)
     List<StudentExamResultDTO> findStudentExamResultsByUserid(@Param("userid") Long userid);
 
 
-    // 응시 답안 제출 -> 저장 -> 채점
-    Optional<AnswerEntity> findByApplys_ApplysSeqAndQuiz_QuizSeq(Long applysSeq, Long quizSeq);
-
-    
     /*
     * function : 응시 기록 (Applys) 으로 답안 조회
     * author : 차경준
@@ -90,4 +87,42 @@ public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
             @Param("applys") ApplysEntity applys,
             @Param("quizSeq") Long quizSeq
     );
+
+    // 유저가 만든 방 조회
+    @Query("""
+    SELECT a FROM AnswerEntity a
+    JOIN a.applys ap
+    JOIN ap.exam e
+    WHERE e.examSeq = :examSeq
+    """)
+        List<AnswerEntity> findAllByRoomSeq(@Param("examSeq") Long examSeq);
+
+
+    @Query("""
+    SELECT new com.unique.dto.answer.AnswerGradingDetailDTO(
+        a.answerSeq,
+        a.quiz.quiz,
+        a.userAnswer,
+        a.aiScore,
+        a.aiFeedback,
+        a.confirmed,
+        a.professorScore,
+        a.professorFeedback
+    )
+    FROM AnswerEntity a
+    WHERE a.applys.member.userSeq = :userSeq
+      AND a.applys.exam.examSeq = (
+            SELECT r.exam.examSeq FROM RoomEntity r WHERE r.roomSeq = :roomSeq
+      )
+    ORDER BY a.answerSeq
+    """)
+    List<AnswerGradingDetailDTO> findGradingDetailByUserAndRoom(
+        @Param("userSeq") Long userSeq,
+        @Param("roomSeq") Long roomSeq
+    );
+
+
+    Optional<AnswerEntity> findByApplys_ApplysSeqAndQuiz_QuizSeq(Long applysSeq, Long quizSeq);
+
+
 }

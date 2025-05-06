@@ -1,13 +1,18 @@
 package com.unique.controller.room;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unique.dto.answer.AnswerDTO;
+import com.unique.dto.answer.AnswerSubmitDTO;
 import com.unique.dto.exam.ExamDTO;
+import com.unique.dto.room.MyRoomStatusDTO;
 import com.unique.dto.room.OpenRoomDTO;
 import com.unique.dto.room.RoomDTO;
 import com.unique.dto.room.RoomDetailDTO;
 import com.unique.dto.room.WrapperRoomDTO;
+import com.unique.entity.answer.AnswerEntity;
+import com.unique.entity.applys.ApplysEntity;
 import com.unique.entity.room.RoomEntity;
 import com.unique.impl.room.RoomServiceImpl;
+import com.unique.repository.answer.AnswerRepository;
 import com.unique.repository.room.RoomRepository;
 import com.unique.service.answer.AnswerService;
 import java.util.HashMap;
@@ -29,6 +34,7 @@ public class RoomRestController {
     private final AnswerService answerService;
     private final ObjectMapper objectMapper;
     private final RoomRepository roomRepository;
+    private final AnswerRepository answerRepository;
 
     // 특정 시험방 + 특정 시험지 정보 한번에 조회
     @GetMapping("/{id}")
@@ -60,6 +66,8 @@ public class RoomRestController {
             .header("Access-Control-Expose-Headers", "Content-Disposition")
             .body(map);
     }
+
+
     // 시험방 생성
     @PostMapping("/create")
     public ResponseEntity<Long> ctlRoomInsert(@RequestBody WrapperRoomDTO wrapperRoomDTO) {
@@ -98,13 +106,6 @@ public class RoomRestController {
         return ResponseEntity.ok(roomService.svcGetRoomsByOrder(sort));
     }
 
-    // 응시 답안 제출 -> 저장 -> 채점
-    @PostMapping("/submit-answer")
-    public ResponseEntity<String> submitAnswer(@RequestBody AnswerDTO answerDTO) {
-        answerService.saveOrUpdateAnswer(answerDTO);
-        return ResponseEntity.ok("답안 저장 완료");
-    }
-
     @PutMapping("/room")
     public void ctlRoomUpdate(@RequestBody RoomEntity entity) {
         roomService.svcRoomUpdate(entity);
@@ -115,5 +116,17 @@ public class RoomRestController {
     public void ctlRoomDelete(@PathVariable(value="id") Long id) {
         roomService.svcRoomDelete(id);
     }
+
+
+    // 시험 방 관리 - 상세 채점 페이지에서 응시자 리스트 및 답안 표시
+    @GetMapping("/my-room-status")
+    public Map<String, Object> getMyRoomStatus(@RequestParam Long userSeq) {
+        List<MyRoomStatusDTO> result = roomService.getMyRoomStatus(userSeq);
+        Map<String, Object> response = new HashMap<>();
+        response.put("roomList", result);
+        return response;
+    }
+
+
 
 }

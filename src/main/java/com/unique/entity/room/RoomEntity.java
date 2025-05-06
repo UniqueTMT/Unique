@@ -81,8 +81,9 @@ public class RoomEntity {
     private MemberEntity member;
 
     // 방에서 사용된 시험지
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exam_seq")
     private ExamEntity exam;
+
 
 }

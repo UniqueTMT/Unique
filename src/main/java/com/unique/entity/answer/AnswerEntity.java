@@ -65,4 +65,11 @@ public class AnswerEntity {
     @JoinColumn(name = "quiz_seq")
     @JsonIgnore
     private QuizEntity quiz;
+
+    @Column(name = "user_seq")
+    private Long userSeq;
+
+    @Column(name = "room_seq")
+    private Long roomSeq;
+
 }

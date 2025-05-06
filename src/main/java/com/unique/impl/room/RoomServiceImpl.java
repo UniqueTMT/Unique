@@ -2,17 +2,21 @@ package com.unique.impl.room;
 
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.quiz.QuizDTO;
+import com.unique.dto.room.MyRoomStatusDTO;
 import com.unique.dto.room.OpenRoomDTO;
 import com.unique.dto.room.RoomDTO;
 import com.unique.dto.room.RoomDetailDTO;
+import com.unique.entity.answer.AnswerEntity;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.entity.quiz.QuizEntity;
 import com.unique.entity.member.MemberEntity;
 import com.unique.entity.room.RoomEntity;
+import com.unique.repository.answer.AnswerRepository;
 import com.unique.repository.exam.ExamRepository;
 import com.unique.repository.room.RoomRepository;
 import com.unique.service.room.RoomService;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,7 @@ public class RoomServiceImpl implements RoomService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ExamRepository examRepository;
     private final ModelMapper modelMapper;
+    private final AnswerRepository answerRepository;
 
     public Optional<RoomEntity> svcRoomDetail(Long id) {
         return roomRepository.findById(id);
@@ -193,10 +198,26 @@ public class RoomServiceImpl implements RoomService {
         return calendar.getTime();
     }
 
-    //시험 방 관리
+    // 시험 방 관리 - 전체 방 조회
     public List<RoomDTO> findRoomWithExams() {
         return roomRepository.findRoomWithExam().stream()
             .map(room -> modelMapper.map(room, RoomDTO.class))
             .collect(Collectors.toList());
     }
+
+    // 시험 방 관리 - 상세 채점 페이지에서 응시자 리스트 및 답안 표시
+    public List<AnswerEntity> getAnswersByRoomSeq(Long roomSeq) {
+        return answerRepository.findAllByRoomSeq(roomSeq);
+    }
+
+    // 유저가 만든 방 조회
+    @Override
+    public List<MyRoomStatusDTO> getMyRoomStatus(Long userSeq) {
+        return roomRepository.findRoomStatusByUser(userSeq);
+    }
+
+
+
+
+
 }

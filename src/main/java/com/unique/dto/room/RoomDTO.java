@@ -23,6 +23,7 @@ public class RoomDTO {
     private String roomStatus;     // 방 상태 (진행전, 진행중, 진행완료)
     private String viewYn;         // 공개방/비공개방 유무
     private Long userSeq;
+    private Boolean confirmed;     // 2차 채점 완료 여부 추가
 
     private ExamDTO exam;          // 선택된 시험지
 

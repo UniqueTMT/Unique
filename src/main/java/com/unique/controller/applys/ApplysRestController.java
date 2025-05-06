@@ -150,4 +150,12 @@ public class ApplysRestController {
                 .header("Access-Control-Expose-Headers", "Content-Disposition")
                 .body(response);
     }
+
+    // 시험 방 관리 - 응시한 유저 수 조회
+    @GetMapping("/room/{roomSeq}/confirm-status")
+    public Map<String, Object> getConfirmStatus(@PathVariable Long roomSeq) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("confirmList", applysService.getConfirmStatusByRoom(roomSeq));
+        return result;
+    }
 }
