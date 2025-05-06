@@ -2,6 +2,7 @@ package com.unique.impl.exam;
 import com.unique.dto.exam.CategoryQuizCountDTO;
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
+import com.unique.dto.exam.ExamDetailDTO;
 import com.unique.entity.exam.ExamEntity;
 import com.unique.repository.exam.ExamRepository;
 import com.unique.service.exam.ExamService;
@@ -33,10 +34,8 @@ public class ExamServiceImpl implements ExamService {
 
     //문제은행 카테고리별 시험지 상세 보기
     @Override
-    public List<ExamDTO> svcFindExamWithQuizList() {
-        return examRepository.findExamWithQuizList().stream()
-                .map(exam -> modelMapper.map(exam, ExamDTO.class))
-                .collect(Collectors.toList());
+    public List<ExamDetailDTO> svcFindExamWithQuizListBySubjectCode(String subjectCode) {
+        return examRepository.findExamWithQuizListBySubjectCode(subjectCode);
     }
 
 

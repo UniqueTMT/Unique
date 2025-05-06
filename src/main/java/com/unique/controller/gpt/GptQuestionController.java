@@ -50,45 +50,49 @@ public class GptQuestionController {
             @RequestParam("prompt") String userPrompt
     ) throws Exception {
         // 1. 로그인 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        MemberEntity member = userDetails.getMember();
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        MemberEntity member = userDetails.getMember();
 
-        // 2. PDF 텍스트 추출
+        // 1) PDF 텍스트 추출
         String text = pdfParseService.svcExtractText(pdfFile);
+
         int maxChars = MAX_INPUT_TOKENS * APPROX_CHARS_PER_TOKEN;
         if (text.length() > maxChars) {
             text = text.substring(0, maxChars);
         }
 
-        // 3. GPT 프롬프트 생성
+        // 2) GPT 프롬프트 생성
         String prompt = gptPromptService.svcBuildPrompt(category, chapter, type, count, userPrompt, text);
 
-        // 4. GPT API 호출
+        // 3) GPT 호출
         String gptResponse = gptClient.sendToGpt(prompt);
 
-        // 5. 시험 생성 (출제자 userSeq 포함)
+        // 4) 시험 저장
+        // user_seq=1, 과목코드 200
+        MemberEntity member = new MemberEntity();
+        member.setUserSeq(1L);
+
         ExamEntity exam = examRepository.save(
                 ExamEntity.builder()
-                        .examTitle(userPrompt + " 기반 시험")
+                        .examTitle(userPrompt + "시험")
                         .subjectName(category)
-                        .subjectCode(999L)
+                        .subjectCode(200L)
                         .examCnt(Integer.parseInt(count))
                         .pubYn("0")
-                        .member(member)  // ✅ 로그인 사용자 ID 삽입
                         .regdate(new Date())
+                        .member(member)
                         .build()
         );
 
-        // 6. Kafka 메시지 전송
-        gptKafkaProducer.sendQuestionRequest(text, prompt, exam.getExamSeq());
 
-        // 7. GPT 응답 → 문제 파싱 및 저장
+
+        // 5) GPT 응답 파싱 → 문제 리스트로 변환
         List<QuizEntity> quizList = gptService.svcParseGptResponse(gptResponse, exam);
+
+        // 6) DB 저장
         quizRepository.saveAll(quizList);
 
-        // 8. 응답 반환
-//        return ResponseEntity.ok("문제 생성 및 저장 완료. 시험번호: " + exam.getExamSeq());
         // ✅ 응답 데이터 구성
         Map<String, Object> result = new HashMap<>();
         result.put("message", "문제 생성 및 저장 완료");
@@ -99,6 +103,5 @@ public class GptQuestionController {
         return ResponseEntity.ok()
                 .header("Access-Control-Expose-Headers", "Content-Disposition")
                 .body(result);
-
     }
 }
