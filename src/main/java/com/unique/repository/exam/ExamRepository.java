@@ -2,6 +2,7 @@ package com.unique.repository.exam;
 
 import com.unique.dto.exam.CategoryQuizCountDTO;
 import com.unique.dto.answer.StudentExamResultDTO;
+import com.unique.dto.exam.ExamDetailDTO;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.Optional;
 import com.unique.entity.exam.ExamEntity;
@@ -28,11 +29,17 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
     Optional<ExamEntity> findWithQuizListByExamSeq(@Param("examSeq") Long examSeq);
 
     //문제은행 카테고리별 시험지 상세 보기
-    @EntityGraph(attributePaths = {
-            "quizList.quiz"
-    })
-    @Query("SELECT e FROM ExamEntity e")
-    List<ExamEntity> findExamWithQuizList();
+    @Query("SELECT new com.unique.dto.exam.ExamDetailDTO( " +
+            "e.subjectName, " +
+            "CAST(e.subjectCode AS string), " +
+            "CAST(e.examCnt AS string), " +
+            "CAST(e.examSeq AS string), " +
+            "q.quiz, q.objYn, q.obj1, q.obj2, q.obj3, q.obj4, " +
+            "CAST(q.correctScore AS string), " +
+            "q.correctAnswer, q.hint, q.comments) " +
+            "FROM ExamEntity e JOIN e.quizList q " +
+            "WHERE e.subjectCode = :subjectCode")
+    List<ExamDetailDTO> findExamWithQuizListBySubjectCode(@Param("subjectCode") String subjectCode);
 
     //문제은행 리스트 업
     @Query("SELECT new com.unique.dto.exam.CategoryQuizCountDTO(e.subjectName, e.subjectCode, COUNT(q.quizSeq)) " +

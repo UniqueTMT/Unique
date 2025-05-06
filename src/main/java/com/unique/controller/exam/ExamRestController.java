@@ -3,6 +3,7 @@ package com.unique.controller.exam;
 import com.unique.dto.exam.ExamDTO;
 import com.unique.dto.answer.AnswerDetailDTO;
 import com.unique.dto.exam.CategoryQuizCountDTO;
+import com.unique.dto.exam.ExamDetailDTO;
 import com.unique.dto.exam.ExamParticipationDTO;
 import com.unique.dto.room.OpenRoomDTO;
 import com.unique.entity.exam.ExamEntity;
@@ -25,9 +26,6 @@ public class ExamRestController {
     private final ExamServiceImpl examService;
 
     @GetMapping("/list")
-//    public ResponseEntity<List<AnswerDetailDTO>> ctlFindAll() {
-//        return ResponseEntity.ok(examService.svcFindAll());
-//    }
     public ResponseEntity<Map<String, List<AnswerDetailDTO>>> ctlFindAll() {
         List<AnswerDetailDTO> list = examService.svcFindAll();
 
@@ -84,17 +82,18 @@ public class ExamRestController {
 
 
     //문제은행 카테고리별 시험지 상세 보기
-    @GetMapping("/quizbank-detail")
-    public ResponseEntity<Map<String, List<ExamDTO>>> ctlFindExamWithQuizList() {
-        List<ExamDTO> examList = examService.svcFindExamWithQuizList();
+    @GetMapping("/quizbank-detail/{subjectCode}")
+    public ResponseEntity<Map<String, List<ExamDetailDTO>>> ctlFindExamWithQuizList(@PathVariable("subjectCode") String subjectCode) {
+        List<ExamDetailDTO> examList = examService.svcFindExamWithQuizListBySubjectCode(subjectCode);
 
-        Map<String, List<ExamDTO>> map = new HashMap<>();
-        map.put("dsQuizBankList", examList); // 원하는 alias로 지정
+        Map<String, List<ExamDetailDTO>> map = new HashMap<>();
+        map.put("dsQuizList", examList);
 
         return ResponseEntity.ok()
                 .header("Access-Control-Expose-Headers", "Content-Disposition")
                 .body(map);
     }
+
 
   // 유저가 생성한 시험지 조회
   @GetMapping("/create-examList")

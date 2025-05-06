@@ -9,43 +9,43 @@ public class GptPromptServiceImpl implements GptPromptService {
     @Override
     public String svcBuildPrompt(String category, String chapter, String type, String count, String userPrompt, String text) {
         return String.format("""
-        당신은 교육용 문제를 JSON 형식으로 생성하는 AI입니다.
+    			당신은 JSON 형식으로만 응답하는 AI 문제 생성기입니다.
 
-        다음 조건을 참고해 문제를 완전히 생성하세요:
-
-        📂 카테고리: %s
-        📖 챕터: %s
-        🧾 문제 유형: %s (1: 객관식, 2: 주관식, 3: 혼합)
-        🔢 문제 개수: %s
-        🧠 추가 지시사항: %s
-
-        [출력 지침]
-        - 반드시 JSON 배열 형식으로만 응답하세요. 그 외의 텍스트는 절대 포함하지 마세요.
-        + 반드시 JSON 배열 형식([ ... ])로만 출력하세요.
-        + 절대 어떤 말머리 설명도 붙이지 마세요. JSON 외 텍스트가 포함되면 안 됩니다.
-        + 출력은 무조건 [ 로 시작하고 ] 로 끝나야 하며, 그 외의 설명은 입력하지 마세요.
+    			📂 카테고리: %s
+    			📖 챕터: %s
+    			🧾 문제 유형: %s (1: 객관식, 2: 주관식, 3: 혼합)
+    			🔢 문제 개수: %s
+    			🧠 출제자 추가 지시사항: %s
 
 
-        [예시]
-        [
-          {
-            "quiz": "변수란 무엇인가요?",
-            "objYn": "1",
-            "obj1": "값을 저장하는 공간",
-            "obj2": "함수의 이름",
-            "obj3": "반복문",
-            "obj4": "조건문",
-            "correctAnswer": "1",
-            "correctScore": 10,
-            "hint": "변수는 데이터를 담는 공간입니다.",
-            "comments": "객관식 문제입니다."
-          }
-        ]
+        ⚠️ 생성 조건:
+        - 반드시 JSON 배열로만 응답하십시오. 그 외 설명 문장은 포함하지 마십시오.
+        - 각 문제는 아래 형식을 따라야 하며, 모든 항목을 빠짐없이 작성하십시오.
+        - 문제의 총점(`correctScore`)은 반드시 **100점**이 되도록 설정하십시오.
 
-        [학습자료 시작]
-        %s
-        [학습자료 끝]
-        """, category, chapter, type, count, userPrompt, count, text);
+        👉 배점 규칙:
+        - 객관식(`objYn`: "1") 문제는 문제 수에 따라 **균등하게 배점**하십시오.
+        - 주관식(`objYn`: "0") 문제는 **객관식보다 더 높은 배점**을 부여하십시오. (예: 주관식 2문제 = 각 30점, 객관식 4문제 = 각 10점 등)
+        - 혼합형(문제유형 3)인 경우, 객관식/주관식 간의 비율에 맞게 배점하십시오.
+
+    			[
+    			  {
+    			    "quiz": "배열이란 무엇인가요?",
+    			    "objYn": "1",
+    			    "obj1": "선형",
+    			    "obj2": "비선형",
+    			    "obj3": "트리",
+    			    "obj4": "그래프",
+    			    "correctAnswer": "1",
+    			    "correctScore": 10,
+    			    "hint": "배열은 연속된 메모리를 사용합니다.",
+    			    "comments": "기본 개념 평가용 문제입니다."
+    			  }
+    			]
+
+    			[자료 시작]
+    			%s
+    			[자료 끝]
+    			""", category, chapter, type, count, userPrompt, text);
     }
-
 }
